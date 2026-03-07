@@ -38,5 +38,5 @@ export const siteConfig = {
   tagline: 'Create quotes, generate invoices, and keep full control of your data.',
   url: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
   githubUrl: 'https://github.com/guttership/stackbill',
-  docsUrl: 'https://stackbill.tech',
+  docsUrl: '/docs',
 }

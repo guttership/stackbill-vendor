@@ -1,0 +1,151 @@
+import { readFile } from 'node:fs/promises'
+import path from 'node:path'
+import { getCurrentMessages } from '@/lib/i18n/server'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { ChevronLeft, Github } from 'lucide-react'
+import { siteConfig } from '@/lib/config'
+
+async function getInstallationDoc() {
+  try {
+    const docPath = path.join(process.cwd(), 'INSTALLATION.md')
+    const content = await readFile(docPath, 'utf-8')
+    return content
+  } catch {
+    return null
+  }
+}
+
+export default async function DocsPage() {
+  const messages = await getCurrentMessages()
+  const docContent = await getInstallationDoc()
+
+  if (!docContent) {
+    return (
+      <div className="container mx-auto px-4 py-16 text-center">
+        <h1 className="text-3xl font-bold mb-4">Documentation not available</h1>
+        <p className="text-[#676060] mb-8">The installation guide could not be loaded.</p>
+        <Button asChild>
+          <Link href="/">
+            <ChevronLeft className="mr-2 h-4 w-4" />
+            Back to home
+          </Link>
+        </Button>
+      </div>
+    )
+  }
+
+  // Split French and English sections
+  const sections = docContent.split('---\n\n---\n\n---\n')
+  const frenchDoc = sections[0]?.trim() || ''
+  const englishDoc = sections[1]?.trim() || ''
+
+  return (
+    <div className="relative z-10">
+      <div className="container mx-auto px-4 py-16 md:py-24">
+        <div className="max-w-4xl mx-auto">
+          <div className="mb-12 flex items-center justify-between">
+            <Button variant="outline" asChild>
+              <Link href="/">
+                <ChevronLeft className="mr-2 h-4 w-4" />
+                {messages.marketing.heroTitle}
+              </Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link href={siteConfig.githubUrl} target="_blank" rel="noopener noreferrer">
+                <Github className="mr-2 h-4 w-4" />
+                View on GitHub
+              </Link>
+            </Button>
+          </div>
+
+          <article className="prose prose-slate max-w-none">
+            <div
+              className="markdown-content"
+              dangerouslySetInnerHTML={{ __html: convertMarkdownToHTML(frenchDoc) }}
+            />
+
+            <hr className="my-16" />
+
+            <div
+              className="markdown-content"
+              dangerouslySetInnerHTML={{ __html: convertMarkdownToHTML(englishDoc) }}
+            />
+          </article>
+
+          <div className="mt-16 pt-8 border-t border-black/10 flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg" asChild>
+              <Link href="/pricing">Install StackBill</Link>
+            </Button>
+            <Button size="lg" variant="outline" asChild>
+              <Link href="/">Back to home</Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Simple markdown to HTML converter for basic formatting
+function convertMarkdownToHTML(markdown: string): string {
+  let html = markdown
+
+  // Headers
+  html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>')
+  html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>')
+  html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>')
+
+  // Bold
+  html = html.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
+
+  // Code blocks
+  html = html.replace(/```(\w+)?\n([\s\S]*?)```/gim, (match, lang, code) => {
+    return `<pre><code class="language-${lang || 'text'}">${escapeHtml(code.trim())}</code></pre>`
+  })
+
+  // Inline code
+  html = html.replace(/`([^`]+)`/gim, '<code>$1</code>')
+
+  // Unordered lists
+  html = html.replace(/^\- (.*$)/gim, '<li>$1</li>')
+  html = html.replace(/(<li>[\s\S]*?<\/li>)/gim, '<ul>$1</ul>')
+
+  // Ordered lists
+  html = html.replace(/^\d+\. (.*$)/gim, '<li>$1</li>')
+
+  // Paragraphs
+  html = html
+    .split('\n\n')
+    .map((paragraph) => {
+      paragraph = paragraph.trim()
+      if (
+        paragraph.startsWith('<h') ||
+        paragraph.startsWith('<pre>') ||
+        paragraph.startsWith('<ul>') ||
+        paragraph.startsWith('<ol>') ||
+        paragraph.startsWith('<hr') ||
+        paragraph === ''
+      ) {
+        return paragraph
+      }
+      return `<p>${paragraph}</p>`
+    })
+    .join('\n')
+
+  // Horizontal rules
+  html = html.replace(/^---$/gim, '<hr />')
+
+  return html
+}
+
+function escapeHtml(text: string): string {
+  const map: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;',
+  }
+  return text.replace(/[&<>"']/g, (m) => map[m] || m)
+}
