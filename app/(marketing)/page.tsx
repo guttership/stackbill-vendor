@@ -3,16 +3,20 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { siteConfig } from '@/lib/config'
 import {
   Server,
   Code2,
   FileText,
   Clock,
   Trello,
-  Palette,
   Download,
   ChevronRight,
   Check,
+  Play,
+  Key,
+  Zap,
+  Github,
 } from 'lucide-react'
 import { getCurrentMessages } from '@/lib/i18n/server'
 
@@ -20,7 +24,8 @@ export default async function HomePage() {
   const messages = await getCurrentMessages()
 
   const whyIcons = [Server, Code2, FileText]
-  const integrationIcons = [Clock, Trello, Palette]
+  const howItWorksIcons = [Play, Key, Zap]
+  const integrationIcons = [Clock, Trello]
 
   return (
     <div className="relative z-10 flex flex-col text-[#463f3f]">
@@ -53,6 +58,10 @@ export default async function HomePage() {
                 <span className="text-black/20">•</span>
                 <span>{messages.marketing.reassurance[2]}</span>
               </div>
+
+              <p className="text-sm text-[#555353] pt-4 border-t border-black/10">
+                {messages.marketing.deployReassurance}
+              </p>
             </div>
 
             <div className="relative">
@@ -74,11 +83,40 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section id="features" className="border-b border-black/10">
+      <section className="border-b border-black/10 bg-[#fafaf9]">
+        <div className="container mx-auto px-4 py-12 md:py-16">
+          <div className="max-w-3xl mx-auto text-center space-y-6">
+            <h2 className="text-2xl md:text-3xl font-bold" style={{ fontFamily: 'var(--brand-font-heading)' }}>
+              {messages.marketing.saasContrastTitle}
+            </h2>
+            <div className="space-y-4 text-[#555353] leading-relaxed">
+              {messages.marketing.saasContrastText.map((line, index) => (
+                <p key={index} className={index === 2 ? "font-semibold text-[#3f3a3a] text-lg" : ""}>
+                  {line}
+                </p>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-b border-black/10">
+        <div className="container mx-auto px-4 py-12 md:py-16">
+          <div className="max-w-2xl mx-auto text-center space-y-4">
+            <h2 className="text-2xl md:text-3xl font-bold" style={{ fontFamily: 'var(--brand-font-heading)' }}>
+              {messages.marketing.targetAudienceTitle}
+            </h2>
+            <p className="text-lg text-[#555353] leading-relaxed">
+              {messages.marketing.targetAudienceText}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-b border-black/10">
         <div className="container mx-auto px-4 py-16 md:py-24">
           <div className="text-center mb-16 space-y-4">
             <h2 className="section-title">{messages.marketing.whyTitle}</h2>
-            <p className="text-lg max-w-[700px] mx-auto text-[#676060]">{messages.marketing.whySubtitle}</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -104,10 +142,9 @@ export default async function HomePage() {
         <div className="container mx-auto px-4 py-16 md:py-24">
           <div className="text-center mb-16 space-y-4">
             <h2 className="section-title">{messages.marketing.integrationsTitle}</h2>
-            <p className="text-lg max-w-[700px] mx-auto text-[#676060]">{messages.marketing.integrationsSubtitle}</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
             {messages.marketing.integrationsCards.map((card, index) => {
               const Icon = integrationIcons[index]
               const bgClass = index % 2 === 0 ? 'bg-[color:var(--brand-primary)]/15' : 'bg-[color:var(--brand-accent)]/15'
@@ -127,6 +164,60 @@ export default async function HomePage() {
                 </Card>
               )
             })}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-b border-black/10">
+        <div className="container mx-auto px-4 py-16 md:py-24">
+          <div className="text-center mb-16 space-y-4">
+            <h2 className="section-title">{messages.marketing.howItWorksTitle}</h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {messages.marketing.howItWorksSteps.map((step, index) => {
+              const Icon = howItWorksIcons[index]
+              return (
+                <Card key={step.title} className="relative overflow-hidden">
+                  <CardHeader>
+                    <div className="w-12 h-12 rounded-lg bg-[color:var(--brand-accent)]/15 flex items-center justify-center mb-4 text-[#3f3a3a]">
+                      <Icon className="h-6 w-6" />
+                    </div>
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-8 h-8 rounded-full bg-[color:var(--brand-primary)]/20 flex items-center justify-center">
+                        <span className="text-sm font-bold text-[#3f3a3a]">{index + 1}</span>
+                      </div>
+                      <CardTitle>{step.title}</CardTitle>
+                    </div>
+                    <CardDescription>{step.description}</CardDescription>
+                  </CardHeader>
+                </Card>
+              )
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-b border-black/10 bg-[#fafaf9]">
+        <div className="container mx-auto px-4 py-12 md:py-16">
+          <div className="max-w-3xl mx-auto text-center space-y-6">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <Github className="h-8 w-8 text-[#3f3a3a]" />
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold" style={{ fontFamily: 'var(--brand-font-heading)' }}>
+              {messages.marketing.openSourceTitle}
+            </h2>
+            <p className="text-lg text-[#555353]">
+              {messages.marketing.openSourceText}
+            </p>
+            <div className="pt-4">
+              <Button variant="outline" size="lg" asChild>
+                <Link href={siteConfig.githubUrl} target="_blank" rel="noopener noreferrer">
+                  <Github className="h-4 w-4 mr-2" />
+                  {messages.marketing.openSourceLink}
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
       </section>

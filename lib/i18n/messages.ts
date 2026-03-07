@@ -23,12 +23,22 @@ export interface Messages {
     heroPrimaryCta: string
     heroSecondaryCta: string
     reassurance: string[]
+    deployReassurance: string
+    saasContrastTitle: string
+    saasContrastText: string[]
+    targetAudienceTitle: string
+    targetAudienceText: string
     whyTitle: string
     whySubtitle: string
     whyCards: Array<{ title: string; description: string }>
+    howItWorksTitle: string
+    howItWorksSteps: Array<{ title: string; description: string }>
     integrationsTitle: string
     integrationsSubtitle: string
     integrationsCards: Array<{ title: string; badge: string; description: string }>
+    openSourceTitle: string
+    openSourceText: string
+    openSourceLink: string
     pricingHighlightTitle: string
     pricingHighlightSubtitle: string
     pricingHighlightMonthly: string
@@ -158,7 +168,7 @@ const en: Messages = {
     pricing: 'Pricing',
     faq: 'FAQ',
     docs: 'Docs',
-    cta: 'Start using StackBill',
+    cta: 'Get StackBill',
   },
   footer: {
     product: 'Product',
@@ -171,52 +181,70 @@ const en: Messages = {
   },
   marketing: {
     heroTitle: 'Self-hosted invoicing for developers',
-    heroSubtitle: 'Create quotes and invoices on your own infrastructure, with a clear license model built for developers.',
-    heroPrimaryCta: 'Start using StackBill',
+    heroSubtitle: 'Create quotes, generate invoices, and keep full control of your data.',
+    heroPrimaryCta: 'Get StackBill',
     heroSecondaryCta: 'View pricing',
-    reassurance: ['2 instances included.', 'Self-hosted.', 'License-based access.'],
-    whyTitle: 'Own your invoices. Own your stack.',
-    whySubtitle: 'Self-hosted control without SaaS bloat, with honest licensing and update checks.',
+    reassurance: ['2 instances included.', 'Self-hosted.', 'Built for developers.'],
+    deployReassurance: 'Deploy StackBill in minutes. Run it locally or on your own server.',
+    saasContrastTitle: 'Most invoicing tools are SaaS.',
+    saasContrastText: [
+      'Your invoices live on someone else\'s servers.',
+      'Your data depends on a third-party platform.',
+      'StackBill flips that model.',
+      'Run your invoicing stack on your own infrastructure.',
+    ],
+    targetAudienceTitle: 'Built for developers and indie makers.',
+    targetAudienceText:
+      'If you\'re a freelance developer, indie hacker or small dev team tired of SaaS invoicing tools, StackBill lets you run your own invoicing stack.',
+    whyTitle: 'Everything you need. Nothing you don\'t.',
+    whySubtitle: '',
     whyCards: [
       {
         title: 'Self-hosted',
-        description:
-          'Run StackBill locally or on your own server. Your invoicing data stays on your infrastructure.',
+        description: 'Run StackBill locally or on your own server.',
       },
       {
         title: 'Built for developers',
-        description:
-          'Simple setup, clean configuration, and no bloated workflow. Configure it with code and deploy where you want.',
+        description: 'Simple setup, clean configuration, no bloated SaaS.',
       },
       {
-        title: 'Connected licensing',
-        description:
-          'License validation and updates may require occasional outbound requests, while billing data remains under your control.',
+        title: 'Quotes to invoices',
+        description: 'Turn accepted quotes into invoices instantly.',
       },
     ],
-    integrationsTitle: 'Built to fit your workflow',
-    integrationsSubtitle:
-      'Connect with the tools you already use. Extend functionality through simple integrations.',
+    howItWorksTitle: 'How it works',
+    howItWorksSteps: [
+      {
+        title: 'Install StackBill',
+        description: 'Run it locally or on your own server.',
+      },
+      {
+        title: 'Activate your license',
+        description: 'Connect your instance with your StackBill account.',
+      },
+      {
+        title: 'Start invoicing',
+        description: 'Create quotes, generate invoices and track projects.',
+      },
+    ],
+    integrationsTitle: 'Integrations',
+    integrationsSubtitle: '',
     integrationsCards: [
       {
         title: 'Clockify',
         badge: 'Integration',
-        description:
-          'Import tracked time into invoices. Convert your time entries into billable line items automatically.',
+        description: 'Import tracked time directly into invoices.',
       },
       {
         title: 'Trello',
         badge: 'Integration',
-        description:
-          'Create project structure automatically when a quote is accepted. Streamline your project management workflow.',
-      },
-      {
-        title: 'Custom branding',
-        badge: 'Built-in',
-        description:
-          'Generate quotes and invoices that match your identity. Full control over colors, logos, and templates.',
+        description: 'Create project structure automatically when a quote is accepted.',
       },
     ],
+    openSourceTitle: 'Open source core available on GitHub.',
+    openSourceText:
+      'Review the code, contribute improvements, or adapt it to your workflow.',
+    openSourceLink: 'View on GitHub',
     pricingHighlightTitle: 'One product. One clear price.',
     pricingHighlightSubtitle:
       'StackBill is sold as an active license with updates included. Choose monthly or yearly billing.',
@@ -233,7 +261,7 @@ const en: Messages = {
       'Built for developers',
     ],
     pricingHighlightNote: 'One product, one clear price.',
-    pricingHighlightPrimaryCta: 'Start using StackBill',
+    pricingHighlightPrimaryCta: 'Get StackBill',
     pricingHighlightSecondaryCta: 'View documentation',
     installationTitle: 'Deploy it your way',
     installationText:
@@ -265,7 +293,7 @@ const en: Messages = {
     finalTitle: 'Ready to take control?',
     finalText:
       'Replace bloated invoicing SaaS with a self-hosted workflow that keeps you in control.',
-    finalPrimaryCta: 'Start using StackBill',
+    finalPrimaryCta: 'Get StackBill',
     finalSecondaryCta: 'View documentation',
     questionsLabel: 'Questions? Contact us at',
   },
@@ -284,7 +312,7 @@ const en: Messages = {
     ],
     bestValue: 'Best Value',
     savePerYear: 'Save $20.88 per year',
-    getStarted: 'Start using StackBill',
+    getStarted: 'Get StackBill',
   },
   checkout: {
     loading: 'Loading...',
@@ -420,7 +448,7 @@ const fr: Messages = {
     pricing: 'Tarifs',
     faq: 'FAQ',
     docs: 'Docs',
-    cta: 'Commencer avec StackBill',
+    cta: 'Obtenir StackBill',
   },
   footer: {
     product: 'Produit',
@@ -433,52 +461,70 @@ const fr: Messages = {
   },
   marketing: {
     heroTitle: 'Facturation self-hosted pour les developpeurs',
-    heroSubtitle: 'Creez devis et factures sur votre infrastructure, avec un modele de licence clair pour les developpeurs.',
-    heroPrimaryCta: 'Commencer avec StackBill',
+    heroSubtitle: 'Creez des devis, generez des factures et gardez le controle total de vos donnees.',
+    heroPrimaryCta: 'Obtenir StackBill',
     heroSecondaryCta: 'Voir les tarifs',
-    reassurance: ['2 instances incluses.', 'Self-hosted.', 'Acces base sur licence.'],
-    whyTitle: 'Vos factures. Votre stack.',
-    whySubtitle: 'Le controle du self-hosted, sans bloat SaaS, avec une licence et des mises a jour assumees.',
+    reassurance: ['2 instances incluses.', 'Self-hosted.', 'Concu pour les developpeurs.'],
+    deployReassurance: 'Deployez StackBill en quelques minutes. Executez-le en local ou sur votre serveur.',
+    saasContrastTitle: 'La plupart des outils de facturation sont des SaaS.',
+    saasContrastText: [
+      'Vos factures vivent sur les serveurs de quelqu\'un d\'autre.',
+      'Vos donnees dependent d\'une plateforme tierce.',
+      'StackBill inverse ce modele.',
+      'Executez votre stack de facturation sur votre propre infrastructure.',
+    ],
+    targetAudienceTitle: 'Concu pour les developpeurs et indie makers.',
+    targetAudienceText:
+      'Si vous etes developpeur freelance, indie hacker ou petite equipe dev fatiguee des outils SaaS, StackBill vous permet de gerer votre propre stack de facturation.',
+    whyTitle: 'Tout ce dont vous avez besoin. Rien de plus.',
+    whySubtitle: '',
     whyCards: [
       {
         title: 'Self-hosted',
-        description:
-          'Executez StackBill en local ou sur votre serveur. Vos donnees de facturation restent sur votre infrastructure.',
+        description: 'Executez StackBill en local ou sur votre propre serveur.',
       },
       {
-        title: 'Pense pour les developpeurs',
-        description:
-          'Installation simple, configuration propre, sans usine a gaz. Configurez avec du code et deployez ou vous voulez.',
+        title: 'Concu pour les developpeurs',
+        description: 'Installation simple, configuration propre, pas de bloat SaaS.',
       },
       {
-        title: 'Licence connectee',
-        description:
-          'La validation de licence et les mises a jour peuvent demander des requetes sortantes ponctuelles, sans exposer vos donnees de facturation.',
+        title: 'Du devis a la facture',
+        description: 'Transformez un devis accepte en facture instantanement.',
       },
     ],
-    integrationsTitle: 'Concu pour votre workflow',
-    integrationsSubtitle:
-      'Connectez les outils que vous utilisez deja et etendez facilement StackBill.',
+    howItWorksTitle: 'Comment ca marche',
+    howItWorksSteps: [
+      {
+        title: 'Installez StackBill',
+        description: 'Executez-le en local ou sur votre propre serveur.',
+      },
+      {
+        title: 'Activez votre licence',
+        description: 'Connectez votre instance a votre compte StackBill.',
+      },
+      {
+        title: 'Commencez a facturer',
+        description: 'Creez des devis, generez des factures et suivez vos projets.',
+      },
+    ],
+    integrationsTitle: 'Integrations',
+    integrationsSubtitle: '',
     integrationsCards: [
       {
         title: 'Clockify',
         badge: 'Integration',
-        description:
-          'Importez le temps suivi dans vos factures et convertissez vos entrees en lignes facturables.',
+        description: 'Importez le temps suivi directement dans vos factures.',
       },
       {
         title: 'Trello',
         badge: 'Integration',
-        description:
-          'Creez automatiquement une structure projet lorsqu\'un devis est accepte.',
-      },
-      {
-        title: 'Branding personnalise',
-        badge: 'Inclus',
-        description:
-          'Generez des devis et factures a votre image: couleurs, logo et templates.',
+        description: 'Creez automatiquement une structure projet lorsqu\'un devis est accepte.',
       },
     ],
+    openSourceTitle: 'Code source ouvert disponible sur GitHub.',
+    openSourceText:
+      'Examinez le code, contribuez aux ameliorations ou adaptez-le a votre workflow.',
+    openSourceLink: 'Voir sur GitHub',
     pricingHighlightTitle: 'Un produit. Un prix clair.',
     pricingHighlightSubtitle:
       'StackBill fonctionne avec une licence active incluant les mises a jour. Choisissez mensuel ou annuel.',
@@ -495,7 +541,7 @@ const fr: Messages = {
       'Concu pour les developpeurs',
     ],
     pricingHighlightNote: 'Un produit, un prix clair.',
-    pricingHighlightPrimaryCta: 'Commencer avec StackBill',
+    pricingHighlightPrimaryCta: 'Obtenir StackBill',
     pricingHighlightSecondaryCta: 'Voir la documentation',
     installationTitle: 'Deployez a votre facon',
     installationText:
@@ -526,7 +572,7 @@ const fr: Messages = {
     ],
     finalTitle: 'Pret a reprendre le controle ?',
     finalText: 'Remplacez les SaaS de facturation trop lourds par un workflow self-hosted, clair et maitrise.',
-    finalPrimaryCta: 'Commencer avec StackBill',
+    finalPrimaryCta: 'Obtenir StackBill',
     finalSecondaryCta: 'Voir la documentation',
     questionsLabel: 'Une question ? Contactez-nous :',
   },
@@ -545,7 +591,7 @@ const fr: Messages = {
     ],
     bestValue: 'Meilleure offre',
     savePerYear: 'Economisez 20,88 $/an',
-    getStarted: 'Commencer avec StackBill',
+    getStarted: 'Obtenir StackBill',
   },
   checkout: {
     loading: 'Chargement...',
