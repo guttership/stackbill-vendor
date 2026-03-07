@@ -51,7 +51,7 @@ export default async function NotFound() {
               {messages.notFound.documentation}
             </Link>
             <span>·</span>
-            <Link href="mailto:support@stackbill.tech" className="text-blue-600 hover:text-blue-700">
+            <Link href="mailto:designmoiunmouton@gmail.com" className="text-blue-600 hover:text-blue-700">
               {messages.notFound.support}
             </Link>
           </div>

@@ -385,10 +385,10 @@ npm run dev`}
               <p className="text-sm text-[#676060]">
                 {messages.marketing.questionsLabel}{' '}
                 <a
-                  href="mailto:support@stackbill.tech"
+                  href="mailto:designmoiunmouton@gmail.com"
                   className="underline underline-offset-4 hover:text-foreground transition-colors"
                 >
-                  support@stackbill.tech
+                  designmoiunmouton@gmail.com
                 </a>
               </p>
             </div>

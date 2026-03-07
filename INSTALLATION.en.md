@@ -386,4 +386,4 @@ For any questions or issues:
 
 - Check the documentation: https://stackbill.tech
 - Open an issue on GitHub: https://github.com/guttership/stackbill/issues
-- Contact support: support@stackbill.tech
+- Contact support: designmoiunmouton@gmail.com

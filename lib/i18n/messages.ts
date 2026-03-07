@@ -356,7 +356,7 @@ const en: Messages = {
         {
           title: 'Have questions?',
           description:
-            'Contact us at support@stackbill.tech and we will be happy to help you choose the right plan.',
+            'Contact us at designmoiunmouton@gmail.com and we will be happy to help you choose the right plan.',
         },
       ],
       whatYouGet: 'What you get with StackBill:',
@@ -635,7 +635,7 @@ const fr: Messages = {
         {
           title: 'Une question ?',
           description:
-            'Contactez-nous sur support@stackbill.tech et nous vous aiderons a choisir le bon plan.',
+            'Contactez-nous sur designmoiunmouton@gmail.com et nous vous aiderons a choisir le bon plan.',
         },
       ],
       whatYouGet: 'Ce que vous obtenez avec StackBill :',
