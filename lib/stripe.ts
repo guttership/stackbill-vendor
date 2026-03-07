@@ -1,10 +1,20 @@
 import Stripe from 'stripe'
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error('STRIPE_SECRET_KEY is not defined')
-}
+let stripeClient: Stripe | null = null
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: '2025-02-24.acacia',
-  typescript: true,
-})
+export function getStripeClient() {
+  if (!stripeClient) {
+    const secretKey = process.env.STRIPE_SECRET_KEY
+
+    if (!secretKey) {
+      throw new Error('STRIPE_SECRET_KEY is not defined')
+    }
+
+    stripeClient = new Stripe(secretKey, {
+      apiVersion: '2025-02-24.acacia',
+      typescript: true,
+    })
+  }
+
+  return stripeClient
+}

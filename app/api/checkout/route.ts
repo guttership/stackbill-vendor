@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { stripe } from '@/lib/stripe'
+import { getStripeClient } from '@/lib/stripe'
 import { siteConfig } from '@/lib/config'
 
 export async function POST(request: NextRequest) {
   try {
+    const stripe = getStripeClient()
     const body = await request.json()
     const { priceId } = body
 

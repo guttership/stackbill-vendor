@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
-import { stripe } from '@/lib/stripe'
+import { getStripeClient } from '@/lib/stripe'
 import Stripe from 'stripe'
 
 /**
@@ -8,6 +8,7 @@ import Stripe from 'stripe'
  * Handles subscription lifecycle events from Stripe
  */
 export async function POST(request: NextRequest) {
+  const stripe = getStripeClient()
   const body = await request.text()
   const signature = (await headers()).get('stripe-signature')
 
