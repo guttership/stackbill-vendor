@@ -169,7 +169,7 @@ const en: Messages = {
     pricing: 'Pricing',
     faq: 'FAQ',
     docs: 'Docs',
-    cta: 'Get StackBill license',
+    cta: 'Install StackBill',
   },
   footer: {
     product: 'Product',
@@ -183,7 +183,7 @@ const en: Messages = {
   marketing: {
     heroTitle: 'Self-hosted invoicing for developers',
     heroSubtitle: 'Stop relying on SaaS invoicing tools. Run your billing stack on your own infrastructure.',
-    heroPrimaryCta: 'Get StackBill license',
+    heroPrimaryCta: 'Install StackBill',
     heroSecondaryCta: 'View documentation',
     reassurance: ['2 instances included.', 'Self-hosted.', 'Built for developers.'],
     deployReassurance: 'Deploy in minutes. Run locally or on your own server.',
@@ -263,7 +263,7 @@ const en: Messages = {
     ],
     pricingHighlightReassurance: 'Run it locally. Deploy it anywhere.',
     pricingHighlightNote: 'One product, one clear price.',
-    pricingHighlightPrimaryCta: 'Get StackBill license',
+    pricingHighlightPrimaryCta: 'Install StackBill',
     pricingHighlightSecondaryCta: 'View documentation',
     installationTitle: 'Deploy it your way',
     installationText:
@@ -295,7 +295,7 @@ const en: Messages = {
     finalTitle: 'Ready to take control?',
     finalText:
       'Replace bloated invoicing SaaS with a self-hosted workflow that keeps you in control.',
-    finalPrimaryCta: 'Get StackBill license',
+    finalPrimaryCta: 'Install StackBill',
     finalSecondaryCta: 'View documentation',
     questionsLabel: 'Questions? Contact us at',
   },
@@ -314,7 +314,7 @@ const en: Messages = {
     ],
     bestValue: 'Best Value',
     savePerYear: 'Save $20.88 per year',
-    getStarted: 'Get StackBill license',
+    getStarted: 'Install StackBill',
   },
   checkout: {
     loading: 'Loading...',
@@ -450,7 +450,7 @@ const fr: Messages = {
     pricing: 'Tarifs',
     faq: 'FAQ',
     docs: 'Docs',
-    cta: 'Obtenir la licence StackBill',
+    cta: 'Installer StackBill',
   },
   footer: {
     product: 'Produit',
@@ -464,7 +464,7 @@ const fr: Messages = {
   marketing: {
     heroTitle: 'Facturation self-hosted pour les développeurs',
     heroSubtitle: 'Arrêtez de dépendre des plateformes SaaS de facturation. Exécutez votre stack de facturation sur votre propre infrastructure.',
-    heroPrimaryCta: 'Obtenir la licence StackBill',
+    heroPrimaryCta: 'Installer StackBill',
     heroSecondaryCta: 'Voir la documentation',
     reassurance: ['2 instances incluses.', 'Self-hosted.', 'Conçu pour les développeurs.'],
     deployReassurance: 'Déployez en quelques minutes. Exécutez-le en local ou sur votre serveur.',
@@ -544,7 +544,7 @@ const fr: Messages = {
     ],
     pricingHighlightReassurance: 'Exécutez-le en local. Déployez-le partout.',
     pricingHighlightNote: 'Un produit, un prix clair.',
-    pricingHighlightPrimaryCta: 'Obtenir la licence StackBill',
+    pricingHighlightPrimaryCta: 'Installer StackBill',
     pricingHighlightSecondaryCta: 'Voir la documentation',
     installationTitle: 'Déployez à votre façon',
     installationText:
@@ -575,7 +575,7 @@ const fr: Messages = {
     ],
     finalTitle: 'Prêt à reprendre le contrôle ?',
     finalText: 'Remplacez les SaaS de facturation trop lourds par un workflow self-hosted, clair et maîtrisé.',
-    finalPrimaryCta: 'Obtenir la licence StackBill',
+    finalPrimaryCta: 'Installer StackBill',
     finalSecondaryCta: 'Voir la documentation',
     questionsLabel: 'Une question ? Contactez-nous :',
   },
@@ -594,7 +594,7 @@ const fr: Messages = {
     ],
     bestValue: 'Meilleure offre',
     savePerYear: 'Économisez 20,88 $/an',
-    getStarted: 'Obtenir la licence StackBill',
+    getStarted: 'Installer StackBill',
   },
   checkout: {
     loading: 'Chargement...',
