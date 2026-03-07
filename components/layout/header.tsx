@@ -68,21 +68,22 @@ export function Header({ locale }: { locale: Locale }) {
 
   return (
     <header className="topnav-glass fixed top-0 left-0 right-0 z-50">
-      <div className="relative container flex h-28 items-center justify-between px-6 md:px-8">
-        <div className="flex items-center gap-8">
-          <Link href="/" className="group flex items-center py-3">
-            <Image
-              src="/images/logo.svg"
-              alt={siteConfig.name}
-              width={360}
-              height={80}
-              className="h-14 w-auto transition-opacity group-hover:opacity-90"
-              priority
-            />
-          </Link>
+      <div className="relative container mx-auto px-6 md:px-8">
+        <div className="flex h-28 items-center justify-center">
+          <div className="flex items-center gap-12">
+            <Link href="/" className="group flex items-center py-3">
+              <Image
+                src="/images/logo.svg"
+                alt={siteConfig.name}
+                width={360}
+                height={80}
+                className="h-14 w-auto transition-opacity group-hover:opacity-90"
+                priority
+              />
+            </Link>
 
-          <nav className="hidden md:flex items-center gap-2">
-            {navItems.map((item) => {
+            <nav className="hidden md:flex items-center gap-2">
+              {navItems.map((item) => {
               const isExternal = item.href.startsWith('http')
               const isPricing = item.href === '/pricing'
               const sectionTarget = item.href.startsWith('/#') ? item.href.replace('/#', '') : ''
@@ -113,15 +114,14 @@ export function Header({ locale }: { locale: Locale }) {
               )
             })}
           </nav>
-        </div>
 
-        <div className="flex items-center gap-3">
           <Link href="/pricing">
             <Button size="sm" className="min-w-[170px]">
               {messages.header.cta}
             </Button>
           </Link>
         </div>
+      </div>
       </div>
     </header>
   )

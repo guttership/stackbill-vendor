@@ -169,7 +169,7 @@ const en: Messages = {
     pricing: 'Pricing',
     faq: 'FAQ',
     docs: 'Docs',
-    cta: 'Get StackBill',
+    cta: 'Get StackBill license',
   },
   footer: {
     product: 'Product',
@@ -182,11 +182,11 @@ const en: Messages = {
   },
   marketing: {
     heroTitle: 'Self-hosted invoicing for developers',
-    heroSubtitle: 'Stop relying on SaaS invoicing platforms. Run your billing stack on your own infrastructure.',
-    heroPrimaryCta: 'Get StackBill',
+    heroSubtitle: 'Stop relying on SaaS invoicing tools. Run your billing stack on your own infrastructure.',
+    heroPrimaryCta: 'Get StackBill license',
     heroSecondaryCta: 'View documentation',
     reassurance: ['2 instances included.', 'Self-hosted.', 'Built for developers.'],
-    deployReassurance: 'Deploy StackBill in minutes. Run it locally or on your own server.',
+    deployReassurance: 'Deploy in minutes. Run locally or on your own server.',
     saasContrastTitle: 'Most invoicing tools are SaaS.',
     saasContrastText: [
       'Your invoices live on someone else\'s servers.',
@@ -263,7 +263,7 @@ const en: Messages = {
     ],
     pricingHighlightReassurance: 'Run it locally. Deploy it anywhere.',
     pricingHighlightNote: 'One product, one clear price.',
-    pricingHighlightPrimaryCta: 'Get StackBill',
+    pricingHighlightPrimaryCta: 'Get StackBill license',
     pricingHighlightSecondaryCta: 'View documentation',
     installationTitle: 'Deploy it your way',
     installationText:
@@ -271,7 +271,7 @@ const en: Messages = {
     installBadge: 'Easy setup',
     installTerminalLabel: 'Terminal',
     installFooter: 'Runs on Node.js 18+. Works with PostgreSQL, MySQL, or SQLite.',
-    installButton: 'View full documentation',
+    installButton: 'View documentation',
     faqTitle: 'Frequently asked questions',
     faqSubtitle: 'Everything you need to know about StackBill',
     faqs: [
@@ -295,7 +295,7 @@ const en: Messages = {
     finalTitle: 'Ready to take control?',
     finalText:
       'Replace bloated invoicing SaaS with a self-hosted workflow that keeps you in control.',
-    finalPrimaryCta: 'Get StackBill',
+    finalPrimaryCta: 'Get StackBill license',
     finalSecondaryCta: 'View documentation',
     questionsLabel: 'Questions? Contact us at',
   },
@@ -314,7 +314,7 @@ const en: Messages = {
     ],
     bestValue: 'Best Value',
     savePerYear: 'Save $20.88 per year',
-    getStarted: 'Get StackBill',
+    getStarted: 'Get StackBill license',
   },
   checkout: {
     loading: 'Loading...',
@@ -450,7 +450,7 @@ const fr: Messages = {
     pricing: 'Tarifs',
     faq: 'FAQ',
     docs: 'Docs',
-    cta: 'Obtenir StackBill',
+    cta: 'Obtenir la licence StackBill',
   },
   footer: {
     product: 'Produit',
@@ -464,10 +464,10 @@ const fr: Messages = {
   marketing: {
     heroTitle: 'Facturation self-hosted pour les développeurs',
     heroSubtitle: 'Arrêtez de dépendre des plateformes SaaS de facturation. Exécutez votre stack de facturation sur votre propre infrastructure.',
-    heroPrimaryCta: 'Obtenir StackBill',
+    heroPrimaryCta: 'Obtenir la licence StackBill',
     heroSecondaryCta: 'Voir la documentation',
     reassurance: ['2 instances incluses.', 'Self-hosted.', 'Conçu pour les développeurs.'],
-    deployReassurance: 'Déployez StackBill en quelques minutes. Exécutez-le en local ou sur votre serveur.',
+    deployReassurance: 'Déployez en quelques minutes. Exécutez-le en local ou sur votre serveur.',
     saasContrastTitle: 'La plupart des outils de facturation sont des SaaS.',
     saasContrastText: [
       'Vos factures vivent sur les serveurs de quelqu\'un d\'autre.',
@@ -544,7 +544,7 @@ const fr: Messages = {
     ],
     pricingHighlightReassurance: 'Exécutez-le en local. Déployez-le partout.',
     pricingHighlightNote: 'Un produit, un prix clair.',
-    pricingHighlightPrimaryCta: 'Obtenir StackBill',
+    pricingHighlightPrimaryCta: 'Obtenir la licence StackBill',
     pricingHighlightSecondaryCta: 'Voir la documentation',
     installationTitle: 'Déployez à votre façon',
     installationText:
@@ -575,7 +575,7 @@ const fr: Messages = {
     ],
     finalTitle: 'Prêt à reprendre le contrôle ?',
     finalText: 'Remplacez les SaaS de facturation trop lourds par un workflow self-hosted, clair et maîtrisé.',
-    finalPrimaryCta: 'Obtenir StackBill',
+    finalPrimaryCta: 'Obtenir la licence StackBill',
     finalSecondaryCta: 'Voir la documentation',
     questionsLabel: 'Une question ? Contactez-nous :',
   },
@@ -594,7 +594,7 @@ const fr: Messages = {
     ],
     bestValue: 'Meilleure offre',
     savePerYear: 'Économisez 20,88 $/an',
-    getStarted: 'Obtenir StackBill',
+    getStarted: 'Obtenir la licence StackBill',
   },
   checkout: {
     loading: 'Chargement...',
