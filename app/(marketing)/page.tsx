@@ -59,11 +59,13 @@ export default async function HomePage() {
               <div className="glass-card relative overflow-hidden p-2 md:p-3">
                 <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl">
                   <Image
-                    src="/images/image.png"
+                    src="/images/image.webp"
                     alt="StackBill dashboard preview"
                     fill
                     className="object-cover object-center"
                     priority
+                    quality={72}
+                    sizes="(min-width: 1280px) 560px, (min-width: 1024px) 46vw, 100vw"
                   />
                 </div>
               </div>
