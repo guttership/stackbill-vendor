@@ -40,7 +40,7 @@ export function PricingCard({ plan, recommended = false, locale }: PricingCardPr
         </div>
         {savings && (
           <Badge variant="outline" className="w-fit mt-4 border-[color:var(--brand-primary)]/40 text-[#4f4a4a]">
-            Save {savings} per year
+            {savings}
           </Badge>
         )}
       </CardHeader>

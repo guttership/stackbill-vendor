@@ -29,6 +29,15 @@ export interface Messages {
     integrationsTitle: string
     integrationsSubtitle: string
     integrationsCards: Array<{ title: string; badge: string; description: string }>
+    pricingHighlightTitle: string
+    pricingHighlightSubtitle: string
+    pricingHighlightMonthly: string
+    pricingHighlightYearly: string
+    pricingHighlightOr: string
+    pricingHighlightFeatures: string[]
+    pricingHighlightNote: string
+    pricingHighlightPrimaryCta: string
+    pricingHighlightSecondaryCta: string
     installationTitle: string
     installationText: string
     installBadge: string
@@ -162,27 +171,27 @@ const en: Messages = {
   },
   marketing: {
     heroTitle: 'Self-hosted invoicing for developers',
-    heroSubtitle: 'Create quotes, generate invoices, and keep full control of your data.',
+    heroSubtitle: 'Create quotes and invoices on your own infrastructure, with a clear license model built for developers.',
     heroPrimaryCta: 'Start using StackBill',
-    heroSecondaryCta: 'View documentation',
-    reassurance: ['2 instances included.', 'Self-hosted.', 'Built for developers.'],
+    heroSecondaryCta: 'View pricing',
+    reassurance: ['2 instances included.', 'Self-hosted.', 'License-based access.'],
     whyTitle: 'Own your invoices. Own your stack.',
-    whySubtitle: 'No subscriptions. No data sharing. No vendor lock-in.',
+    whySubtitle: 'Self-hosted control without SaaS bloat, with honest licensing and update checks.',
     whyCards: [
       {
         title: 'Self-hosted',
         description:
-          'Run StackBill locally or on your own server. Your data stays on your infrastructure, under your control.',
+          'Run StackBill locally or on your own server. Your invoicing data stays on your infrastructure.',
       },
       {
         title: 'Built for developers',
         description:
-          'Simple setup, clean configuration, no bloated SaaS. Configure everything with code, deploy anywhere.',
+          'Simple setup, clean configuration, and no bloated workflow. Configure it with code and deploy where you want.',
       },
       {
-        title: 'Quotes to invoices',
+        title: 'Connected licensing',
         description:
-          'Turn accepted quotes into invoices instantly. Track everything from proposal to payment in one place.',
+          'License validation and updates may require occasional outbound requests, while billing data remains under your control.',
       },
     ],
     integrationsTitle: 'Built to fit your workflow',
@@ -208,6 +217,24 @@ const en: Messages = {
           'Generate quotes and invoices that match your identity. Full control over colors, logos, and templates.',
       },
     ],
+    pricingHighlightTitle: 'One product. One clear price.',
+    pricingHighlightSubtitle:
+      'StackBill is sold as an active license with updates included. Choose monthly or yearly billing.',
+    pricingHighlightMonthly: '$9.99 / month',
+    pricingHighlightYearly: '$99 / year',
+    pricingHighlightOr: 'or',
+    pricingHighlightFeatures: [
+      '2 instances included',
+      'Self-hosted',
+      'Updates included',
+      'Clockify integration',
+      'Trello integration',
+      'License-based access',
+      'Built for developers',
+    ],
+    pricingHighlightNote: 'One product, one clear price.',
+    pricingHighlightPrimaryCta: 'Start using StackBill',
+    pricingHighlightSecondaryCta: 'View documentation',
     installationTitle: 'Deploy it your way',
     installationText:
       'StackBill runs locally or on your own infrastructure. Get started in minutes with a simple git clone.',
@@ -219,54 +246,45 @@ const en: Messages = {
     faqSubtitle: 'Everything you need to know about StackBill',
     faqs: [
       {
-        q: 'What does "2 instances included" mean?',
-        a: 'Each license allows you to run StackBill on up to 2 separate environments or servers. Perfect for running a production instance and a staging/development instance.',
+        q: 'Can I self-host StackBill?',
+        a: 'Yes. Run it locally or on your own server.',
       },
       {
-        q: 'Is StackBill completely self-hosted?',
-        a: 'Yes. StackBill runs entirely on your own infrastructure. No data is sent to external servers. You have complete control over your invoicing data, backups, and security.',
+        q: 'Does it work on localhost?',
+        a: 'Yes. A license includes up to 2 instances.',
       },
       {
-        q: 'Can I customize the invoice templates?',
-        a: 'Absolutely. StackBill provides full control over invoice and quote templates. You can customize colors, fonts, logos, and layout through configuration files or by editing the templates directly.',
+        q: 'Is StackBill a SaaS?',
+        a: 'No. StackBill is self-hosted, but connected for licensing and updates.',
       },
       {
-        q: 'What integrations are available?',
-        a: 'Currently, StackBill integrates with Clockify for time tracking and Trello for project management. More integrations are being added regularly. You can also build custom integrations using the API.',
-      },
-      {
-        q: 'Do I need technical knowledge to run StackBill?',
-        a: 'Basic knowledge of Node.js and command-line tools is helpful. If you can run npm commands and deploy a web application, you can run StackBill. Detailed documentation guides you through every step.',
-      },
-      {
-        q: 'What happens after I purchase?',
-        a: 'You receive immediate access to the private GitHub repository, complete documentation, and all future updates. Installation takes just minutes, and you can start creating invoices right away.',
+        q: 'What happens if my license expires?',
+        a: 'Your existing setup remains accessible, while premium features or updates may be limited depending on license status.',
       },
     ],
     finalTitle: 'Ready to take control?',
     finalText:
-      'Start creating professional invoices with StackBill. One-time purchase, lifetime access.',
-    finalPrimaryCta: 'View pricing',
-    finalSecondaryCta: 'Learn more',
+      'Replace bloated invoicing SaaS with a self-hosted workflow that keeps you in control.',
+    finalPrimaryCta: 'Start using StackBill',
+    finalSecondaryCta: 'View documentation',
     questionsLabel: 'Questions? Contact us at',
   },
   pricing: {
     title: 'Simple, transparent pricing',
-    subtitle: 'Choose the plan that works best for you. All plans include full access to StackBill.',
+    subtitle: 'StackBill is available at $9.99/month or $99/year. Active license, 2 instances included, updates included.',
     includedTitle: 'Everything included in all plans',
     includedFeatures: [
       '2 instances included',
       'Self-hosted on your infrastructure',
-      'Unlimited quotes & invoices',
-      'Custom branding & templates',
+      'Updates included',
       'Clockify time tracking integration',
       'Trello project management integration',
-      'Email support',
-      'Regular updates & improvements',
+      'License-based access',
+      'Built for developers',
     ],
     bestValue: 'Best Value',
     savePerYear: 'Save $20.88 per year',
-    getStarted: 'Get started',
+    getStarted: 'Start using StackBill',
   },
   checkout: {
     loading: 'Loading...',
@@ -415,27 +433,27 @@ const fr: Messages = {
   },
   marketing: {
     heroTitle: 'Facturation self-hosted pour les developpeurs',
-    heroSubtitle: 'Creez des devis, generez des factures et gardez le controle total de vos donnees.',
+    heroSubtitle: 'Creez devis et factures sur votre infrastructure, avec un modele de licence clair pour les developpeurs.',
     heroPrimaryCta: 'Commencer avec StackBill',
-    heroSecondaryCta: 'Voir la documentation',
-    reassurance: ['2 instances incluses.', 'Self-hosted.', 'Concu pour les developpeurs.'],
+    heroSecondaryCta: 'Voir les tarifs',
+    reassurance: ['2 instances incluses.', 'Self-hosted.', 'Acces base sur licence.'],
     whyTitle: 'Vos factures. Votre stack.',
-    whySubtitle: 'Pas de verrou SaaS. Pas de partage de donnees. Pas de dependance.',
+    whySubtitle: 'Le controle du self-hosted, sans bloat SaaS, avec une licence et des mises a jour assumees.',
     whyCards: [
       {
         title: 'Self-hosted',
         description:
-          'Executez StackBill en local ou sur votre serveur. Vos donnees restent chez vous, sous votre controle.',
+          'Executez StackBill en local ou sur votre serveur. Vos donnees de facturation restent sur votre infrastructure.',
       },
       {
         title: 'Pense pour les developpeurs',
         description:
-          'Installation simple, configuration propre, sans complexite SaaS inutile. Deploiement partout.',
+          'Installation simple, configuration propre, sans usine a gaz. Configurez avec du code et deployez ou vous voulez.',
       },
       {
-        title: 'Du devis a la facture',
+        title: 'Licence connectee',
         description:
-          'Transformez un devis accepte en facture instantanement et suivez le cycle complet.',
+          'La validation de licence et les mises a jour peuvent demander des requetes sortantes ponctuelles, sans exposer vos donnees de facturation.',
       },
     ],
     integrationsTitle: 'Concu pour votre workflow',
@@ -461,6 +479,24 @@ const fr: Messages = {
           'Generez des devis et factures a votre image: couleurs, logo et templates.',
       },
     ],
+    pricingHighlightTitle: 'Un produit. Un prix clair.',
+    pricingHighlightSubtitle:
+      'StackBill fonctionne avec une licence active incluant les mises a jour. Choisissez mensuel ou annuel.',
+    pricingHighlightMonthly: '9,99 $ / mois',
+    pricingHighlightYearly: '99 $ / an',
+    pricingHighlightOr: 'ou',
+    pricingHighlightFeatures: [
+      '2 instances incluses',
+      'Self-hosted',
+      'Mises a jour incluses',
+      'Integration Clockify',
+      'Integration Trello',
+      'Acces base sur licence',
+      'Concu pour les developpeurs',
+    ],
+    pricingHighlightNote: 'Un produit, un prix clair.',
+    pricingHighlightPrimaryCta: 'Commencer avec StackBill',
+    pricingHighlightSecondaryCta: 'Voir la documentation',
     installationTitle: 'Deployez a votre facon',
     installationText:
       'StackBill fonctionne en local ou sur votre propre infrastructure. Demarrage en quelques minutes.',
@@ -472,53 +508,44 @@ const fr: Messages = {
     faqSubtitle: 'Tout ce qu\'il faut savoir sur StackBill',
     faqs: [
       {
-        q: 'Que signifie "2 instances incluses" ?',
-        a: 'Chaque licence vous permet d\'executer StackBill sur 2 environnements ou serveurs distincts.',
+        q: 'Puis-je auto-heberger StackBill ?',
+        a: 'Oui. Vous pouvez l\'executer en local ou sur votre propre serveur.',
       },
       {
-        q: 'StackBill est-il vraiment self-hosted ?',
-        a: 'Oui. StackBill s\'execute entierement sur votre infrastructure, sans envoi de donnees vers des serveurs tiers.',
+        q: 'Est-ce que StackBill fonctionne sur localhost ?',
+        a: 'Oui. Une licence inclut jusqu\'a 2 instances.',
       },
       {
-        q: 'Puis-je personnaliser les templates de facture ?',
-        a: 'Oui. Vous pouvez personnaliser couleurs, polices, logos et mise en page.',
+        q: 'StackBill est-il un SaaS ?',
+        a: 'Non. StackBill est self-hosted, mais connecte pour la licence et les mises a jour.',
       },
       {
-        q: 'Quelles integrations sont disponibles ?',
-        a: 'Clockify et Trello sont deja disponibles, avec possibilite d\'integrations custom via API.',
-      },
-      {
-        q: 'Faut-il un niveau technique pour l\'utiliser ?',
-        a: 'Des bases Node.js/CLI sont utiles. Si vous savez lancer des commandes npm, vous pouvez deployer StackBill.',
-      },
-      {
-        q: 'Que se passe-t-il apres l\'achat ?',
-        a: 'Vous obtenez l\'acces au repo prive, la documentation complete et les mises a jour futures.',
+        q: 'Que se passe-t-il si ma licence expire ?',
+        a: 'Votre installation existante reste accessible, tandis que certaines fonctions premium ou mises a jour peuvent etre limitees selon le statut de licence.',
       },
     ],
     finalTitle: 'Pret a reprendre le controle ?',
-    finalText: 'Creez des factures professionnelles avec StackBill. Achat unique, acces a vie.',
-    finalPrimaryCta: 'Voir les tarifs',
-    finalSecondaryCta: 'En savoir plus',
+    finalText: 'Remplacez les SaaS de facturation trop lourds par un workflow self-hosted, clair et maitrise.',
+    finalPrimaryCta: 'Commencer avec StackBill',
+    finalSecondaryCta: 'Voir la documentation',
     questionsLabel: 'Une question ? Contactez-nous :',
   },
   pricing: {
     title: 'Tarification simple et transparente',
-    subtitle: 'Choisissez le plan qui vous convient. Tous les plans incluent l\'acces complet a StackBill.',
+    subtitle: 'StackBill est propose a 9,99 $/mois ou 99 $/an. Licence active, 2 instances incluses, mises a jour incluses.',
     includedTitle: 'Inclus dans tous les plans',
     includedFeatures: [
       '2 instances incluses',
       'Self-hosted sur votre infrastructure',
-      'Devis et factures illimites',
-      'Branding et templates personnalises',
+      'Mises a jour incluses',
       'Integration Clockify',
       'Integration Trello',
-      'Support email',
-      'Mises a jour regulieres',
+      'Acces base sur licence',
+      'Concu pour les developpeurs',
     ],
     bestValue: 'Meilleure offre',
     savePerYear: 'Economisez 20,88 $/an',
-    getStarted: 'Commencer',
+    getStarted: 'Commencer avec StackBill',
   },
   checkout: {
     loading: 'Chargement...',

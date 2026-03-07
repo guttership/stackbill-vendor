@@ -41,7 +41,7 @@ export default async function HomePage() {
                   </Link>
                 </Button>
                 <Button size="lg" variant="outline" asChild>
-                  <Link href="#installation">{messages.marketing.heroSecondaryCta}</Link>
+                  <Link href="/pricing">{messages.marketing.heroSecondaryCta}</Link>
                 </Button>
               </div>
 
@@ -127,6 +127,58 @@ export default async function HomePage() {
                 </Card>
               )
             })}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-b border-black/10">
+        <div className="container mx-auto px-4 py-16 md:py-24">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-12 space-y-4">
+              <h2 className="section-title">{messages.marketing.pricingHighlightTitle}</h2>
+              <p className="text-lg max-w-[760px] mx-auto text-[#676060]">{messages.marketing.pricingHighlightSubtitle}</p>
+            </div>
+
+            <Card className="max-w-3xl mx-auto">
+              <CardHeader className="text-center">
+                <CardTitle className="text-3xl">StackBill</CardTitle>
+                <CardDescription className="text-base">{messages.marketing.pricingHighlightNote}</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-8">
+                <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 text-center">
+                  <div className="rounded-xl border border-black/10 px-6 py-4 min-w-[200px]">
+                    <p className="text-2xl font-semibold text-[#3f3a3a]">{messages.marketing.pricingHighlightMonthly}</p>
+                  </div>
+                  <span className="text-sm text-[#676060] uppercase tracking-[0.15em]">{messages.marketing.pricingHighlightOr}</span>
+                  <div className="rounded-xl border border-black/10 px-6 py-4 min-w-[200px]">
+                    <p className="text-2xl font-semibold text-[#3f3a3a]">{messages.marketing.pricingHighlightYearly}</p>
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-x-8 gap-y-4">
+                  {messages.marketing.pricingHighlightFeatures.map((feature) => (
+                    <div key={feature} className="flex items-start gap-3">
+                      <Check className="h-4 w-4 mt-1 text-[#4f4a4a]" />
+                      <span className="text-sm text-[#555353]">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button size="lg" asChild>
+                    <Link href="/pricing">
+                      {messages.marketing.pricingHighlightPrimaryCta}
+                      <ChevronRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                  <Button size="lg" variant="outline" asChild>
+                    <Link href={"https://stackbill.tech"} target="_blank" rel="noopener noreferrer">
+                      {messages.marketing.pricingHighlightSecondaryCta}
+                    </Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
@@ -217,7 +269,9 @@ npm run dev`}
                 </Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
-                <Link href="#features">{messages.marketing.finalSecondaryCta}</Link>
+                <Link href={"https://stackbill.tech"} target="_blank" rel="noopener noreferrer">
+                  {messages.marketing.finalSecondaryCta}
+                </Link>
               </Button>
             </div>
 
