@@ -11,43 +11,35 @@ export default async function PricingPage() {
     locale === 'fr'
       ? [
           '2 instances incluses',
-          'Self-hosted',
-          'Devis et factures illimites',
-          'Branding personnalise',
-          'Integration Clockify',
-          'Integration Trello',
-          'Support email',
+          'Mises à jour incluses',
+          'Déploiement self-hosted',
+          'Intégration Clockify',
+          'Intégration Trello',
         ]
       : [
           '2 instances included',
-          'Self-hosted',
-          'Unlimited quotes & invoices',
-          'Custom branding',
+          'Updates included',
+          'Self-hosted deployment',
           'Clockify integration',
           'Trello integration',
-          'Email support',
         ]
 
   const yearlyFeatures =
     locale === 'fr'
       ? [
           '2 instances incluses',
-          'Self-hosted',
-          'Devis et factures illimites',
-          'Branding personnalise',
-          'Integration Clockify',
-          'Integration Trello',
-          'Support email prioritaire',
+          'Mises à jour incluses',
+          'Déploiement self-hosted',
+          'Intégration Clockify',
+          'Intégration Trello',
           messages.pricing.savePerYear,
         ]
       : [
           '2 instances included',
-          'Self-hosted',
-          'Unlimited quotes & invoices',
-          'Custom branding',
+          'Updates included',
+          'Self-hosted deployment',
           'Clockify integration',
           'Trello integration',
-          'Priority email support',
           messages.pricing.savePerYear,
         ]
 

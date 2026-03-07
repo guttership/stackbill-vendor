@@ -69,7 +69,9 @@ export default async function HomePage() {
                   </Link>
                 </Button>
                 <Button size="lg" variant="outline" asChild>
-                  <Link href="/pricing">{messages.marketing.heroSecondaryCta}</Link>
+                  <Link href={siteConfig.docsUrl} target="_blank" rel="noopener noreferrer">
+                    {messages.marketing.heroSecondaryCta}
+                  </Link>
                 </Button>
               </div>
 
@@ -111,7 +113,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="border-b border-black/10">
+      <section id="features" className="border-b border-black/10">
         <div className="container mx-auto px-4 py-12 md:py-16">
           <div className="max-w-2xl mx-auto text-center space-y-4">
             <h2 className="text-2xl md:text-3xl font-bold" style={{ fontFamily: 'var(--brand-font-heading)' }}>
@@ -136,7 +138,7 @@ export default async function HomePage() {
               return (
                 <Card key={card.title} className="relative overflow-hidden">
                   <CardHeader>
-                    <div className="w-12 h-12 rounded-lg bg-[color:var(--brand-primary)]/15 flex items-center justify-center mb-4 text-[#3f3a3a]">
+                    <div className="w-12 h-12 rounded-lg bg-[color:var(--brand-primary)]/15 flex items-center justify-center mb-4 text-[#3f3a3a] mx-auto">
                       <Icon className="h-6 w-6" />
                     </div>
                     <CardTitle>{card.title}</CardTitle>
@@ -163,7 +165,7 @@ export default async function HomePage() {
               return (
                 <Card key={card.title}>
                   <CardHeader>
-                    <div className={`w-12 h-12 rounded-lg ${bgClass} flex items-center justify-center mb-4`}>
+                    <div className={`w-12 h-12 rounded-lg ${bgClass} flex items-center justify-center mb-4 mx-auto`}>
                       <Icon className="h-6 w-6 text-[#4f4a4a]" />
                     </div>
                     <CardTitle className="flex items-center gap-2">
@@ -191,7 +193,7 @@ export default async function HomePage() {
               return (
                 <Card key={step.title} className="relative overflow-hidden">
                   <CardHeader>
-                    <div className="w-12 h-12 rounded-lg bg-[color:var(--brand-accent)]/15 flex items-center justify-center mb-4 text-[#3f3a3a]">
+                    <div className="w-12 h-12 rounded-lg bg-[color:var(--brand-accent)]/15 flex items-center justify-center mb-4 text-[#3f3a3a] mx-auto">
                       <Icon className="h-6 w-6" />
                     </div>
                     <div className="flex items-center gap-3 mb-3">
@@ -266,6 +268,8 @@ export default async function HomePage() {
                   ))}
                 </div>
 
+                <p className="text-center text-sm text-[#676060]">{messages.marketing.pricingHighlightReassurance}</p>
+
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Button size="lg" asChild>
                     <Link href="/pricing">
@@ -323,7 +327,7 @@ npm run dev`}
             <div className="mt-8 text-center">
               <p className="text-sm text-[#676060] mb-4">{messages.marketing.installFooter}</p>
               <Button variant="outline" asChild>
-                <Link href="/pricing">
+                <Link href={siteConfig.docsUrl} target="_blank" rel="noopener noreferrer">
                   {messages.marketing.installButton}
                   <ChevronRight className="ml-2 h-4 w-4" />
                 </Link>

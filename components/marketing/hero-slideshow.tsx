@@ -43,10 +43,9 @@ export function HeroSlideshow({ images }: HeroSlideshowProps) {
           />
         ))}
 
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent p-4">
-          <p className="text-sm font-medium text-white">Clean interface. Built for developers.</p>
-        </div>
       </div>
+
+      <p className="mt-3 text-center text-sm text-[#676060]">Clean interface. Built for developers.</p>
 
       {slides.length > 1 && (
         <div className="mt-3 flex justify-center gap-2">
