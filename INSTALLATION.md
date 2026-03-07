@@ -14,7 +14,7 @@ Avant de commencer, assurez-vous d'avoir installé :
 
 - **Node.js** version 18 ou supérieure
 - **npm** ou **yarn**
-- **PostgreSQL** version 14 ou supérieure
+- **PostgreSQL** version 14 ou supérieure (ou MySQL/SQLite comme alternative)
 - **Git**
 
 Vérifiez vos versions installées :
@@ -33,7 +33,7 @@ psql --version
 Clonez le repository GitHub de StackBill sur votre machine :
 
 ```powershell
-git clone https://github.com/yourusername/stackbill.git
+git clone https://github.com/guttership/stackbill.git
 cd stackbill
 ```
 
@@ -69,18 +69,11 @@ Ouvrez `.env.local` et configurez les variables d'environnement :
 # Base de données PostgreSQL
 DATABASE_URL=postgresql://stackbill:password@localhost:5432/stackbill
 
-# Stripe (pour les paiements)
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_votre_cle_publique
-STRIPE_SECRET_KEY=sk_test_votre_cle_secrete
-STRIPE_WEBHOOK_SECRET=whsec_votre_webhook_secret
-NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID=price_votre_prix_mensuel
-NEXT_PUBLIC_STRIPE_YEARLY_PRICE_ID=price_votre_prix_annuel
-
 # URL de l'application
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-**Important :** Remplacez les valeurs fictives par vos vraies clés Stripe et vos identifiants de base de données.
+**Important :** Remplacez les valeurs fictives par vos vrais identifiants de base de données.
 
 ---
 
@@ -105,13 +98,13 @@ GRANT ALL PRIVILEGES ON DATABASE stackbill TO stackbill;
 
 ### 2. Exécuter les migrations
 
-Si le projet utilise Prisma ou un autre ORM, exécutez les migrations :
+Si le projet utilise Prisma, exécutez les migrations :
 
 ```powershell
 npm run db:migrate
 ```
 
-Ou initialisez manuellement le schéma si nécessaire :
+Ou initialisez le schéma :
 
 ```powershell
 npm run db:push
@@ -132,11 +125,11 @@ Le serveur démarre sur le port 3000 par défaut.
 Vous devriez voir :
 
 ```
-▲ Next.js 16.1.6
+▲ Next.js
 - Local:        http://localhost:3000
 - Environments: .env.local
 
-✓ Compiled in 1.2s
+✓ Compiled
 ```
 
 ---
@@ -149,14 +142,12 @@ Ouvrez votre navigateur et accédez à :
 http://localhost:3000
 ```
 
-Vous verrez la page d'accueil de StackBill.
+Vous verrez l'interface de StackBill. Vous pouvez maintenant :
 
-### Activer votre licence
-
-1. Créez un compte sur la page de tarification
-2. Obtenez votre clé de licence
-3. Activez votre instance locale avec cette clé
-4. Commencez à créer vos devis et factures
+1. Créer des devis
+2. Générer des factures
+3. Gérer vos clients
+4. Intégrer Clockify et Trello
 
 ---
 
@@ -177,6 +168,28 @@ npm run type-check
 
 # Linter
 npm run lint
+```
+
+---
+
+## Déployer en production
+
+### Sur votre propre serveur
+
+1. Clonez le repository sur votre serveur
+2. Configurez les variables d'environnement
+3. Installez les dépendances : `npm install`
+4. Exécutez les migrations
+5. Buildez : `npm run build`
+6. Lancez : `npm start`
+
+### Avec Docker
+
+Si vous avez Docker installé :
+
+```powershell
+docker build -t stackbill .
+docker run -p 3000:3000 --env-file .env.local stackbill
 ```
 
 ---
@@ -223,8 +236,8 @@ npm install
 
 Pour toute question ou problème :
 
-- Consultez la documentation complète : https://stackbill.tech
-- Ouvrez une issue sur GitHub
+- Consultez la documentation : https://stackbill.tech
+- Ouvrez une issue sur GitHub : https://github.com/guttership/stackbill/issues
 - Contactez le support : support@stackbill.tech
 
 ---
@@ -249,7 +262,7 @@ Before you begin, make sure you have installed:
 
 - **Node.js** version 18 or higher
 - **npm** or **yarn**
-- **PostgreSQL** version 14 or higher
+- **PostgreSQL** version 14 or higher (or MySQL/SQLite as alternatives)
 - **Git**
 
 Check your installed versions:
@@ -268,7 +281,7 @@ psql --version
 Clone the StackBill GitHub repository to your machine:
 
 ```powershell
-git clone https://github.com/yourusername/stackbill.git
+git clone https://github.com/guttership/stackbill.git
 cd stackbill
 ```
 
@@ -304,18 +317,11 @@ Open `.env.local` and configure the environment variables:
 # PostgreSQL database
 DATABASE_URL=postgresql://stackbill:password@localhost:5432/stackbill
 
-# Stripe (for payments)
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_your_public_key
-STRIPE_SECRET_KEY=sk_test_your_secret_key
-STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
-NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID=price_your_monthly_price
-NEXT_PUBLIC_STRIPE_YEARLY_PRICE_ID=price_your_yearly_price
-
 # Application URL
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-**Important:** Replace the placeholder values with your actual Stripe keys and database credentials.
+**Important:** Replace the placeholder values with your actual database credentials.
 
 ---
 
@@ -340,13 +346,13 @@ GRANT ALL PRIVILEGES ON DATABASE stackbill TO stackbill;
 
 ### 2. Run migrations
 
-If the project uses Prisma or another ORM, run the migrations:
+If the project uses Prisma, run the migrations:
 
 ```powershell
 npm run db:migrate
 ```
 
-Or manually initialize the schema if needed:
+Or initialize the schema:
 
 ```powershell
 npm run db:push
@@ -367,11 +373,11 @@ The server starts on port 3000 by default.
 You should see:
 
 ```
-▲ Next.js 16.1.6
+▲ Next.js
 - Local:        http://localhost:3000
 - Environments: .env.local
 
-✓ Compiled in 1.2s
+✓ Compiled
 ```
 
 ---
@@ -384,14 +390,12 @@ Open your browser and navigate to:
 http://localhost:3000
 ```
 
-You will see the StackBill homepage.
+You will see the StackBill interface. You can now:
 
-### Activate your license
-
-1. Create an account on the pricing page
-2. Get your license key
-3. Activate your local instance with this key
-4. Start creating your quotes and invoices
+1. Create quotes
+2. Generate invoices
+3. Manage your clients
+4. Integrate Clockify and Trello
 
 ---
 
@@ -412,6 +416,28 @@ npm run type-check
 
 # Linter
 npm run lint
+```
+
+---
+
+## Deploy to production
+
+### On your own server
+
+1. Clone the repository on your server
+2. Configure environment variables
+3. Install dependencies: `npm install`
+4. Run migrations
+5. Build: `npm run build`
+6. Start: `npm start`
+
+### With Docker
+
+If you have Docker installed:
+
+```powershell
+docker build -t stackbill .
+docker run -p 3000:3000 --env-file .env.local stackbill
 ```
 
 ---
@@ -458,8 +484,9 @@ npm install
 
 For any questions or issues:
 
-- Check the full documentation: https://stackbill.tech
-- Open an issue on GitHub
+- Check the documentation: https://stackbill.tech
+- Open an issue on GitHub: https://github.com/guttership/stackbill/issues
 - Contact support: support@stackbill.tech
 
 ---
+
