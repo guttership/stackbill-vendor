@@ -1,14 +1,15 @@
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
-import { getCurrentMessages } from '@/lib/i18n/server'
+import { getCurrentMessages, getCurrentLocale } from '@/lib/i18n/server'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ChevronLeft, Github } from 'lucide-react'
 import { siteConfig } from '@/lib/config'
 
-async function getInstallationDoc() {
+async function getInstallationDoc(locale: 'fr' | 'en') {
   try {
-    const docPath = path.join(process.cwd(), 'INSTALLATION.md')
+    const fileName = locale === 'en' ? 'INSTALLATION.en.md' : 'INSTALLATION.fr.md'
+    const docPath = path.join(process.cwd(), fileName)
     const content = await readFile(docPath, 'utf-8')
     return content
   } catch {
@@ -18,7 +19,8 @@ async function getInstallationDoc() {
 
 export default async function DocsPage() {
   const messages = await getCurrentMessages()
-  const docContent = await getInstallationDoc()
+  const locale = await getCurrentLocale()
+  const docContent = await getInstallationDoc(locale)
 
   if (!docContent) {
     return (
@@ -35,11 +37,6 @@ export default async function DocsPage() {
     )
   }
 
-  // Split French and English sections
-  const sections = docContent.split('---\n\n---\n\n---\n')
-  const frenchDoc = sections[0]?.trim() || ''
-  const englishDoc = sections[1]?.trim() || ''
-
   return (
     <div className="relative z-10">
       <div className="container mx-auto px-4 py-16 md:py-24">
@@ -54,7 +51,7 @@ export default async function DocsPage() {
             <Button variant="outline" asChild>
               <Link href={siteConfig.githubUrl} target="_blank" rel="noopener noreferrer">
                 <Github className="mr-2 h-4 w-4" />
-                View on GitHub
+                {locale === 'en' ? 'View on GitHub' : 'Voir sur GitHub'}
               </Link>
             </Button>
           </div>
@@ -62,23 +59,16 @@ export default async function DocsPage() {
           <article className="prose prose-slate max-w-none">
             <div
               className="markdown-content"
-              dangerouslySetInnerHTML={{ __html: convertMarkdownToHTML(frenchDoc) }}
-            />
-
-            <hr className="my-16" />
-
-            <div
-              className="markdown-content"
-              dangerouslySetInnerHTML={{ __html: convertMarkdownToHTML(englishDoc) }}
+              dangerouslySetInnerHTML={{ __html: convertMarkdownToHTML(docContent) }}
             />
           </article>
 
           <div className="mt-16 pt-8 border-t border-black/10 flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" asChild>
-              <Link href="/pricing">Install StackBill</Link>
+              <Link href="/pricing">{locale === 'en' ? 'Install StackBill' : 'Installer StackBill'}</Link>
             </Button>
             <Button size="lg" variant="outline" asChild>
-              <Link href="/">Back to home</Link>
+              <Link href="/">{locale === 'en' ? 'Back to home' : 'Retour à l\'accueil'}</Link>
             </Button>
           </div>
         </div>

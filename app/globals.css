@@ -8,21 +8,24 @@
 }
 
 .markdown-content h1 {
-  @apply text-3xl md:text-4xl font-bold mb-6 mt-8;
+  @apply text-4xl md:text-5xl font-bold mb-8 mt-12;
   font-family: var(--brand-font-heading);
+  letter-spacing: -0.02em;
 }
 
 .markdown-content h2 {
-  @apply text-2xl md:text-3xl font-bold mb-4 mt-8;
+  @apply text-3xl md:text-4xl font-bold mb-6 mt-10;
   font-family: var(--brand-font-heading);
+  letter-spacing: -0.01em;
 }
 
 .markdown-content h3 {
-  @apply text-xl md:text-2xl font-semibold mb-3 mt-6;
+  @apply text-2xl font-bold mb-4 mt-6;
+  font-family: var(--brand-font-heading);
 }
 
 .markdown-content p {
-  @apply mb-4 leading-relaxed text-[#555353];
+  @apply mb-4 leading-relaxed text-[#555353] text-base;
 }
 
 .markdown-content pre {
@@ -39,27 +42,31 @@
 
 .markdown-content p code,
 .markdown-content li code {
-  @apply bg-[#f5f5f4] text-[#d73a49] px-1.5 py-0.5 rounded text-sm;
+  @apply bg-[#f5f5f4] text-[color:var(--brand-accent)] px-1.5 py-0.5 rounded text-sm;
 }
 
 .markdown-content ul {
-  @apply mb-6 ml-6 list-disc;
+  @apply mb-6 ml-6 list-disc space-y-2;
 }
 
 .markdown-content ol {
-  @apply mb-6 ml-6 list-decimal;
+  @apply mb-6 ml-6 list-decimal space-y-2;
 }
 
 .markdown-content li {
-  @apply mb-2 leading-relaxed text-[#555353];
+  @apply leading-relaxed text-[#555353] text-base;
 }
 
 .markdown-content hr {
-  @apply my-8 border-black/10;
+  @apply my-12 border-black/10;
 }
 
 .markdown-content strong {
-  @apply font-semibold text-[#3f3a3a];
+  @apply font-bold text-[#3f3a3a];
+}
+
+.markdown-content a {
+  @apply text-[color:var(--brand-accent)] hover:underline;
 }
 
 @font-face {
