@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
@@ -10,6 +11,7 @@ import type { Locale } from '@/lib/i18n/detect-locale'
 
 export function Header({ locale }: { locale: Locale }) {
   const pathname = usePathname()
+  const [activeSection, setActiveSection] = useState('')
   const messages = getMessages(locale)
 
   const navItems = [
@@ -18,6 +20,51 @@ export function Header({ locale }: { locale: Locale }) {
     { href: '/#faq', label: messages.header.faq },
     { href: siteConfig.docsUrl, label: messages.header.docs },
   ]
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return
+    }
+
+    const sectionIds = ['features', 'faq']
+
+    const syncActiveSection = () => {
+      if (pathname !== '/') {
+        setActiveSection('')
+        return
+      }
+
+      const hash = window.location.hash.replace('#', '')
+      if (sectionIds.includes(hash)) {
+        setActiveSection(hash)
+        return
+      }
+
+      let currentSection = ''
+      for (const sectionId of sectionIds) {
+        const section = document.getElementById(sectionId)
+        if (!section) {
+          continue
+        }
+
+        const { top } = section.getBoundingClientRect()
+        if (top <= 140) {
+          currentSection = sectionId
+        }
+      }
+
+      setActiveSection(currentSection)
+    }
+
+    syncActiveSection()
+    window.addEventListener('hashchange', syncActiveSection)
+    window.addEventListener('scroll', syncActiveSection, { passive: true })
+
+    return () => {
+      window.removeEventListener('hashchange', syncActiveSection)
+      window.removeEventListener('scroll', syncActiveSection)
+    }
+  }, [pathname])
 
   return (
     <header className="topnav-glass fixed top-0 left-0 right-0 z-50">
@@ -37,7 +84,12 @@ export function Header({ locale }: { locale: Locale }) {
           <nav className="hidden md:flex items-center gap-2">
             {navItems.map((item) => {
               const isExternal = item.href.startsWith('http')
-              const isActive = !isExternal && item.href === '/pricing' && pathname.startsWith('/pricing')
+              const isPricing = item.href === '/pricing'
+              const sectionTarget = item.href.startsWith('/#') ? item.href.replace('/#', '') : ''
+              const isActive =
+                !isExternal &&
+                ((isPricing && pathname.startsWith('/pricing')) ||
+                  (sectionTarget.length > 0 && pathname === '/' && activeSection === sectionTarget))
 
               return (
                 <Link

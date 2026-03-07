@@ -1,9 +1,11 @@
-import Image from 'next/image'
 import Link from 'next/link'
+import { readdir } from 'node:fs/promises'
+import path from 'node:path'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { siteConfig } from '@/lib/config'
+import { HeroSlideshow } from '@/components/marketing/hero-slideshow'
 import {
   Server,
   Code2,
@@ -20,8 +22,29 @@ import {
 } from 'lucide-react'
 import { getCurrentMessages } from '@/lib/i18n/server'
 
+async function getHeroSlides() {
+  try {
+    const imagesDir = path.join(process.cwd(), 'public', 'images')
+    const fileNames = await readdir(imagesDir)
+    const slides = fileNames
+      .filter((fileName) => fileName.endsWith('.webp'))
+      .filter((fileName) => !fileName.startsWith('logo'))
+      .sort((a, b) => a.localeCompare(b))
+      .map((fileName) => `/images/${fileName}`)
+
+    if (slides.length > 0) {
+      return slides
+    }
+  } catch {
+    // Ignore filesystem errors and use a safe fallback image.
+  }
+
+  return ['/images/image.webp']
+}
+
 export default async function HomePage() {
   const messages = await getCurrentMessages()
+  const heroSlides = await getHeroSlides()
 
   const whyIcons = [Server, Code2, FileText]
   const howItWorksIcons = [Play, Key, Zap]
@@ -65,19 +88,7 @@ export default async function HomePage() {
             </div>
 
             <div className="relative">
-              <div className="glass-card relative overflow-hidden p-2 md:p-3">
-                <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl">
-                  <Image
-                    src="/images/image.webp"
-                    alt="StackBill dashboard preview"
-                    fill
-                    className="object-cover object-center"
-                    priority
-                    quality={72}
-                    sizes="(min-width: 1280px) 560px, (min-width: 1024px) 46vw, 100vw"
-                  />
-                </div>
-              </div>
+              <HeroSlideshow images={heroSlides} />
             </div>
           </div>
         </div>

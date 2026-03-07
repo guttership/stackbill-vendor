@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { detectPreferredLocale } from '@/lib/i18n/detect-locale'
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const locale = detectPreferredLocale({
     country: request.headers.get('x-vercel-ip-country'),
     region: request.headers.get('x-vercel-ip-country-region'),
