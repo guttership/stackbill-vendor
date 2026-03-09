@@ -17,9 +17,13 @@ interface PricingCardProps {
 export function PricingCard({ plan, recommended = false, locale }: PricingCardProps) {
   const messages = getMessages(locale)
 
-  const formattedPrice = plan.interval === 'month' 
-    ? `$${plan.price}/mo` 
-    : `$${plan.price}/yr`
+  const formattedPrice = locale === 'fr'
+    ? (plan.interval === 'month' 
+      ? `€${plan.price}/mois` 
+      : `€${plan.price}/année`)
+    : (plan.interval === 'month'
+      ? `$${Math.round(plan.price * 1.1)}/month`
+      : `$${Math.round(plan.price * 1.1)}/year`)
 
   const savings = plan.interval === 'year' ? messages.pricing.savePerYear : null
 

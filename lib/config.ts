@@ -1,7 +1,7 @@
 export const plans = {
   monthly: {
     name: 'Monthly',
-    price: 9.99,
+    price: 10,
     interval: 'month',
     priceId: process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID || '',
     features: [
@@ -16,7 +16,7 @@ export const plans = {
   },
   yearly: {
     name: 'Yearly',
-    price: 99,
+    price: 100,
     interval: 'year',
     priceId: process.env.NEXT_PUBLIC_STRIPE_YEARLY_PRICE_ID || '',
     features: [
@@ -27,7 +27,7 @@ export const plans = {
       'Clockify integration',
       'Trello integration',
       'Priority email support',
-      'Save $20.88 per year',
+      'Save €20 per year',
     ],
   },
 } as const

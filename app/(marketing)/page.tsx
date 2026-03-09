@@ -155,6 +155,9 @@ export default async function HomePage() {
         <div className="container mx-auto px-4 py-16 md:py-24">
           <div className="text-center mb-16 space-y-4">
             <h2 className="section-title">{messages.marketing.integrationsTitle}</h2>
+            <p className="text-lg text-[#555353] leading-relaxed max-w-2xl mx-auto">
+              {messages.marketing.integrationsSubtitle}
+            </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">

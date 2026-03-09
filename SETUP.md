@@ -21,8 +21,8 @@ Dans le dashboard Stripe:
 1. Allez dans **Products**
 2. Créez un produit "StackBill License"
 3. Ajoutez 2 prix:
-   - **Monthly**: $9.99/month (recurring)
-   - **Yearly**: $99/year (recurring)
+   - **Monthly**: $11/month (recurring)
+   - **Yearly**: $110/year (recurring)
 4. Copiez les Price IDs (commencent par `price_...`)
 5. Ajoutez-les dans [.env.local](.env.local):
    - `NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID=price_...`

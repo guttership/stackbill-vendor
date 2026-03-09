@@ -229,17 +229,17 @@ const en: Messages = {
       },
     ],
     integrationsTitle: 'Integrations',
-    integrationsSubtitle: '',
+    integrationsSubtitle: 'Boost your productivity by integrating and activating project tracking services.',
     integrationsCards: [
       {
         title: 'Clockify',
         badge: 'Integration',
-        description: 'Import tracked time directly into invoices.',
+        description: 'Automatically create projects and import tracked time directly into invoices when a quote is accepted.',
       },
       {
         title: 'Trello',
         badge: 'Integration',
-        description: 'Create project structure automatically when a quote is accepted.',
+        description: 'Automatically create cards and project structure when a quote is accepted.',
       },
     ],
     openSourceTitle: 'Open source core available on GitHub.',
@@ -249,8 +249,8 @@ const en: Messages = {
     pricingHighlightTitle: 'One product. One clear price.',
     pricingHighlightSubtitle:
       'StackBill is sold as an active license with updates included. Choose monthly or yearly billing.',
-    pricingHighlightMonthly: '$9.99 / month',
-    pricingHighlightYearly: '$99 / year',
+    pricingHighlightMonthly: '$11 / month',
+    pricingHighlightYearly: '$110 / year',
     pricingHighlightOr: 'or',
     pricingHighlightFeatures: [
       '2 instances included',
@@ -301,7 +301,7 @@ const en: Messages = {
   },
   pricing: {
     title: 'Simple, transparent pricing',
-    subtitle: 'StackBill is available at $9.99/month or $99/year. Active license, 2 instances included, updates included.',
+    subtitle: 'StackBill is available at $11/month or $110/year. Active license, 2 instances included, updates included.',
     includedTitle: 'Everything included in all plans',
     includedFeatures: [
       '2 instances included',
@@ -313,7 +313,7 @@ const en: Messages = {
       'Built for developers',
     ],
     bestValue: 'Best Value',
-    savePerYear: 'Save $20.88 per year',
+    savePerYear: 'Save €20 per year',
     getStarted: 'Install StackBill',
   },
   checkout: {
@@ -402,7 +402,7 @@ const en: Messages = {
       active: 'Active',
       monthlyPlan: 'Monthly Plan',
       nextBilling: 'Next billing date: April 7, 2026',
-      amount: 'Amount: $9.99/month',
+      amount: 'Amount: $11/month',
       quickStats: {
         activeLicenses: 'Active Licenses',
         ofAvailable: 'of 2 available',
@@ -510,17 +510,17 @@ const fr: Messages = {
       },
     ],
     integrationsTitle: 'Intégrations',
-    integrationsSubtitle: '',
+    integrationsSubtitle: 'Améliorez votre productivité en intégrant et activant des services de suivi de projets.',
     integrationsCards: [
       {
         title: 'Clockify',
         badge: 'Intégration',
-        description: 'Importez le temps suivi directement dans vos factures.',
+        description: 'Créez automatiquement des projets et importez le temps suivi directement dans vos factures à la validation d\'un devis.',
       },
       {
         title: 'Trello',
         badge: 'Intégration',
-        description: 'Créez automatiquement une structure projet lorsqu\'un devis est accepté.',
+        description: 'Créez automatiquement des cartes et une structure projet à la validation d\'un devis.',
       },
     ],
     openSourceTitle: 'Code source ouvert disponible sur GitHub.',
@@ -530,8 +530,8 @@ const fr: Messages = {
     pricingHighlightTitle: 'Un produit. Un prix clair.',
     pricingHighlightSubtitle:
       'StackBill fonctionne avec une licence active incluant les mises à jour. Choisissez mensuel ou annuel.',
-    pricingHighlightMonthly: '9,99 $ / mois',
-    pricingHighlightYearly: '99 $ / an',
+    pricingHighlightMonthly: '10 € / mois',
+    pricingHighlightYearly: '100 € / an',
     pricingHighlightOr: 'ou',
     pricingHighlightFeatures: [
       '2 instances incluses',
@@ -581,7 +581,7 @@ const fr: Messages = {
   },
   pricing: {
     title: 'Tarification simple et transparente',
-    subtitle: 'StackBill est proposé à 9,99 $/mois ou 99 $/an. Licence active, 2 instances incluses, mises à jour incluses.',
+    subtitle: 'StackBill est proposé à 10 €/mois ou 100 €/an. Licence active, 2 instances incluses, mises à jour incluses.',
     includedTitle: 'Inclus dans tous les plans',
     includedFeatures: [
       '2 instances incluses',
@@ -593,7 +593,7 @@ const fr: Messages = {
       'Conçu pour les développeurs',
     ],
     bestValue: 'Meilleure offre',
-    savePerYear: 'Économisez 20,88 $/an',
+    savePerYear: 'Économisez 20€ par an',
     getStarted: 'Installer StackBill',
   },
   checkout: {
@@ -681,7 +681,7 @@ const fr: Messages = {
       active: 'Actif',
       monthlyPlan: 'Plan mensuel',
       nextBilling: 'Prochaine facturation : 7 avril 2026',
-      amount: 'Montant : 9,99 $/mois',
+      amount: 'Montant : 10 €/mois',
       quickStats: {
         activeLicenses: 'Licences actives',
         ofAvailable: 'sur 2 disponibles',
