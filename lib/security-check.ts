@@ -7,6 +7,9 @@
 function checkSecurityConfig() {
   const warnings: string[] = [];
   const errors: string[] = [];
+  
+  // Détecter si on est en phase de build (ne pas bloquer le build)
+  const isBuildTime = process.argv.includes('build') || process.env.NEXT_PHASE === 'phase-production-build';
 
   // 1. Vérifier STRIPE_SECRET_KEY
   const stripeSecret = process.env.STRIPE_SECRET_KEY;
@@ -75,9 +78,12 @@ function checkSecurityConfig() {
     errors.forEach((err) => console.error(`   • ${err}`));
     console.error('\n⚠️  Fix these errors before running in production!\n');
     
-    if (process.env.NODE_ENV === 'production') {
+    // Ne bloquer que si on est en production ET pas en phase de build
+    if (process.env.NODE_ENV === 'production' && !isBuildTime) {
       console.error('🚨 BLOCKING STARTUP IN PRODUCTION MODE\n');
       process.exit(1);
+    } else if (isBuildTime) {
+      console.warn('⏳ Build phase detected - skipping startup block. Configure environment variables in your deployment platform.\n');
     }
   }
 
