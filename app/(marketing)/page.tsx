@@ -6,6 +6,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { siteConfig } from '@/lib/config'
 import { HeroSlideshow } from '@/components/marketing/hero-slideshow'
+import { AnimateOnScroll } from '@/components/marketing/animate-on-scroll'
 import {
   Server,
   Code2,
@@ -55,7 +56,7 @@ export default async function HomePage() {
       <section className="relative overflow-hidden border-b border-black/10">
         <div className="container mx-auto px-4 py-16 md:py-24">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8">
+            <div className="space-y-8 animate-slide-right">
               <div className="space-y-4">
                 <h1 className="page-title">{messages.marketing.heroTitle}</h1>
                 <p className="text-xl max-w-[600px] text-[#555353]">{messages.marketing.heroSubtitle}</p>
@@ -89,7 +90,7 @@ export default async function HomePage() {
               </p>
             </div>
 
-            <div className="relative">
+            <div className="relative animate-slide-left">
               <HeroSlideshow images={heroSlides} />
             </div>
           </div>
@@ -98,7 +99,8 @@ export default async function HomePage() {
 
       <section className="border-b border-black/10 bg-[#fafaf9]">
         <div className="container mx-auto px-4 py-12 md:py-16">
-          <div className="max-w-3xl mx-auto text-center space-y-6">
+          <AnimateOnScroll animation="slide-up">
+            <div className="max-w-3xl mx-auto text-center space-y-6">
             <h2 className="text-2xl md:text-3xl font-bold" style={{ fontFamily: 'var(--brand-font-heading)' }}>
               {messages.marketing.saasContrastTitle}
             </h2>
@@ -109,34 +111,38 @@ export default async function HomePage() {
                 </p>
               ))}
             </div>
-          </div>
+            </div>
+          </AnimateOnScroll>
         </div>
       </section>
 
       <section id="features" className="border-b border-black/10">
         <div className="container mx-auto px-4 py-12 md:py-16">
-          <div className="max-w-2xl mx-auto text-center space-y-4">
+          <AnimateOnScroll animation="scale-up">
+            <div className="max-w-2xl mx-auto text-center space-y-4">
             <h2 className="text-2xl md:text-3xl font-bold" style={{ fontFamily: 'var(--brand-font-heading)' }}>
               {messages.marketing.targetAudienceTitle}
             </h2>
             <p className="text-lg text-[#555353] leading-relaxed">
               {messages.marketing.targetAudienceText}
             </p>
-          </div>
+            </div>
+          </AnimateOnScroll>
         </div>
       </section>
 
       <section className="border-b border-black/10">
         <div className="container mx-auto px-4 py-16 md:py-24">
-          <div className="text-center mb-16 space-y-4">
-            <h2 className="section-title">{messages.marketing.whyTitle}</h2>
-          </div>
+          <AnimateOnScroll animation="slide-up">
+            <h2 className="section-title text-center mb-16">{messages.marketing.whyTitle}</h2>
+          </AnimateOnScroll>
 
           <div className="grid md:grid-cols-3 gap-8">
             {messages.marketing.whyCards.map((card, index) => {
               const Icon = whyIcons[index]
               return (
-                <Card key={card.title} className="relative overflow-hidden">
+                <AnimateOnScroll key={card.title} animation="slide-up" delay={index * 100}>
+                  <Card className="relative overflow-hidden hover-lift">
                   <CardHeader>
                     <div className="w-12 h-12 rounded-lg bg-[color:var(--brand-primary)]/15 flex items-center justify-center mb-4 text-[#3f3a3a] mx-auto">
                       <Icon className="h-6 w-6" />
@@ -145,6 +151,7 @@ export default async function HomePage() {
                     <CardDescription>{card.description}</CardDescription>
                   </CardHeader>
                 </Card>
+                </AnimateOnScroll>
               )
             })}
           </div>
@@ -153,12 +160,14 @@ export default async function HomePage() {
 
       <section className="border-b border-black/10">
         <div className="container mx-auto px-4 py-16 md:py-24">
-          <div className="text-center mb-16 space-y-4">
-            <h2 className="section-title">{messages.marketing.integrationsTitle}</h2>
-            <p className="text-lg text-[#555353] leading-relaxed max-w-2xl mx-auto">
-              {messages.marketing.integrationsSubtitle}
-            </p>
-          </div>
+          <AnimateOnScroll animation="slide-up">
+            <div className="text-center mb-16 space-y-4">
+              <h2 className="section-title">{messages.marketing.integrationsTitle}</h2>
+              <p className="text-lg text-[#555353] leading-relaxed max-w-2xl mx-auto">
+                {messages.marketing.integrationsSubtitle}
+              </p>
+            </div>
+          </AnimateOnScroll>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
             {messages.marketing.integrationsCards.map((card, index) => {
@@ -166,7 +175,8 @@ export default async function HomePage() {
               const bgClass = index % 2 === 0 ? 'bg-[color:var(--brand-primary)]/15' : 'bg-[color:var(--brand-accent)]/15'
 
               return (
-                <Card key={card.title}>
+                <AnimateOnScroll key={card.title} animation="scale-up" delay={index * 100}>
+                  <Card className="hover-lift">
                   <CardHeader>
                     <div className={`w-12 h-12 rounded-lg ${bgClass} flex items-center justify-center mb-4 mx-auto`}>
                       <Icon className="h-6 w-6 text-[#4f4a4a]" />
@@ -178,6 +188,7 @@ export default async function HomePage() {
                     <CardDescription>{card.description}</CardDescription>
                   </CardHeader>
                 </Card>
+                </AnimateOnScroll>
               )
             })}
           </div>
@@ -186,15 +197,16 @@ export default async function HomePage() {
 
       <section className="border-b border-black/10">
         <div className="container mx-auto px-4 py-16 md:py-24">
-          <div className="text-center mb-16 space-y-4">
-            <h2 className="section-title">{messages.marketing.howItWorksTitle}</h2>
-          </div>
+          <AnimateOnScroll animation="slide-up">
+            <h2 className="section-title text-center mb-16">{messages.marketing.howItWorksTitle}</h2>
+          </AnimateOnScroll>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {messages.marketing.howItWorksSteps.map((step, index) => {
               const Icon = howItWorksIcons[index]
               return (
-                <Card key={step.title} className="relative overflow-hidden">
+                <AnimateOnScroll key={step.title} animation="slide-up" delay={index * 100}>
+                  <Card className="relative overflow-hidden hover-lift">
                   <CardHeader>
                     <div className="w-12 h-12 rounded-lg bg-[color:var(--brand-accent)]/15 flex items-center justify-center mb-4 text-[#3f3a3a] mx-auto">
                       <Icon className="h-6 w-6" />
@@ -208,6 +220,7 @@ export default async function HomePage() {
                     <CardDescription>{step.description}</CardDescription>
                   </CardHeader>
                 </Card>
+                </AnimateOnScroll>
               )
             })}
           </div>
@@ -216,37 +229,42 @@ export default async function HomePage() {
 
       <section className="border-b border-black/10 bg-[#fafaf9]">
         <div className="container mx-auto px-4 py-12 md:py-16">
-          <div className="max-w-3xl mx-auto text-center space-y-6">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <Github className="h-8 w-8 text-[#3f3a3a]" />
+          <AnimateOnScroll animation="scale-up">
+            <div className="max-w-3xl mx-auto text-center space-y-6">
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <Github className="h-8 w-8 text-[#3f3a3a] animate-float" />
+              </div>
+              <h2 className="text-2xl md:text-3xl font-bold" style={{ fontFamily: 'var(--brand-font-heading)' }}>
+                {messages.marketing.openSourceTitle}
+              </h2>
+              <p className="text-lg text-[#555353]">
+                {messages.marketing.openSourceText}
+              </p>
+              <div className="pt-4">
+                <Button variant="outline" size="lg" asChild>
+                  <Link href={siteConfig.githubUrl} target="_blank" rel="noopener noreferrer">
+                    <Github className="h-4 w-4 mr-2" />
+                    {messages.marketing.openSourceLink}
+                  </Link>
+                </Button>
+              </div>
             </div>
-            <h2 className="text-2xl md:text-3xl font-bold" style={{ fontFamily: 'var(--brand-font-heading)' }}>
-              {messages.marketing.openSourceTitle}
-            </h2>
-            <p className="text-lg text-[#555353]">
-              {messages.marketing.openSourceText}
-            </p>
-            <div className="pt-4">
-              <Button variant="outline" size="lg" asChild>
-                <Link href={siteConfig.githubUrl} target="_blank" rel="noopener noreferrer">
-                  <Github className="h-4 w-4 mr-2" />
-                  {messages.marketing.openSourceLink}
-                </Link>
-              </Button>
-            </div>
-          </div>
+          </AnimateOnScroll>
         </div>
       </section>
 
       <section className="border-b border-black/10">
         <div className="container mx-auto px-4 py-16 md:py-24">
           <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-12 space-y-4">
-              <h2 className="section-title">{messages.marketing.pricingHighlightTitle}</h2>
-              <p className="text-lg max-w-[760px] mx-auto text-[#676060]">{messages.marketing.pricingHighlightSubtitle}</p>
-            </div>
+            <AnimateOnScroll animation="slide-up">
+              <div className="text-center mb-12 space-y-4">
+                <h2 className="section-title">{messages.marketing.pricingHighlightTitle}</h2>
+                <p className="text-lg max-w-[760px] mx-auto text-[#676060]">{messages.marketing.pricingHighlightSubtitle}</p>
+              </div>
+            </AnimateOnScroll>
 
-            <Card className="max-w-3xl mx-auto">
+            <AnimateOnScroll animation="scale-up">
+              <Card className="max-w-3xl mx-auto hover-scale">
               <CardHeader className="text-center">
                 <CardTitle className="text-3xl">StackBill</CardTitle>
                 <CardDescription className="text-base">{messages.marketing.pricingHighlightNote}</CardDescription>
@@ -288,6 +306,7 @@ export default async function HomePage() {
                 </div>
               </CardContent>
             </Card>
+            </AnimateOnScroll>
           </div>
         </div>
       </section>
@@ -295,16 +314,19 @@ export default async function HomePage() {
       <section id="installation" className="border-b border-black/10">
         <div className="container mx-auto px-4 py-16 md:py-24">
           <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-16 space-y-4">
-              <div className="flex items-center justify-center gap-2 mb-4">
-                <Download className="h-6 w-6" />
-                <Badge>{messages.marketing.installBadge}</Badge>
+            <AnimateOnScroll animation="slide-up">
+              <div className="text-center mb-16 space-y-4">
+                <div className="flex items-center justify-center gap-2 mb-4">
+                  <Download className="h-6 w-6" />
+                  <Badge>{messages.marketing.installBadge}</Badge>
+                </div>
+                <h2 className="section-title">{messages.marketing.installationTitle}</h2>
+                <p className="text-lg max-w-[600px] mx-auto text-[#676060]">{messages.marketing.installationText}</p>
               </div>
-              <h2 className="section-title">{messages.marketing.installationTitle}</h2>
-              <p className="text-lg max-w-[600px] mx-auto text-[#676060]">{messages.marketing.installationText}</p>
-            </div>
+            </AnimateOnScroll>
 
-            <Card>
+            <AnimateOnScroll animation="scale-up" delay={100}>
+              <Card>
               <CardHeader>
                 <div className="flex items-center gap-2 pb-3 border-b border-black/10">
                   <div className="flex gap-1.5">
@@ -326,6 +348,7 @@ npm run dev`}
                 </pre>
               </CardContent>
             </Card>
+            </AnimateOnScroll>
 
             <div className="mt-8 text-center">
               <p className="text-sm text-[#676060] mb-4">{messages.marketing.installFooter}</p>
@@ -343,20 +366,22 @@ npm run dev`}
       <section id="faq" className="border-b border-black/10">
         <div className="container mx-auto px-4 py-16 md:py-24">
           <div className="max-w-3xl mx-auto">
-            <div className="text-center mb-16 space-y-4">
-              <h2 className="section-title">{messages.marketing.faqTitle}</h2>
-              <p className="text-lg text-[#676060]">{messages.marketing.faqSubtitle}</p>
-            </div>
+            <AnimateOnScroll animation="slide-up">
+              <div className="text-center mb-16 space-y-4">
+                <h2 className="section-title">{messages.marketing.faqTitle}</h2>
+                <p className="text-lg text-[#676060]">{messages.marketing.faqSubtitle}</p>
+              </div>
+            </AnimateOnScroll>
 
             <div className="space-y-6">
-              {messages.marketing.faqs.map((item) => (
-                <Card key={item.q}>
+              {messages.marketing.faqs.map((item, index) => (
+                <AnimateOnScroll key={item.q} animation="slide-up" delay={index * 100}>
+                  <Card className="hover-lift">
                   <CardHeader>
                     <CardTitle className="text-xl">{item.q}</CardTitle>
                     <CardDescription className="text-base pt-2">{item.a}</CardDescription>
                   </CardHeader>
-                </Card>
-              ))}
+                </Card>                </AnimateOnScroll>              ))}
             </div>
           </div>
         </div>
@@ -364,7 +389,8 @@ npm run dev`}
 
       <section className="border-b border-black/10">
         <div className="container mx-auto px-4 py-16 md:py-24">
-          <div className="max-w-4xl mx-auto text-center space-y-8">
+          <AnimateOnScroll animation="scale-bounce">
+            <div className="max-w-4xl mx-auto text-center space-y-8">
             <div className="space-y-4">
               <h2 className="section-title">{messages.marketing.finalTitle}</h2>
               <p className="text-xl text-[#676060] max-w-[600px] mx-auto">{messages.marketing.finalText}</p>
@@ -396,6 +422,7 @@ npm run dev`}
               </p>
             </div>
           </div>
+          </AnimateOnScroll>
         </div>
       </section>
     </div>

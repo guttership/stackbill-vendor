@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ChevronLeft, Github } from 'lucide-react'
 import { siteConfig } from '@/lib/config'
+import { AnimateOnScroll } from '@/components/marketing/animate-on-scroll'
 
 async function getInstallationDoc(locale: 'fr' | 'en') {
   try {
@@ -41,36 +42,42 @@ export default async function DocsPage() {
     <div className="relative z-10">
       <div className="container mx-auto px-4 py-16 md:py-24">
         <div className="max-w-4xl mx-auto">
-          <div className="mb-12 flex items-center justify-between">
-            <Button variant="outline" asChild>
-              <Link href="/">
-                <ChevronLeft className="mr-2 h-4 w-4" />
-                {messages.marketing.heroTitle}
-              </Link>
-            </Button>
-            <Button variant="outline" asChild>
-              <Link href={siteConfig.githubUrl} target="_blank" rel="noopener noreferrer">
-                <Github className="mr-2 h-4 w-4" />
-                {locale === 'en' ? 'View on GitHub' : 'Voir sur GitHub'}
-              </Link>
-            </Button>
-          </div>
+          <AnimateOnScroll animation="slide-up">
+            <div className="mb-12 flex items-center justify-between">
+              <Button variant="outline" asChild>
+                <Link href="/">
+                  <ChevronLeft className="mr-2 h-4 w-4" />
+                  {messages.marketing.heroTitle}
+                </Link>
+              </Button>
+              <Button variant="outline" asChild>
+                <Link href={siteConfig.githubUrl} target="_blank" rel="noopener noreferrer">
+                  <Github className="mr-2 h-4 w-4" />
+                  {locale === 'en' ? 'View on GitHub' : 'Voir sur GitHub'}
+                </Link>
+              </Button>
+            </div>
+          </AnimateOnScroll>
 
-          <article className="prose prose-slate max-w-none">
-            <div
-              className="markdown-content"
-              dangerouslySetInnerHTML={{ __html: convertMarkdownToHTML(docContent) }}
-            />
-          </article>
+          <AnimateOnScroll animation="scale-up" delay={100}>
+            <article className="prose prose-slate max-w-none">
+              <div
+                className="markdown-content"
+                dangerouslySetInnerHTML={{ __html: convertMarkdownToHTML(docContent) }}
+              />
+            </article>
+          </AnimateOnScroll>
 
-          <div className="mt-16 pt-8 border-t border-black/10 flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" asChild>
-              <Link href="/pricing">{locale === 'en' ? 'Install StackBill' : 'Installer StackBill'}</Link>
-            </Button>
-            <Button size="lg" variant="outline" asChild>
-              <Link href="/">{locale === 'en' ? 'Back to home' : 'Retour à l\'accueil'}</Link>
-            </Button>
-          </div>
+          <AnimateOnScroll animation="slide-up" delay={200}>
+            <div className="mt-16 pt-8 border-t border-black/10 flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" asChild>
+                <Link href="/pricing">{locale === 'en' ? 'Install StackBill' : 'Installer StackBill'}</Link>
+              </Button>
+              <Button size="lg" variant="outline" asChild>
+                <Link href="/">{locale === 'en' ? 'Back to home' : 'Retour à l\'accueil'}</Link>
+              </Button>
+            </div>
+          </AnimateOnScroll>
         </div>
       </div>
     </div>

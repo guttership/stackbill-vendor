@@ -2,6 +2,7 @@ import { plans } from '@/lib/config'
 import { PricingCard } from '@/components/pricing/pricing-card'
 import { Check } from 'lucide-react'
 import { getCurrentLocale, getCurrentMessages } from '@/lib/i18n/server'
+import { AnimateOnScroll } from '@/components/marketing/animate-on-scroll'
 
 export default async function PricingPage() {
   const locale = await getCurrentLocale()
@@ -61,10 +62,14 @@ export default async function PricingPage() {
         <div className="absolute inset-0 gradient-mesh opacity-70"></div>
         <div className="container relative mx-auto px-6 md:px-8 py-16 md:py-24">
           <div className="max-w-4xl mx-auto text-center space-y-8">
-            <h1 className="page-title">{messages.pricing.title}</h1>
-            <p className="text-xl md:text-2xl text-[#676060] max-w-2xl mx-auto leading-relaxed">
-              {messages.pricing.subtitle}
-            </p>
+            <AnimateOnScroll animation="slide-up">
+              <h1 className="page-title">{messages.pricing.title}</h1>
+            </AnimateOnScroll>
+            <AnimateOnScroll animation="slide-up" delay={100}>
+              <p className="text-xl md:text-2xl text-[#676060] max-w-2xl mx-auto leading-relaxed">
+                {messages.pricing.subtitle}
+              </p>
+            </AnimateOnScroll>
           </div>
         </div>
       </section>
@@ -72,22 +77,30 @@ export default async function PricingPage() {
       <section className="py-12 md:py-20">
         <div className="container mx-auto px-6 md:px-8">
           <div className="grid md:grid-cols-2 gap-8 lg:gap-12 max-w-6xl mx-auto">
-            <PricingCard plan={monthlyPlan} recommended={false} locale={locale} />
-            <PricingCard plan={yearlyPlan} recommended={true} locale={locale} />
+            <AnimateOnScroll animation="scale-up">
+              <PricingCard plan={monthlyPlan} recommended={false} locale={locale} />
+            </AnimateOnScroll>
+            <AnimateOnScroll animation="scale-up" delay={100}>
+              <PricingCard plan={yearlyPlan} recommended={true} locale={locale} />
+            </AnimateOnScroll>
           </div>
 
           <div className="mt-24 max-w-4xl mx-auto">
-            <h2 className="section-title text-center mb-12">{messages.pricing.includedTitle}</h2>
+            <AnimateOnScroll animation="slide-up">
+              <h2 className="section-title text-center mb-12">{messages.pricing.includedTitle}</h2>
+            </AnimateOnScroll>
             <div className="grid md:grid-cols-2 gap-x-12 gap-y-6">
-              {messages.pricing.includedFeatures.map((feature) => (
-                <div key={feature} className="flex items-start gap-4">
-                  <div className="mt-1">
-                    <div className="w-5 h-5 rounded-full bg-[color:var(--brand-primary)]/20 flex items-center justify-center">
-                      <Check className="h-3.5 w-3.5 text-[#4f4a4a]" />
+              {messages.pricing.includedFeatures.map((feature, index) => (
+                <AnimateOnScroll key={feature} animation="slide-up" delay={index * 50}>
+                  <div className="flex items-start gap-4">
+                    <div className="mt-1">
+                      <div className="w-5 h-5 rounded-full bg-[color:var(--brand-primary)]/20 flex items-center justify-center">
+                        <Check className="h-3.5 w-3.5 text-[#4f4a4a]" />
+                      </div>
                     </div>
+                    <span className="text-base text-[#555353] leading-relaxed">{feature}</span>
                   </div>
-                  <span className="text-base text-[#555353] leading-relaxed">{feature}</span>
-                </div>
+                </AnimateOnScroll>
               ))}
             </div>
           </div>
