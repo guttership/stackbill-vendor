@@ -8,8 +8,12 @@ function checkSecurityConfig() {
   const warnings: string[] = [];
   const errors: string[] = [];
   
-  // Détecter si on est en phase de build (ne pas bloquer le build)
-  const isBuildTime = process.argv.includes('build') || process.env.NEXT_PHASE === 'phase-production-build';
+  // Sur Vercel, ne bloquer que si on a au moins une variable Stripe définie
+  // (cela signifie qu'on est au runtime, pas au build)
+  const isVercelBuild = process.env.VERCEL === '1' && !process.env.STRIPE_SECRET_KEY;
+  const isBuildTime = process.argv.includes('build') || 
+                      process.env.NEXT_PHASE === 'phase-production-build' ||
+                      isVercelBuild;
 
   // 1. Vérifier STRIPE_SECRET_KEY
   const stripeSecret = process.env.STRIPE_SECRET_KEY;
