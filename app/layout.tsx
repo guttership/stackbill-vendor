@@ -16,27 +16,69 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.url),
   title: {
-    default: `${siteConfig.name} - ${siteConfig.description}`,
+    default: `${siteConfig.name} — ${siteConfig.description}`,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.tagline,
-  keywords: [
-    'invoicing',
-    'self-hosted',
-    'developers',
-    'quotes',
-    'billing',
-    'open-source',
-  ],
-  authors: [{ name: 'StackBill' }],
+  keywords: siteConfig.keywords,
+  authors: [{ name: 'StackBill', url: siteConfig.url }],
+  creator: 'StackBill',
+  publisher: 'StackBill',
+  category: siteConfig.category,
+  manifest: '/favicon/site.webmanifest',
+  icons: {
+    icon: [
+      { url: '/favicon/favicon.ico', sizes: 'any' },
+      { url: '/favicon/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/favicon/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  alternates: {
+    canonical: siteConfig.url,
+    languages: {
+      'en-US': `${siteConfig.url}`,
+      'fr-FR': `${siteConfig.url}`,
+    },
+  },
   openGraph: {
     type: 'website',
-    locale: 'en_US',
+    locale: siteConfig.locale,
+    alternateLocale: ['fr_FR'],
     url: siteConfig.url,
-    title: siteConfig.name,
+    title: `${siteConfig.name} — ${siteConfig.description}`,
     description: siteConfig.tagline,
     siteName: siteConfig.name,
+    images: [
+      {
+        url: siteConfig.ogImage,
+        width: 1200,
+        height: 630,
+        alt: `${siteConfig.name} — Self-hosted invoicing for developers`,
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `${siteConfig.name} — ${siteConfig.description}`,
+    description: siteConfig.tagline,
+    creator: siteConfig.twitterHandle,
+    images: [siteConfig.ogImage],
   },
 }
 

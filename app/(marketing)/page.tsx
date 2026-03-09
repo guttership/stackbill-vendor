@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { readdir } from 'node:fs/promises'
 import path from 'node:path'
@@ -7,6 +8,21 @@ import { Badge } from '@/components/ui/badge'
 import { siteConfig } from '@/lib/config'
 import { HeroSlideshow } from '@/components/marketing/hero-slideshow'
 import { AnimateOnScroll } from '@/components/marketing/animate-on-scroll'
+
+export const metadata: Metadata = {
+  title: `${siteConfig.name} — Self-hosted Invoicing for Developers`,
+  description:
+    'StackBill is an open-source, self-hosted invoicing and quoting tool built for developers and freelancers. Full data ownership, PDF export, Clockify & Trello integration.',
+  alternates: {
+    canonical: siteConfig.url,
+  },
+  openGraph: {
+    url: siteConfig.url,
+    title: `${siteConfig.name} — Self-hosted Invoicing for Developers`,
+    description:
+      'StackBill is an open-source, self-hosted invoicing and quoting tool built for developers and freelancers. Full data ownership, PDF export, Clockify & Trello integration.',
+  },
+}
 import {
   Server,
   Code2,
@@ -43,6 +59,47 @@ async function getHeroSlides() {
   return ['/images/image.webp']
 }
 
+function SoftwareApplicationJsonLd() {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: siteConfig.name,
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Linux, macOS, Windows',
+    description: siteConfig.tagline,
+    url: siteConfig.url,
+    license: 'https://opensource.org/licenses/MIT',
+    softwareVersion: '1.0',
+    author: {
+      '@type': 'Organization',
+      name: 'StackBill',
+      url: siteConfig.url,
+    },
+    offers: {
+      '@type': 'Offer',
+      price: '10',
+      priceCurrency: 'EUR',
+      priceValidUntil: '2027-12-31',
+    },
+    featureList: [
+      'Self-hosted deployment',
+      'Invoice and quote generation',
+      'PDF export',
+      'Clockify integration',
+      'Trello integration',
+      'Custom branding',
+      'Open source',
+    ],
+  }
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+    />
+  )
+}
+
 export default async function HomePage() {
   const messages = await getCurrentMessages()
   const heroSlides = await getHeroSlides()
@@ -52,7 +109,9 @@ export default async function HomePage() {
   const integrationIcons = [Clock, Trello]
 
   return (
-    <div className="relative z-10 flex flex-col text-[#463f3f]">
+    <>
+      <SoftwareApplicationJsonLd />
+      <div className="relative z-10 flex flex-col text-[#463f3f]">
       <section className="relative overflow-hidden border-b border-black/10">
         <div className="container mx-auto px-4 py-16 md:py-24">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -426,5 +485,6 @@ npm run dev`}
         </div>
       </section>
     </div>
+    </>
   )
 }

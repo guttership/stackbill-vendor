@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { getCurrentMessages, getCurrentLocale } from '@/lib/i18n/server'
@@ -6,6 +7,21 @@ import { Button } from '@/components/ui/button'
 import { ChevronLeft, Github } from 'lucide-react'
 import { siteConfig } from '@/lib/config'
 import { AnimateOnScroll } from '@/components/marketing/animate-on-scroll'
+
+export const metadata: Metadata = {
+  title: 'Documentation — Installation Guide',
+  description:
+    'Step-by-step installation guide for StackBill. Deploy your self-hosted invoicing tool with Docker in minutes. Supports Linux, macOS and Windows.',
+  alternates: {
+    canonical: `${siteConfig.url}/docs`,
+  },
+  openGraph: {
+    url: `${siteConfig.url}/docs`,
+    title: `Documentation | ${siteConfig.name}`,
+    description:
+      'Step-by-step installation guide for StackBill. Deploy your self-hosted invoicing tool with Docker in minutes. Supports Linux, macOS and Windows.',
+  },
+}
 
 async function getInstallationDoc(locale: 'fr' | 'en') {
   try {

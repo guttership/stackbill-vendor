@@ -1,8 +1,24 @@
-import { plans } from '@/lib/config'
+import type { Metadata } from 'next'
+import { plans, siteConfig } from '@/lib/config'
 import { PricingCard } from '@/components/pricing/pricing-card'
 import { Check } from 'lucide-react'
 import { getCurrentLocale, getCurrentMessages } from '@/lib/i18n/server'
 import { AnimateOnScroll } from '@/components/marketing/animate-on-scroll'
+
+export const metadata: Metadata = {
+  title: 'Pricing',
+  description:
+    'Simple, transparent pricing for StackBill. Start with a monthly or yearly license. Self-hosted, no recurring SaaS fees — pay once and own your data.',
+  alternates: {
+    canonical: `${siteConfig.url}/pricing`,
+  },
+  openGraph: {
+    url: `${siteConfig.url}/pricing`,
+    title: `Pricing | ${siteConfig.name}`,
+    description:
+      'Simple, transparent pricing for StackBill. Start with a monthly or yearly license. Self-hosted, no recurring SaaS fees — pay once and own your data.',
+  },
+}
 
 export default async function PricingPage() {
   const locale = await getCurrentLocale()
