@@ -1,26 +1,36 @@
 export interface License {
-  id: string
-  customerId: string
-  subscriptionId: string
-  status: 'active' | 'inactive' | 'expired' | 'cancelled'
-  licenseKey: string
-  activatedAt: Date | null
-  expiresAt: Date | null
-  instanceUrl: string | null
-  maxInstances: number
-  currentInstances: number
-  createdAt: Date
-  updatedAt: Date
+  id: number
+  license_key: string
+  plan: string
+  max_instances: number
+  status: 'active' | 'expired' | 'cancelled'
+  created_at: string
+  expires_at: string | null
+  stripe_customer_id: string | null
+  stripe_subscription_id: string | null
 }
 
-export interface LicenseActivation {
-  licenseId: string
-  instanceUrl: string
-  activatedAt: Date
+export interface LicenseInstance {
+  id: number
+  license_id: number
+  instance_id: string
+  domain: string | null
+  first_seen_at: string
+  last_seen_at: string
 }
 
-export interface LicenseValidation {
-  isValid: boolean
-  license?: License
-  error?: string
+export interface VerifyRequest {
+  license_key: string
+  instance_id: string
+  domain?: string
+  app_version?: string
+}
+
+export interface VerifyResponse {
+  valid: boolean
+  plan?: string
+  max_instances?: number
+  expires_at?: string
+  server_time?: string
+  reason?: string
 }

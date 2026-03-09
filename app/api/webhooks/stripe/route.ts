@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import { getStripeClient } from '@/lib/stripe'
+import { createLicense, findLicenseBySubscription, extendLicense, cancelLicense } from '@/lib/license'
+import { sendLicenseEmail } from '@/lib/email'
+import { logLicenseEvent } from '@/lib/logger'
 import Stripe from 'stripe'
 
 /**
@@ -41,32 +44,23 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  console.log(`Received Stripe event: ${event.type}`)
+  logLicenseEvent(null, 'webhook_received', `type=${event.type}, id=${event.id}`)
 
   try {
     switch (event.type) {
       case 'checkout.session.completed':
-        await handleCheckoutSessionCompleted(event.data.object as Stripe.Checkout.Session)
+        await handleCheckoutSessionCompleted(
+          event.data.object as Stripe.Checkout.Session,
+          stripe
+        )
         break
 
-      case 'customer.subscription.created':
-        await handleSubscriptionCreated(event.data.object as Stripe.Subscription)
-        break
-
-      case 'customer.subscription.updated':
-        await handleSubscriptionUpdated(event.data.object as Stripe.Subscription)
+      case 'invoice.paid':
+        handleInvoicePaid(event.data.object as Stripe.Invoice)
         break
 
       case 'customer.subscription.deleted':
-        await handleSubscriptionDeleted(event.data.object as Stripe.Subscription)
-        break
-
-      case 'invoice.payment_succeeded':
-        await handleInvoicePaymentSucceeded(event.data.object as Stripe.Invoice)
-        break
-
-      case 'invoice.payment_failed':
-        await handleInvoicePaymentFailed(event.data.object as Stripe.Invoice)
+        handleSubscriptionDeleted(event.data.object as Stripe.Subscription)
         break
 
       default:
@@ -76,6 +70,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ received: true })
   } catch (error) {
     console.error('Error processing webhook:', error)
+    logLicenseEvent(null, 'webhook_error', `type=${event.type}, error=${error instanceof Error ? error.message : String(error)}`)
     return NextResponse.json(
       { error: 'Webhook processing failed' },
       { status: 500 }
@@ -84,98 +79,113 @@ export async function POST(request: NextRequest) {
 }
 
 /**
- * Handle successful checkout session
- * TODO: Create customer record in database
- * TODO: Send welcome email
+ * checkout.session.completed → Create a new license
  */
 async function handleCheckoutSessionCompleted(
-  session: Stripe.Checkout.Session
+  session: Stripe.Checkout.Session,
+  stripe: Stripe
 ) {
-  console.log('Checkout session completed:', session.id)
-  console.log('Customer:', session.customer)
-  console.log('Subscription:', session.subscription)
+  const customerId = session.customer as string
+  const subscriptionId = session.subscription as string
 
-  // TODO: Create or update customer in database
-  // TODO: Link customer to subscription
-  // TODO: Send welcome email with license key
-  // TODO: Trigger license generation
+  console.log(`[DEBUG] Checkout completed - customer: ${customerId}`)
+
+  if (!customerId || !subscriptionId) {
+    console.error('Missing customer or subscription in checkout session')
+    return
+  }
+
+  // Check if license already exists for this subscription
+  const existing = findLicenseBySubscription(subscriptionId)
+  if (existing) {
+    console.log(`License already exists for subscription ${subscriptionId}: ${existing.license_key}`)
+    return
+  }
+
+  // Retrieve subscription to get period end
+  const subscription = await stripe.subscriptions.retrieve(subscriptionId)
+  const expiresAt = new Date(subscription.current_period_end * 1000).toISOString()
+
+  // Get customer email and country from Stripe
+  const customer = (await stripe.customers.retrieve(customerId)) as Stripe.Customer
+  const customerEmail = customer.email
+  const countryCode = (customer.address?.country as string) || undefined
+
+  // Determine plan from price
+  const priceId = subscription.items.data[0]?.price.id
+  const monthlyPriceId = process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID
+  const plan = priceId === monthlyPriceId ? 'monthly' : 'yearly'
+
+  // Import here to avoid circular dependencies
+  const { detectLanguage } = await import('@/lib/license')
+  const language = detectLanguage(countryCode)
+
+  const license = createLicense({
+    stripeCustomerId: customerId,
+    stripeSubscriptionId: subscriptionId,
+    plan,
+    maxInstances: 2,
+    expiresAt,
+  })
+
+  console.log(`License created: ${license.license_key} for subscription ${subscriptionId}`)
+
+  // Send license email
+  if (customerEmail) {
+    console.log(`[EMAIL DEBUG] Sending email to ${customerEmail}`)
+    try {
+      await sendLicenseEmail({
+        email: customerEmail,
+        licenseKey: license.license_key,
+        plan,
+        expiresAt,
+        language,
+      })
+      console.log(`[EMAIL] ✅ Email sent successfully to ${customerEmail}`)
+    } catch (error) {
+      console.error(`[EMAIL] ❌ Failed to send to ${customerEmail}:`, error)
+      logLicenseEvent(license.license_key, 'webhook_error', `email_send_failed: ${error instanceof Error ? error.message : String(error)}`)
+    }
+  } else {
+    console.warn(`[EMAIL] ⚠️ No customer email found`)
+  }
 }
 
 /**
- * Handle new subscription creation
- * TODO: Create subscription record in database
- * TODO: Generate license key
+ * invoice.paid → Extend license validity
  */
-async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
-  console.log('Subscription created:', subscription.id)
-  console.log('Customer:', subscription.customer)
-  console.log('Status:', subscription.status)
-  console.log('Price ID:', subscription.items.data[0]?.price.id)
+function handleInvoicePaid(invoice: Stripe.Invoice) {
+  const subscriptionId = invoice.subscription as string
+  if (!subscriptionId) return
 
-  // TODO: Save subscription to database
-  // TODO: Generate license for subscription
-  // TODO: Determine max instances based on plan
-  // TODO: Send email with license key and setup instructions
+  // Extend to the end of the new billing period
+  const periodEnd = invoice.lines?.data?.[0]?.period?.end
+  if (!periodEnd) {
+    console.error('No period end found in invoice')
+    return
+  }
+
+  const newExpiresAt = new Date(periodEnd * 1000).toISOString()
+  const updated = extendLicense(subscriptionId, newExpiresAt)
+
+  if (updated) {
+    console.log(`License extended for subscription ${subscriptionId} until ${newExpiresAt}`)
+  } else {
+    // License may not exist yet (first invoice comes before checkout.session.completed sometimes)
+    console.log(`No license found for subscription ${subscriptionId} to extend`)
+  }
 }
 
 /**
- * Handle subscription updates
- * TODO: Update subscription record in database
- * TODO: Handle plan changes
- * TODO: Handle status changes
+ * customer.subscription.deleted → Cancel license
  */
-async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
-  console.log('Subscription updated:', subscription.id)
-  console.log('New status:', subscription.status)
-  console.log('Cancel at period end:', subscription.cancel_at_period_end)
+function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
+  const subscriptionId = subscription.id
+  const cancelled = cancelLicense(subscriptionId)
 
-  // TODO: Update subscription in database
-  // TODO: If plan changed, update license limits
-  // TODO: If cancelled, mark license for expiration
-  // TODO: If reactivated, reactivate license
-  // TODO: Send notification email
-}
-
-/**
- * Handle subscription deletion/cancellation
- * TODO: Mark subscription as cancelled in database
- * TODO: Deactivate license
- */
-async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
-  console.log('Subscription deleted:', subscription.id)
-  console.log('Cancelled at:', subscription.canceled_at)
-
-  // TODO: Update subscription status in database
-  // TODO: Deactivate associated licenses
-  // TODO: Revoke instance access
-  // TODO: Send cancellation confirmation email
-}
-
-/**
- * Handle successful invoice payment
- * TODO: Update payment status in database
- */
-async function handleInvoicePaymentSucceeded(invoice: Stripe.Invoice) {
-  console.log('Invoice payment succeeded:', invoice.id)
-  console.log('Subscription:', invoice.subscription)
-  console.log('Amount paid:', invoice.amount_paid)
-
-  // TODO: Record payment in database
-  // TODO: Extend subscription/license expiration
-  // TODO: Send receipt email
-}
-
-/**
- * Handle failed invoice payment
- * TODO: Update payment status in database
- * TODO: Send payment failure notification
- */
-async function handleInvoicePaymentFailed(invoice: Stripe.Invoice) {
-  console.log('Invoice payment failed:', invoice.id)
-  console.log('Subscription:', invoice.subscription)
-  console.log('Attempt count:', invoice.attempt_count)
-
-  // TODO: Record failed payment in database
-  // TODO: Send payment failure email
-  // TODO: If final attempt, suspend license
+  if (cancelled) {
+    console.log(`License cancelled for subscription ${subscriptionId}`)
+  } else {
+    console.log(`No license found for subscription ${subscriptionId} to cancel`)
+  }
 }
