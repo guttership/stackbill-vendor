@@ -3,6 +3,8 @@ import { plans, siteConfig } from '@/lib/config'
 import { PricingCard } from '@/components/pricing/pricing-card'
 import { Check } from 'lucide-react'
 import { getCurrentLocale, getCurrentMessages } from '@/lib/i18n/server'
+
+export const dynamic = 'force-dynamic'
 import { AnimateOnScroll } from '@/components/marketing/animate-on-scroll'
 
 export const metadata: Metadata = {

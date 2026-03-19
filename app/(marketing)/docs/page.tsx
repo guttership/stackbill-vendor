@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { getCurrentMessages, getCurrentLocale } from '@/lib/i18n/server'
+
+export const dynamic = 'force-dynamic'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ChevronLeft, Github } from 'lucide-react'

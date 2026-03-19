@@ -2,6 +2,8 @@ import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { getCurrentLocale } from '@/lib/i18n/server'
 
+export const dynamic = 'force-dynamic'
+
 export default async function MarketingLayout({
   children,
 }: {

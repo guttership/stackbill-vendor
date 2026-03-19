@@ -39,6 +39,8 @@ import {
 } from 'lucide-react'
 import { getCurrentMessages } from '@/lib/i18n/server'
 
+export const dynamic = 'force-dynamic'
+
 async function getHeroSlides() {
   try {
     const imagesDir = path.join(process.cwd(), 'public', 'images')
