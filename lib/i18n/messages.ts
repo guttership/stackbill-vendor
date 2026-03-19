@@ -31,6 +31,9 @@ export interface Messages {
     whyTitle: string
     whySubtitle: string
     whyCards: Array<{ title: string; description: string }>
+    clientDeployTitle: string
+    clientDeployText: string
+    clientDeployCards: Array<{ title: string; description: string }>
     howItWorksTitle: string
     howItWorksSteps: Array<{ title: string; description: string }>
     integrationsTitle: string
@@ -181,55 +184,72 @@ const en: Messages = {
     rights: 'All rights reserved.',
   },
   marketing: {
-    heroTitle: 'Self-hosted invoicing for developers',
-    heroSubtitle: 'Stop relying on SaaS invoicing tools. Run your billing stack on your own infrastructure.',
+    heroTitle: 'Invoicing you host. Control you keep.',
+    heroSubtitle: 'StackBill helps freelance developers and small tech teams create quotes, generate invoices, and export clean PDFs without depending on SaaS platforms.',
     heroPrimaryCta: 'Install StackBill',
     heroSecondaryCta: 'View documentation',
-    reassurance: ['2 instances included.', 'Self-hosted.', 'Built for developers.'],
-    deployReassurance: 'Deploy in minutes. Run locally or on your own server.',
-    saasContrastTitle: 'Most invoicing tools are SaaS.',
+    reassurance: ['2 instances included.', 'Works on localhost.', 'Built for developers.'],
+    deployReassurance: 'Deploy locally first, then move to your server when you are ready.',
+    saasContrastTitle: 'SaaS invoicing is convenient until it blocks your workflow.',
     saasContrastText: [
-      'Your invoices live on someone else\'s servers.',
-      'Your data depends on a third-party platform.',
-      'StackBill flips that model.',
-      'Run your invoicing stack on your own infrastructure.',
+      'Client billing data lives on someone else\'s stack.',
+      'Pricing, limits, and access rules can change without notice.',
+      'StackBill gives the control back to your team.',
+      'You run the app, you own the data, you decide how to deploy it.',
     ],
-    targetAudienceTitle: 'Built for developers and indie makers.',
+    targetAudienceTitle: 'Built for freelance developers, indie makers, and small tech teams.',
     targetAudienceText:
-      'If you\'re a freelance developer, indie hacker or small dev team tired of SaaS invoicing tools, StackBill lets you run your own invoicing stack.',
-    whyTitle: 'Everything you need. Nothing you don\'t.',
+      'Use StackBill for your own business, then reuse the same setup for client projects that need invoicing with custom branding.',
+    whyTitle: 'Why teams switch to StackBill',
     whySubtitle: '',
     whyCards: [
       {
-        title: 'Self-hosted',
-        description: 'Run StackBill locally or on your own server.',
+        title: 'Keep full control of billing data',
+        description: 'Invoices, quotes, and customer information stay on infrastructure you control.',
       },
       {
-        title: 'Built for developers',
-        description: 'Simple setup, clean configuration, no bloated SaaS.',
+        title: 'Ship invoices faster',
+        description: 'Generate quotes, convert them to invoices, and export polished PDFs in one workflow.',
       },
       {
-        title: 'Quotes to invoices',
-        description: 'Turn accepted quotes into invoices instantly.',
+        title: 'Reuse your workflow across clients',
+        description: 'Keep a consistent setup and deploy separate instances for your own projects or client projects.',
       },
     ],
-    howItWorksTitle: 'How it works',
+    clientDeployTitle: 'Deploy for clients. Brand each instance.',
+    clientDeployText:
+      'StackBill is a strong fit if you build and maintain tools for clients: deploy per client, customize branding, and keep technical ownership.',
+    clientDeployCards: [
+      {
+        title: 'One instance per client',
+        description: 'Deploy isolated instances so every client gets a clean and dedicated billing workspace.',
+      },
+      {
+        title: 'Custom branding ready',
+        description: 'Adjust logo, legal mentions, and invoice presentation to match each client identity.',
+      },
+      {
+        title: 'Resell as a service',
+        description: 'Package setup, hosting, and maintenance as a recurring service for your clients.',
+      },
+    ],
+    howItWorksTitle: 'From install to first invoice in one flow',
     howItWorksSteps: [
       {
         title: 'Install StackBill',
-        description: 'Run it locally or on your own server.',
+        description: 'Run it on localhost first, then deploy on your own infrastructure.',
       },
       {
         title: 'Activate your license',
-        description: 'Connect your instance with your StackBill account.',
+        description: 'Connect your instance to your StackBill account and unlock full access.',
       },
       {
-        title: 'Start invoicing',
-        description: 'Create quotes, generate invoices and track projects.',
+        title: 'Create quotes and invoice faster',
+        description: 'Use your quote-to-invoice workflow, then duplicate and adapt as your projects grow.',
       },
     ],
     integrationsTitle: 'Integrations',
-    integrationsSubtitle: 'Boost your productivity by integrating and activating project tracking services.',
+    integrationsSubtitle: 'Optional advanced workflow tools. StackBill works perfectly without integrations.',
     integrationsCards: [
       {
         title: 'Clockify',
@@ -244,11 +264,11 @@ const en: Messages = {
     ],
     openSourceTitle: 'Open source core available on GitHub.',
     openSourceText:
-      'Review the code, contribute improvements, or adapt it to your workflow.',
+      'Review the code before deploying, adapt it to your stack, and keep your process transparent for your team and clients.',
     openSourceLink: 'View on GitHub',
     pricingHighlightTitle: 'One product. One clear price.',
     pricingHighlightSubtitle:
-      'StackBill is sold as an active license with updates included. Choose monthly or yearly billing.',
+      'Start monthly, switch to yearly anytime. Same features in both plans, updates included while your license is active.',
     pricingHighlightMonthly: '$11 / month',
     pricingHighlightYearly: '$110 / year',
     pricingHighlightOr: 'or',
@@ -261,8 +281,8 @@ const en: Messages = {
       'License-based access',
       'Built for developers',
     ],
-    pricingHighlightReassurance: 'Run it locally. Deploy it anywhere.',
-    pricingHighlightNote: 'One product, one clear price.',
+    pricingHighlightReassurance: 'No hidden tiers. No feature gating between plans.',
+    pricingHighlightNote: 'Clear pricing for developers who want predictable billing tools.',
     pricingHighlightPrimaryCta: 'Install StackBill',
     pricingHighlightSecondaryCta: 'View documentation',
     installationTitle: 'Deploy it your way',
@@ -273,7 +293,7 @@ const en: Messages = {
     installFooter: 'Runs on Node.js 18+. Works with PostgreSQL, MySQL, or SQLite.',
     installButton: 'View documentation',
     faqTitle: 'Frequently asked questions',
-    faqSubtitle: 'Everything you need to know about StackBill',
+    faqSubtitle: 'Clear answers before you deploy',
     faqs: [
       {
         q: 'Can I self-host StackBill?',
@@ -284,6 +304,18 @@ const en: Messages = {
         a: 'Yes. A license includes up to 2 instances.',
       },
       {
+        q: 'Can I use StackBill without Clockify or Trello?',
+        a: 'Yes. Integrations are optional. Core quote and invoicing features work without them.',
+      },
+      {
+        q: 'Can I deploy StackBill for clients?',
+        a: 'Yes. Many developers deploy one instance per client and handle setup, hosting, and maintenance.',
+      },
+      {
+        q: 'Can I customize branding per client?',
+        a: 'Yes. You can adapt logo, legal details, and invoice presentation for each deployment.',
+      },
+      {
         q: 'Is StackBill a SaaS?',
         a: 'No. StackBill is self-hosted, but connected for licensing and updates.',
       },
@@ -291,10 +323,18 @@ const en: Messages = {
         q: 'What happens if my license expires?',
         a: 'Your existing setup remains accessible, while premium features or updates may be limited depending on license status.',
       },
+      {
+        q: 'What is included in monthly and yearly plans?',
+        a: 'Both plans include the same features and 2 instances. Yearly gives a better price over time.',
+      },
+      {
+        q: 'How is StackBill different from classic invoicing SaaS tools?',
+        a: 'With StackBill, you host the app yourself. You control data location, access, and deployment strategy.',
+      },
     ],
     finalTitle: 'Ready to take control?',
     finalText:
-      'Replace bloated invoicing SaaS with a self-hosted workflow that keeps you in control.',
+      'Install once, own your invoicing workflow, and scale it for your own business or your clients.',
     finalPrimaryCta: 'Install StackBill',
     finalSecondaryCta: 'View documentation',
     questionsLabel: 'Questions? Contact us at',
@@ -462,55 +502,72 @@ const fr: Messages = {
     rights: 'Tous droits réservés.',
   },
   marketing: {
-    heroTitle: 'Facturation self-hosted pour les développeurs',
-    heroSubtitle: 'Arrêtez de dépendre des plateformes SaaS de facturation. Exécutez votre stack de facturation sur votre propre infrastructure.',
+    heroTitle: 'Votre facturation, sur votre infra, sous votre contrôle.',
+    heroSubtitle: 'StackBill aide les freelances dev et petites équipes tech à créer des devis, générer des factures et exporter des PDFs propres sans dépendre d\'un SaaS.',
     heroPrimaryCta: 'Installer StackBill',
     heroSecondaryCta: 'Voir la documentation',
-    reassurance: ['2 instances incluses.', 'Self-hosted.', 'Conçu pour les développeurs.'],
-    deployReassurance: 'Déployez en quelques minutes. Exécutez-le en local ou sur votre serveur.',
-    saasContrastTitle: 'La plupart des outils de facturation sont des SaaS.',
+    reassurance: ['2 instances incluses.', 'Fonctionne en localhost.', 'Conçu pour les développeurs.'],
+    deployReassurance: 'Démarrez en local, puis déployez sur votre serveur quand vous êtes prêt.',
+    saasContrastTitle: 'Le SaaS de facturation est pratique, jusqu\'au moment où il bloque votre workflow.',
     saasContrastText: [
-      'Vos factures vivent sur les serveurs de quelqu\'un d\'autre.',
-      'Vos données dépendent d\'une plateforme tierce.',
-      'StackBill inverse ce modèle.',
-      'Exécutez votre stack de facturation sur votre propre infrastructure.',
+      'Les données de facturation de vos clients vivent sur une plateforme externe.',
+      'Tarifs, limites et règles d\'accès peuvent changer sans prévenir.',
+      'StackBill redonne le contrôle à votre équipe.',
+      'Vous hébergez l\'app, vous gardez les données, vous choisissez le mode de déploiement.',
     ],
-    targetAudienceTitle: 'Conçu pour les développeurs et indie makers.',
+    targetAudienceTitle: 'Conçu pour les freelances dev, indie makers et petites équipes tech.',
     targetAudienceText:
-      'Si vous êtes développeur freelance, indie hacker ou petite équipe dev fatiguée des outils SaaS, StackBill vous permet de gérer votre propre stack de facturation.',
-    whyTitle: 'Tout ce dont vous avez besoin. Rien de plus.',
+      'Utilisez StackBill pour votre propre activité, puis réutilisez le même setup sur des projets clients avec branding personnalisé.',
+    whyTitle: 'Pourquoi les équipes passent à StackBill',
     whySubtitle: '',
     whyCards: [
       {
-        title: 'Self-hosted',
-        description: 'Exécutez StackBill en local ou sur votre propre serveur.',
+        title: 'Gardez le contrôle des données de facturation',
+        description: 'Factures, devis et données clients restent sur une infrastructure que vous maîtrisez.',
       },
       {
-        title: 'Conçu pour les développeurs',
-        description: 'Installation simple, configuration propre, pas de bloat SaaS.',
+        title: 'Facturez plus vite',
+        description: 'Créez des devis, convertissez-les en factures et exportez des PDFs soignés dans un seul workflow.',
       },
       {
-        title: 'Du devis à la facture',
-        description: 'Transformez un devis accepté en facture instantanément.',
+        title: 'Réutilisez votre workflow pour vos clients',
+        description: 'Conservez une base cohérente et déployez des instances séparées selon vos projets.',
       },
     ],
-    howItWorksTitle: 'Comment ça marche',
+    clientDeployTitle: 'Déployez pour vos clients. Brandgez chaque instance.',
+    clientDeployText:
+      'StackBill est idéal si vous créez et maintenez des outils pour vos clients : un déploiement par client, branding adapté, et maîtrise technique complète.',
+    clientDeployCards: [
+      {
+        title: 'Une instance par client',
+        description: 'Déployez des instances isolées pour offrir à chaque client un espace de facturation propre.',
+      },
+      {
+        title: 'Branding personnalisé',
+        description: 'Adaptez le logo, les mentions légales et la présentation des factures à chaque identité client.',
+      },
+      {
+        title: 'Revente en service récurrent',
+        description: 'Packez installation, hébergement et maintenance comme une offre récurrente pour vos clients.',
+      },
+    ],
+    howItWorksTitle: 'De l\'installation à la première facture en un seul flux',
     howItWorksSteps: [
       {
         title: 'Installez StackBill',
-        description: 'Executez-le en local ou sur votre propre serveur.',
+        description: 'Lancez-le en localhost puis déployez-le sur votre infrastructure.',
       },
       {
         title: 'Activez votre licence',
-        description: 'Connectez votre instance à votre compte StackBill.',
+        description: 'Reliez votre instance à votre compte StackBill et déverrouillez l\'accès complet.',
       },
       {
-        title: 'Commencez à facturer',
-        description: 'Créez des devis, générez des factures et suivez vos projets.',
+        title: 'Créez des devis et facturez plus vite',
+        description: 'Utilisez le flux devis-vers-facture, puis dupliquez et adaptez au fur et à mesure de vos projets.',
       },
     ],
     integrationsTitle: 'Intégrations',
-    integrationsSubtitle: 'Améliorez votre productivité en intégrant et activant des services de suivi de projets.',
+    integrationsSubtitle: 'Des outils avancés optionnels. StackBill fonctionne parfaitement sans intégration.',
     integrationsCards: [
       {
         title: 'Clockify',
@@ -525,11 +582,11 @@ const fr: Messages = {
     ],
     openSourceTitle: 'Code source ouvert disponible sur GitHub.',
     openSourceText:
-      'Examinez le code, contribuez aux améliorations ou adaptez-le à votre workflow.',
+      'Auditez le code avant déploiement, adaptez-le à votre stack et gardez un process transparent pour votre équipe et vos clients.',
     openSourceLink: 'Voir sur GitHub',
     pricingHighlightTitle: 'Un produit. Un prix clair.',
     pricingHighlightSubtitle:
-      'StackBill fonctionne avec une licence active incluant les mises à jour. Choisissez mensuel ou annuel.',
+      'Commencez en mensuel, passez en annuel quand vous voulez. Mêmes fonctionnalités dans les deux plans, mises à jour incluses tant que la licence est active.',
     pricingHighlightMonthly: '10 € / mois',
     pricingHighlightYearly: '100 € / an',
     pricingHighlightOr: 'ou',
@@ -542,8 +599,8 @@ const fr: Messages = {
       'Accès basé sur licence',
       'Conçu pour les développeurs',
     ],
-    pricingHighlightReassurance: 'Exécutez-le en local. Déployez-le partout.',
-    pricingHighlightNote: 'Un produit, un prix clair.',
+    pricingHighlightReassurance: 'Pas de paliers cachés. Pas de fonctionnalités verrouillées entre plans.',
+    pricingHighlightNote: 'Un pricing lisible pour les développeurs qui veulent de la prévisibilité.',
     pricingHighlightPrimaryCta: 'Installer StackBill',
     pricingHighlightSecondaryCta: 'Voir la documentation',
     installationTitle: 'Déployez à votre façon',
@@ -554,7 +611,7 @@ const fr: Messages = {
     installFooter: 'Compatible Node.js 18+. Fonctionne avec PostgreSQL, MySQL ou SQLite.',
     installButton: 'Voir la documentation complète',
     faqTitle: 'Questions fréquentes',
-    faqSubtitle: 'Tout ce qu\'il faut savoir sur StackBill',
+    faqSubtitle: 'Des réponses claires avant de déployer',
     faqs: [
       {
         q: 'Puis-je auto-héberger StackBill ?',
@@ -565,6 +622,18 @@ const fr: Messages = {
         a: 'Oui. Une licence inclut jusqu\'à 2 instances.',
       },
       {
+        q: 'Puis-je utiliser StackBill sans Clockify ni Trello ?',
+        a: 'Oui. Les intégrations sont optionnelles. Le coeur devis/factures fonctionne sans elles.',
+      },
+      {
+        q: 'Puis-je déployer StackBill pour des clients ?',
+        a: 'Oui. Beaucoup de développeurs déploient une instance par client puis gèrent setup, hébergement et maintenance.',
+      },
+      {
+        q: 'Puis-je personnaliser le branding pour chaque client ?',
+        a: 'Oui. Vous pouvez adapter logo, mentions légales et présentation des factures selon chaque déploiement.',
+      },
+      {
         q: 'StackBill est-il un SaaS ?',
         a: 'Non. StackBill est self-hosted, mais connecté pour la licence et les mises à jour.',
       },
@@ -572,9 +641,17 @@ const fr: Messages = {
         q: 'Que se passe-t-il si ma licence expire ?',
         a: 'Votre installation existante reste accessible, tandis que certaines fonctions premium ou mises à jour peuvent être limitées selon le statut de licence.',
       },
+      {
+        q: 'Qu\'est-ce qui est inclus en mensuel et annuel ?',
+        a: 'Les deux plans incluent les mêmes fonctionnalités et 2 instances. L\'annuel est plus avantageux sur la durée.',
+      },
+      {
+        q: 'Quelle différence avec un SaaS de facturation classique ?',
+        a: 'Avec StackBill, vous hébergez l\'application vous-même. Vous choisissez où vont les données, qui y accède et comment vous déployez.',
+      },
     ],
     finalTitle: 'Prêt à reprendre le contrôle ?',
-    finalText: 'Remplacez les SaaS de facturation trop lourds par un workflow self-hosted, clair et maîtrisé.',
+    finalText: 'Installez une fois, gardez la maîtrise de votre facturation, puis faites évoluer le même workflow pour votre activité et vos clients.',
     finalPrimaryCta: 'Installer StackBill',
     finalSecondaryCta: 'Voir la documentation',
     questionsLabel: 'Une question ? Contactez-nous :',

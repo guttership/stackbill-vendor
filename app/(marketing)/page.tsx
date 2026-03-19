@@ -107,6 +107,7 @@ export default async function HomePage() {
   const heroSlides = await getHeroSlides()
 
   const whyIcons = [Server, Code2, FileText]
+  const clientDeployIcons = [Server, FileText, Code2]
   const howItWorksIcons = [Play, Key, Zap]
   const integrationIcons = [Clock, Trello]
 
@@ -212,6 +213,38 @@ export default async function HomePage() {
                     <CardDescription>{card.description}</CardDescription>
                   </CardHeader>
                 </Card>
+                </AnimateOnScroll>
+              )
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-b border-black/10 bg-[#fafaf9]">
+        <div className="container mx-auto px-4 py-16 md:py-24">
+          <AnimateOnScroll animation="slide-up">
+            <div className="text-center mb-14 space-y-4 max-w-3xl mx-auto">
+              <h2 className="section-title">{messages.marketing.clientDeployTitle}</h2>
+              <p className="text-lg text-[#555353] leading-relaxed">
+                {messages.marketing.clientDeployText}
+              </p>
+            </div>
+          </AnimateOnScroll>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {messages.marketing.clientDeployCards.map((card, index) => {
+              const Icon = clientDeployIcons[index]
+              return (
+                <AnimateOnScroll key={card.title} animation="scale-up" delay={index * 100}>
+                  <Card className="hover-lift">
+                    <CardHeader>
+                      <div className="w-12 h-12 rounded-lg bg-[color:var(--brand-accent)]/15 flex items-center justify-center mb-4 text-[#3f3a3a] mx-auto">
+                        <Icon className="h-6 w-6" />
+                      </div>
+                      <CardTitle>{card.title}</CardTitle>
+                      <CardDescription>{card.description}</CardDescription>
+                    </CardHeader>
+                  </Card>
                 </AnimateOnScroll>
               )
             })}
