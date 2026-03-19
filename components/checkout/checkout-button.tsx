@@ -63,7 +63,7 @@ export function CheckoutButton({
     <div className="w-full space-y-2">
       <Button
         onClick={handleCheckout}
-        disabled={isLoading || !priceId}
+        disabled={isLoading}
         className={className}
         {...props}
       >
