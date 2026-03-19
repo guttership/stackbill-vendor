@@ -89,7 +89,7 @@ export function Header({ locale = 'en' }: HeaderProps) {
     </header>
   )
 }
-      <div className="container flex h-24 items-center justify-between px-6 md:px-8 py-4">
+
         <div className="flex gap-12 items-center">
           <Link href="/" className="flex items-center py-2">
             <Image
