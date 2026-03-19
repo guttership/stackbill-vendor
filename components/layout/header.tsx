@@ -65,11 +65,11 @@ export function Header({ locale = 'en' }: HeaderProps) {
           </nav>
         </div>
         <div className="flex items-center gap-3">
-          {/* Language switcher */}
           <div className="flex items-center gap-1 text-xs font-medium text-muted-foreground">
             <button
               onClick={() => switchLocale('fr')}
               className={cn('px-2 py-1 rounded transition-colors hover:text-foreground', locale === 'fr' && 'text-foreground font-semibold')}
+              aria-label="Passer en francais"
             >
               FR
             </button>
@@ -77,77 +77,6 @@ export function Header({ locale = 'en' }: HeaderProps) {
             <button
               onClick={() => switchLocale('en')}
               className={cn('px-2 py-1 rounded transition-colors hover:text-foreground', locale === 'en' && 'text-foreground font-semibold')}
-            >
-              EN
-            </button>
-          </div>
-          <Link href="/pricing">
-            <Button size="default">{messages.header.cta}</Button>
-          </Link>
-        </div>
-      </div>
-    </header>
-  )
-}
-
-        <div className="flex gap-12 items-center">
-          <Link href="/" className="flex items-center py-2">
-            <Image
-              src="/images/logo.svg"
-              alt={siteConfig.name}
-              width={360}
-              height={80}
-              className="h-16 w-auto transition-opacity group-hover:opacity-80"
-              priority
-            />
-          </Link>
-          <nav className="hidden md:flex gap-8">
-            <Link
-              href="/#features"
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {messages.header.features}
-            </Link>
-            <Link
-              href="/pricing"
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {messages.header.pricing}
-            </Link>
-            <Link
-              href="/#faq"
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {messages.header.faq}
-            </Link>
-            <Link
-              href={siteConfig.docsUrl}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {messages.header.docs}
-            </Link>
-          </nav>
-        </div>
-        <div className="flex items-center gap-3">
-          {/* Language switcher */}
-          <div className="flex items-center gap-1 text-xs font-medium text-muted-foreground">
-            <button
-              onClick={() => switchLocale('fr')}
-              className={cn(
-                'px-2 py-1 rounded transition-colors hover:text-foreground',
-                locale === 'fr' && 'text-foreground font-semibold'
-              )}
-              aria-label="Passer en français"
-            >
-              FR
-            </button>
-            <span className="opacity-30">|</span>
-            <button
-              onClick={() => switchLocale('en')}
-              className={cn(
-                'px-2 py-1 rounded transition-colors hover:text-foreground',
-                locale === 'en' && 'text-foreground font-semibold'
-              )}
               aria-label="Switch to English"
             >
               EN
