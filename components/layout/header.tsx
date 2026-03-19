@@ -4,15 +4,18 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { siteConfig } from '@/lib/config'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { cn } from '@/lib/utils'
+import { getMessages } from '@/lib/i18n/messages'
+import type { Locale } from '@/lib/i18n/detect-locale'
 
 type HeaderProps = {
-  locale?: string
+  locale?: Locale
 }
 
-export function Header(_: HeaderProps) {
+export function Header({ locale = 'en' }: HeaderProps) {
   const [scrolled, setScrolled] = useState(false)
+  const messages = getMessages(locale)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,6 +24,11 @@ export function Header(_: HeaderProps) {
 
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  const switchLocale = useCallback((next: Locale) => {
+    document.cookie = `NEXT_LOCALE=${next};path=/;max-age=31536000`
+    window.location.reload()
   }, [])
 
   return (
@@ -48,31 +56,55 @@ export function Header(_: HeaderProps) {
               href="/#features"
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
-              Features
+              {messages.header.features}
             </Link>
             <Link
               href="/pricing"
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
-              Pricing
+              {messages.header.pricing}
             </Link>
             <Link
               href="/#faq"
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
-              FAQ
+              {messages.header.faq}
             </Link>
             <Link
               href={siteConfig.docsUrl}
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
-              Docs
+              {messages.header.docs}
             </Link>
           </nav>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
+          {/* Language switcher */}
+          <div className="flex items-center gap-1 text-xs font-medium text-muted-foreground">
+            <button
+              onClick={() => switchLocale('fr')}
+              className={cn(
+                'px-2 py-1 rounded transition-colors hover:text-foreground',
+                locale === 'fr' && 'text-foreground font-semibold'
+              )}
+              aria-label="Passer en français"
+            >
+              FR
+            </button>
+            <span className="opacity-30">|</span>
+            <button
+              onClick={() => switchLocale('en')}
+              className={cn(
+                'px-2 py-1 rounded transition-colors hover:text-foreground',
+                locale === 'en' && 'text-foreground font-semibold'
+              )}
+              aria-label="Switch to English"
+            >
+              EN
+            </button>
+          </div>
           <Link href="/pricing">
-            <Button size="default">Get {siteConfig.name}</Button>
+            <Button size="default">{messages.header.cta}</Button>
           </Link>
         </div>
       </div>
