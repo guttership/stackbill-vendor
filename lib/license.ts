@@ -29,7 +29,9 @@ export function generateLicenseKey(): string {
 export function createLicense(params: {
   stripeCustomerId: string
   stripeSubscriptionId: string
+  email?: string
   plan?: string
+  tier?: string
   maxInstances?: number
   expiresAt?: string
 }): License {
@@ -37,12 +39,14 @@ export function createLicense(params: {
   const licenseKey = generateLicenseKey()
 
   const stmt = db.prepare(`
-    INSERT INTO licenses (license_key, plan, max_instances, status, expires_at, stripe_customer_id, stripe_subscription_id)
-    VALUES (?, ?, ?, 'active', ?, ?, ?)
+    INSERT INTO licenses (license_key, email, tier, plan, max_instances, status, expires_at, stripe_customer_id, stripe_subscription_id)
+    VALUES (?, ?, ?, ?, ?, 'active', ?, ?, ?)
   `)
 
   const result = stmt.run(
     licenseKey,
+    params.email || null,
+    params.tier || 'core',
     params.plan || 'standard',
     params.maxInstances || 2,
     params.expiresAt || null,

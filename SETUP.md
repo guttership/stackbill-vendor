@@ -32,7 +32,7 @@ Dans le dashboard Stripe:
 
 Pour recevoir les événements de paiement:
 1. Dans **Developers** > **Webhooks**, cliquez **Add endpoint**
-2. URL: `https://votre-domaine.com/api/webhooks/stripe`
+2. URL: `https://votre-domaine.com/api/billing/webhook`
 3. Sélectionnez ces événements:
    - checkout.session.completed
    - customer.subscription.created

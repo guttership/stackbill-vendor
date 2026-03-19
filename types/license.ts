@@ -1,9 +1,11 @@
 export interface License {
   id: number
   license_key: string
+  email: string | null
+  tier: string
   plan: string
   max_instances: number
-  status: 'active' | 'expired' | 'cancelled'
+  status: 'active' | 'expired' | 'cancelled' | 'revoked'
   created_at: string
   expires_at: string | null
   stripe_customer_id: string | null

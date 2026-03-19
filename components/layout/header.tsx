@@ -1,127 +1,81 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { siteConfig } from '@/lib/config'
-import { usePathname } from 'next/navigation'
-import { getMessages } from '@/lib/i18n/messages'
-import type { Locale } from '@/lib/i18n/detect-locale'
+import { useEffect, useState } from 'react'
+import { cn } from '@/lib/utils'
 
-export function Header({ locale }: { locale: Locale }) {
-  const pathname = usePathname()
-  const [activeSection, setActiveSection] = useState('')
-  const messages = getMessages(locale)
+type HeaderProps = {
+  locale?: string
+}
 
-  const navItems = [
-    { href: '/#features', label: messages.header.features },
-    { href: '/pricing', label: messages.header.pricing },
-    { href: '/#faq', label: messages.header.faq },
-    { href: siteConfig.docsUrl, label: messages.header.docs },
-  ]
+export function Header(_: HeaderProps) {
+  const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
-    if (typeof window === 'undefined') {
-      return
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10)
     }
 
-    const sectionIds = ['features', 'faq']
-
-    const syncActiveSection = () => {
-      if (pathname !== '/') {
-        setActiveSection('')
-        return
-      }
-
-      const hash = window.location.hash.replace('#', '')
-      if (sectionIds.includes(hash)) {
-        setActiveSection(hash)
-        return
-      }
-
-      let currentSection = ''
-      for (const sectionId of sectionIds) {
-        const section = document.getElementById(sectionId)
-        if (!section) {
-          continue
-        }
-
-        const { top } = section.getBoundingClientRect()
-        if (top <= 140) {
-          currentSection = sectionId
-        }
-      }
-
-      setActiveSection(currentSection)
-    }
-
-    syncActiveSection()
-    window.addEventListener('hashchange', syncActiveSection)
-    window.addEventListener('scroll', syncActiveSection, { passive: true })
-
-    return () => {
-      window.removeEventListener('hashchange', syncActiveSection)
-      window.removeEventListener('scroll', syncActiveSection)
-    }
-  }, [pathname])
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   return (
-    <header className="topnav-glass fixed top-0 left-0 right-0 z-50">
-      <div className="relative container mx-auto px-6 md:px-8">
-        <div className="flex h-28 items-center justify-center">
-          <div className="flex items-center gap-12">
-            <Link href="/" className="group flex items-center py-3">
-              <Image
-                src="/images/logo.svg"
-                alt={siteConfig.name}
-                width={360}
-                height={80}
-                className="h-14 w-auto transition-opacity group-hover:opacity-90"
-                priority
-              />
+    <header 
+      className={cn(
+        'sticky top-0 z-50 w-full transition-all duration-300',
+        scrolled 
+          ? 'glass border-b border-border/50 shadow-apple-sm' 
+          : 'bg-transparent border-b border-transparent'
+      )}
+    >
+      <div className="container flex h-24 items-center justify-between px-6 md:px-8 py-4">
+        <div className="flex gap-12 items-center">
+          <Link href="/" className="flex items-center py-2">
+            <Image
+              src="/images/logo.svg"
+              alt={siteConfig.name}
+              width={360}
+              height={80}
+              className="h-16 w-auto transition-opacity group-hover:opacity-80"
+              priority
+            />
+          </Link>
+          <nav className="hidden md:flex gap-8">
+            <Link
+              href="/#features"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Features
             </Link>
-
-            <nav className="hidden md:flex items-center gap-2">
-              {navItems.map((item) => {
-              const isExternal = item.href.startsWith('http')
-              const isPricing = item.href === '/pricing'
-              const sectionTarget = item.href.startsWith('/#') ? item.href.replace('/#', '') : ''
-              const isActive =
-                !isExternal &&
-                ((isPricing && pathname.startsWith('/pricing')) ||
-                  (sectionTarget.length > 0 && pathname === '/' && activeSection === sectionTarget))
-
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  target={isExternal ? '_blank' : undefined}
-                  rel={isExternal ? 'noopener noreferrer' : undefined}
-                  className="rounded-xl px-4 py-2 text-sm font-medium text-[#555353] transition-all hover:bg-black/5 hover:text-[#3f3a3a]"
-                  style={
-                    isActive
-                      ? {
-                          backgroundColor: 'rgba(0,0,0,0.05)',
-                          boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.08), inset 0 0 0 1px rgba(0,0,0,0.12)',
-                          color: 'var(--brand-accent)',
-                        }
-                      : undefined
-                  }
-                >
-                  {item.label}
-                </Link>
-              )
-            })}
+            <Link
+              href="/pricing"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Pricing
+            </Link>
+            <Link
+              href="/#faq"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              FAQ
+            </Link>
+            <Link
+              href={siteConfig.docsUrl}
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Docs
+            </Link>
           </nav>
-
+        </div>
+        <div className="flex items-center gap-4">
           <Link href="/pricing">
-            <Button size="sm" className="min-w-[170px]">
-              {messages.header.cta}
-            </Button>
+            <Button size="default">Get {siteConfig.name}</Button>
           </Link>
         </div>
-      </div>
       </div>
     </header>
   )

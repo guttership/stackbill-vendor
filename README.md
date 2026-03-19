@@ -30,7 +30,7 @@ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
 
 # 2. Configure webhook endpoint and get signing secret
 # Go to https://dashboard.stripe.com/webhooks
-# Add endpoint: https://your-domain.com/api/webhooks/stripe
+# Add endpoint: https://your-domain.com/api/billing/webhook
 STRIPE_WEBHOOK_SECRET=whsec_...
 
 # 3. Create products in Stripe and get price IDs
@@ -42,6 +42,11 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 
 # 5. Configure database
 DATABASE_URL=postgresql://user:password@host:5432/vendor?sslmode=require
+
+# 6. Configure private artifact download signing
+PRIVATE_DOWNLOAD_BASE_URL=https://downloads.your-domain.com/private
+PRIVATE_DOWNLOAD_SIGNING_SECRET=replace-with-a-long-random-secret
+PRIVATE_DOWNLOAD_URL_TTL_SECONDS=90
 ```
 
 ⚠️ **NEVER commit `.env.local` files to version control!**

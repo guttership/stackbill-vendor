@@ -2,33 +2,30 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Home, Key, CreditCard, Settings, Menu } from 'lucide-react'
 import { siteConfig } from '@/lib/config'
-import { getCurrentMessages } from '@/lib/i18n/server'
 
-export default async function AccountLayout({
+export default function AccountLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const messages = await getCurrentMessages()
-
   const navigation = [
     {
-      name: messages.account.nav.overview,
+      name: 'Overview',
       href: '/account',
       icon: Home,
     },
     {
-      name: messages.account.nav.licenses,
+      name: 'Licenses',
       href: '/account/licenses',
       icon: Key,
     },
     {
-      name: messages.account.nav.billing,
+      name: 'Billing',
       href: '/account/billing',
       icon: CreditCard,
     },
     {
-      name: messages.account.nav.settings,
+      name: 'Settings',
       href: '/account/settings',
       icon: Settings,
     },
@@ -83,15 +80,15 @@ export default async function AccountLayout({
 
             {/* Support section */}
             <div className="mt-8 p-4 bg-white rounded-lg border border-gray-200">
-              <h3 className="text-sm font-medium mb-2">{messages.account.helpTitle}</h3>
+              <h3 className="text-sm font-medium mb-2">Need help?</h3>
               <p className="text-xs text-gray-600 mb-3">
-                {messages.account.helpText}
+                Check our documentation or contact support
               </p>
               <Link
-                href="https://stackbill.tech"
+                href="https://docs.stackbill.com"
                 className="text-xs text-blue-600 hover:text-blue-700"
               >
-                {messages.account.helpCta}
+                View documentation
               </Link>
             </div>
           </aside>

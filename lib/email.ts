@@ -6,6 +6,11 @@ interface SendLicenseEmailParams {
   language?: 'fr' | 'en'
 }
 
+interface SendPortalMagicLinkEmailParams {
+  email: string
+  loginUrl: string
+}
+
 const emailTemplates = {
   fr: {
     subject: (key: string) => `Votre licence StackBill : ${key}`,
@@ -249,5 +254,63 @@ export async function sendLicenseEmail(params: SendLicenseEmailParams) {
   } catch (error) {
     console.error(`[EMAIL] Failed to send to ${params.email}:`, error)
     throw error
+  }
+}
+
+export async function sendPortalMagicLinkEmail(params: SendPortalMagicLinkEmailParams) {
+  const apiKey = process.env.SENDGRID_API_KEY
+
+  const htmlContent = `
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      body { font-family: 'Fira Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #2e2a2a; background: #f6f4f4; margin: 0; }
+      .wrap { max-width: 560px; margin: 32px auto; background: #fff; border-radius: 8px; padding: 28px; border: 1px solid #ececec; }
+      h1 { margin: 0 0 12px 0; font-size: 24px; }
+      p { line-height: 1.6; font-size: 14px; }
+      .button { display: inline-block; margin: 16px 0; background: #a0bf36; color: #fff; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: 600; }
+      .muted { font-size: 12px; color: #6b6666; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>Portal access link</h1>
+      <p>You requested access to your StackBill downloads portal.</p>
+      <p>This link is valid for 15 minutes and can be used once.</p>
+      <p><a class="button" href="${params.loginUrl}">Open portal</a></p>
+      <p class="muted">If you did not request this email, you can ignore it.</p>
+    </div>
+  </body>
+</html>
+  `
+
+  const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'api-key': apiKey || '',
+    },
+    body: JSON.stringify({
+      sender: {
+        name: 'StackBill',
+        email: 'noreply@stackbill.tech',
+      },
+      to: [
+        {
+          email: params.email,
+        },
+      ],
+      subject: 'Your StackBill portal access link',
+      htmlContent,
+    }),
+  })
+
+  if (!response.ok) {
+    const error = await response.text()
+    throw new Error(`Brevo API error: ${error}`)
   }
 }

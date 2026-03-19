@@ -40,6 +40,11 @@ DATABASE_URL=postgresql://user:password@host:5432/dbname?sslmode=require
 # URL de l'application
 NEXT_PUBLIC_APP_URL=https://stackbill-vendor.vercel.app  # Votre domaine Vercel
 
+# Distribution privee des artifacts
+PRIVATE_DOWNLOAD_BASE_URL=https://downloads.votre-domaine.com/private
+PRIVATE_DOWNLOAD_SIGNING_SECRET=replace-with-a-long-random-secret
+PRIVATE_DOWNLOAD_URL_TTL_SECONDS=90
+
 # Email configuration (if using email notifications)
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
@@ -69,7 +74,7 @@ Une fois le site déployé :
 
 1. Dans le dashboard Stripe, allez dans **Developers** > **Webhooks**
 2. Cliquez sur **Add endpoint**
-3. URL : `https://votre-domaine.vercel.app/api/webhooks/stripe`
+3. URL : `https://votre-domaine.vercel.app/api/billing/webhook`
 4. Événements à sélectionner :
    - `checkout.session.completed`
    - `customer.subscription.created`
