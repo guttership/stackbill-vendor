@@ -365,12 +365,12 @@ export default async function HomePage() {
               </CardHeader>
               <CardContent className="space-y-8">
                 <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 text-center">
-                  <div className="rounded-xl border border-black/10 px-6 py-4 min-w-[200px]">
-                    <p className="text-2xl font-semibold text-[#3f3a3a]">{messages.marketing.pricingHighlightMonthly}</p>
+                  <div className="rounded-xl border border-[color:var(--brand-primary)]/30 bg-[color:var(--brand-primary)]/12 px-6 py-4 min-w-[200px] shadow-sm">
+                    <p className="text-2xl font-semibold text-[#332f2f]">{messages.marketing.pricingHighlightMonthly}</p>
                   </div>
                   <span className="text-sm text-[#676060] uppercase tracking-[0.15em]">{messages.marketing.pricingHighlightOr}</span>
-                  <div className="rounded-xl border border-black/10 px-6 py-4 min-w-[200px]">
-                    <p className="text-2xl font-semibold text-[#3f3a3a]">{messages.marketing.pricingHighlightYearly}</p>
+                  <div className="rounded-xl border border-[color:var(--brand-accent)]/35 bg-[color:var(--brand-accent)]/14 px-6 py-4 min-w-[200px] shadow-sm">
+                    <p className="text-2xl font-semibold text-[#332f2f]">{messages.marketing.pricingHighlightYearly}</p>
                   </div>
                 </div>
 
