@@ -27,9 +27,8 @@ export function Header(_: HeaderProps) {
     <header 
       className={cn(
         'sticky top-0 z-50 w-full transition-all duration-300',
-        scrolled 
-          ? 'glass border-b border-border/50 shadow-apple-sm' 
-          : 'bg-transparent border-b border-transparent'
+        'glass border-b border-border/50',
+        scrolled && 'shadow-apple-sm'
       )}
     >
       <div className="container flex h-24 items-center justify-between px-6 md:px-8 py-4">
