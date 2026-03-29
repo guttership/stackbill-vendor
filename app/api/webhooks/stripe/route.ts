@@ -87,6 +87,10 @@ async function handleCheckoutSessionCompleted(
 ) {
   const customerId = session.customer as string
   const subscriptionId = session.subscription as string
+  const fallbackCustomerEmail =
+    session.customer_details?.email?.trim().toLowerCase() ||
+    session.customer_email?.trim().toLowerCase() ||
+    null
 
   console.log(`[DEBUG] Checkout completed - customer: ${customerId}`)
 
@@ -108,7 +112,7 @@ async function handleCheckoutSessionCompleted(
 
   // Get customer email and country from Stripe
   const customer = (await stripe.customers.retrieve(customerId)) as Stripe.Customer
-  const customerEmail = customer.email
+  const customerEmail = customer.email?.trim().toLowerCase() || fallbackCustomerEmail
   const countryCode = (customer.address?.country as string) || undefined
 
   // Determine plan from price
@@ -123,6 +127,7 @@ async function handleCheckoutSessionCompleted(
   const license = createLicense({
     stripeCustomerId: customerId,
     stripeSubscriptionId: subscriptionId,
+    email: customerEmail || undefined,
     plan,
     maxInstances: 2,
     expiresAt,

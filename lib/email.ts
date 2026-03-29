@@ -11,6 +11,18 @@ interface SendPortalMagicLinkEmailParams {
   loginUrl: string
 }
 
+function getTransactionalEmailConfig() {
+  const apiKey = process.env.BREVO_API_KEY || process.env.SENDGRID_API_KEY || ''
+  const senderEmail = process.env.BREVO_SENDER_EMAIL || process.env.EMAIL_FROM || 'noreply@stackbill.tech'
+  const senderName = process.env.BREVO_SENDER_NAME || process.env.EMAIL_FROM_NAME || 'StackBill'
+
+  if (!apiKey) {
+    throw new Error('Transactional email API key is not configured (BREVO_API_KEY or SENDGRID_API_KEY)')
+  }
+
+  return { apiKey, senderEmail, senderName }
+}
+
 const emailTemplates = {
   fr: {
     subject: (key: string) => `Votre licence StackBill : ${key}`,
@@ -220,7 +232,7 @@ export async function sendLicenseEmail(params: SendLicenseEmailParams) {
 </html>
   `
 
-  const apiKey = process.env.SENDGRID_API_KEY
+  const { apiKey, senderEmail, senderName } = getTransactionalEmailConfig()
 
   try {
     const response = await fetch('https://api.brevo.com/v3/smtp/email', {
@@ -232,8 +244,8 @@ export async function sendLicenseEmail(params: SendLicenseEmailParams) {
       },
       body: JSON.stringify({
         sender: {
-          name: 'StackBill',
-          email: 'noreply@stackbill.tech',
+          name: senderName,
+          email: senderEmail,
         },
         to: [
           {
@@ -246,8 +258,8 @@ export async function sendLicenseEmail(params: SendLicenseEmailParams) {
     })
 
     if (!response.ok) {
-      const error = await response.json()
-      throw new Error(`Brevo API error: ${JSON.stringify(error)}`)
+      const error = await response.text()
+      throw new Error(`Brevo API error: ${error}`)
     }
 
     console.log(`[EMAIL] License sent to ${params.email}`)
@@ -258,7 +270,7 @@ export async function sendLicenseEmail(params: SendLicenseEmailParams) {
 }
 
 export async function sendPortalMagicLinkEmail(params: SendPortalMagicLinkEmailParams) {
-  const apiKey = process.env.SENDGRID_API_KEY
+  const { apiKey, senderEmail, senderName } = getTransactionalEmailConfig()
 
   const htmlContent = `
 <!DOCTYPE html>
@@ -296,8 +308,8 @@ export async function sendPortalMagicLinkEmail(params: SendPortalMagicLinkEmailP
     },
     body: JSON.stringify({
       sender: {
-        name: 'StackBill',
-        email: 'noreply@stackbill.tech',
+        name: senderName,
+        email: senderEmail,
       },
       to: [
         {
