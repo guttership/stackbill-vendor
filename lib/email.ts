@@ -9,6 +9,7 @@ interface SendLicenseEmailParams {
 interface SendPortalMagicLinkEmailParams {
   email: string
   loginUrl: string
+  language?: 'fr' | 'en'
 }
 
 function getTransactionalEmailConfig() {
@@ -75,6 +76,25 @@ const emailTemplates = {
     footerText: 'StackBill Vendor © 2026. All rights reserved.',
   },
 }
+
+const portalEmailTemplates = {
+  fr: {
+    subject: 'Votre lien d acces au portail StackBill',
+    title: 'Lien d acces au portail',
+    intro: 'Vous avez demande l acces a votre portail de telechargements StackBill.',
+    validity: 'Ce lien est valide pendant 15 minutes et utilisable une seule fois.',
+    cta: 'Ouvrir le portail',
+    ignore: 'Si vous n etes pas a l origine de cette demande, vous pouvez ignorer cet email.',
+  },
+  en: {
+    subject: 'Your StackBill portal access link',
+    title: 'Portal access link',
+    intro: 'You requested access to your StackBill downloads portal.',
+    validity: 'This link is valid for 15 minutes and can be used once.',
+    cta: 'Open portal',
+    ignore: 'If you did not request this email, you can ignore it.',
+  },
+} as const
 
 export async function sendLicenseEmail(params: SendLicenseEmailParams) {
   const language = params.language || 'en'
@@ -271,6 +291,8 @@ export async function sendLicenseEmail(params: SendLicenseEmailParams) {
 
 export async function sendPortalMagicLinkEmail(params: SendPortalMagicLinkEmailParams) {
   const { apiKey, senderEmail, senderName } = getTransactionalEmailConfig()
+  const language = params.language || 'en'
+  const t = portalEmailTemplates[language]
 
   const htmlContent = `
 <!DOCTYPE html>
@@ -289,11 +311,11 @@ export async function sendPortalMagicLinkEmail(params: SendPortalMagicLinkEmailP
   </head>
   <body>
     <div class="wrap">
-      <h1>Portal access link</h1>
-      <p>You requested access to your StackBill downloads portal.</p>
-      <p>This link is valid for 15 minutes and can be used once.</p>
-      <p><a class="button" href="${params.loginUrl}">Open portal</a></p>
-      <p class="muted">If you did not request this email, you can ignore it.</p>
+      <h1>${t.title}</h1>
+      <p>${t.intro}</p>
+      <p>${t.validity}</p>
+      <p><a class="button" href="${params.loginUrl}">${t.cta}</a></p>
+      <p class="muted">${t.ignore}</p>
     </div>
   </body>
 </html>
@@ -316,7 +338,7 @@ export async function sendPortalMagicLinkEmail(params: SendPortalMagicLinkEmailP
           email: params.email,
         },
       ],
-      subject: 'Your StackBill portal access link',
+      subject: t.subject,
       htmlContent,
     }),
   })

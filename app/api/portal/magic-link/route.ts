@@ -27,10 +27,13 @@ export async function POST(request: NextRequest) {
 
     const token = await issueMagicLink(email, license.id)
     const loginUrl = `${siteConfig.url}/portal/login?token=${encodeURIComponent(token)}`
+    const acceptLanguage = request.headers.get('accept-language') || ''
+    const language: 'fr' | 'en' = acceptLanguage.toLowerCase().includes('fr') ? 'fr' : 'en'
 
     await sendPortalMagicLinkEmail({
       email,
       loginUrl,
+      language,
     })
 
     return NextResponse.json({ success: true })
