@@ -19,12 +19,12 @@ export default async function PortalLoginPage({ searchParams }: LoginPageProps) 
     redirect('/portal/request-access')
   }
 
-  const consumed = consumeMagicLink(token)
+  const consumed = await consumeMagicLink(token)
   if (!consumed) {
     redirect('/portal/request-access?error=invalid_or_expired')
   }
 
-  const sessionToken = createPortalSession(consumed.licenseId)
+  const sessionToken = await createPortalSession(consumed.licenseId)
   const cookieStore = await cookies()
 
   cookieStore.set({
