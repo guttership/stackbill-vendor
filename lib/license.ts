@@ -221,7 +221,7 @@ export async function verifyLicense(request: VerifyRequest): Promise<VerifyRespo
     valid: true,
     plan: (license.plan as any) || 'standard',
     max_instances: license.max_instances,
-    expires_at: license.expires_at,
+    expires_at: license.expires_at || undefined,
     server_time: now,
   }
 }
