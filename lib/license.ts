@@ -3,6 +3,10 @@ import { getDb } from '@/lib/db'
 import { logLicenseEvent } from '@/lib/logger'
 import type { License, LicenseInstance, VerifyRequest, VerifyResponse } from '@/types/license'
 
+const PUBLIC_DEMO_LICENSE_KEY = 'SB-DEMO-DMUM-2026'
+const PUBLIC_DEMO_LICENSE_DOMAIN = 'factures.dmum.eu'
+const PUBLIC_DEMO_MAX_INSTANCES = 10000
+
 /**
  * Detect language from country code
  */
@@ -73,6 +77,37 @@ export function findLicenseBySubscription(stripeSubscriptionId: string): License
 export function findLicenseByKey(licenseKey: string): License | undefined {
   const db = getDb()
   return db.prepare('SELECT * FROM licenses WHERE license_key = ?').get(licenseKey) as License | undefined
+}
+
+function normalizeDomain(domain?: string): string | null {
+  if (!domain) return null
+
+  const normalized = domain
+    .trim()
+    .toLowerCase()
+    .replace(/^https?:\/\//, '')
+    .split('/')[0]
+    .replace(/^www\./, '')
+
+  return normalized || null
+}
+
+function ensurePublicDemoLicense(): License {
+  const db = getDb()
+
+  db.prepare(`
+    INSERT OR IGNORE INTO licenses (
+      license_key, email, tier, plan, max_instances, status, expires_at, stripe_customer_id, stripe_subscription_id
+    ) VALUES (?, ?, 'core', 'demo', ?, 'active', NULL, NULL, NULL)
+  `).run(PUBLIC_DEMO_LICENSE_KEY, 'demo@stackbill.local', PUBLIC_DEMO_MAX_INSTANCES)
+
+  db.prepare(`
+    UPDATE licenses
+    SET email = ?, tier = 'core', plan = 'demo', max_instances = ?, status = 'active', expires_at = NULL
+    WHERE license_key = ?
+  `).run('demo@stackbill.local', PUBLIC_DEMO_MAX_INSTANCES, PUBLIC_DEMO_LICENSE_KEY)
+
+  return db.prepare('SELECT * FROM licenses WHERE license_key = ?').get(PUBLIC_DEMO_LICENSE_KEY) as License
 }
 
 /**
@@ -156,12 +191,31 @@ export function upsertInstance(licenseId: number, instanceId: string, domain?: s
  */
 export function verifyLicense(req: VerifyRequest, ip?: string): VerifyResponse {
   const now = new Date().toISOString()
+  const requestedDomain = normalizeDomain(req.domain)
+  const isPublicDemoLicense = req.license_key === PUBLIC_DEMO_LICENSE_KEY
 
   // 1. Find license
-  const license = findLicenseByKey(req.license_key)
+  const license = isPublicDemoLicense
+    ? ensurePublicDemoLicense()
+    : findLicenseByKey(req.license_key)
+
   if (!license) {
     logLicenseEvent(req.license_key, 'verify_invalid_key', `instance=${req.instance_id}`, ip)
     return { valid: false, reason: 'invalid_license' }
+  }
+
+  const existingInstance = findInstance(license.id, req.instance_id)
+
+  if (isPublicDemoLicense) {
+    if (requestedDomain && requestedDomain !== PUBLIC_DEMO_LICENSE_DOMAIN) {
+      logLicenseEvent(req.license_key, 'verify_invalid_key', `demo_domain=${requestedDomain}, instance=${req.instance_id}`, ip)
+      return { valid: false, reason: 'invalid_demo_domain' }
+    }
+
+    if (!requestedDomain && !existingInstance) {
+      logLicenseEvent(req.license_key, 'verify_invalid_key', `demo_domain_missing, instance=${req.instance_id}`, ip)
+      return { valid: false, reason: 'demo_domain_required' }
+    }
   }
 
   // 2. Check status
@@ -177,8 +231,6 @@ export function verifyLicense(req: VerifyRequest, ip?: string): VerifyResponse {
   }
 
   // 4. Check instance
-  const existingInstance = findInstance(license.id, req.instance_id)
-
   if (existingInstance) {
     // Known instance — update last_seen
     upsertInstance(license.id, req.instance_id, req.domain)
