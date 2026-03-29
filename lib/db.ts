@@ -1,4 +1,4 @@
-import { Pool, PoolClient } from 'pg'
+import { Pool } from 'pg'
 
 let pool: Pool | null = null
 
@@ -25,6 +25,32 @@ export function getPool(): Pool {
 export async function query(sql: string, values?: any[]) {
   const pool = getPool()
   return pool.query(sql, values)
+}
+
+/**
+ * Synchronous query wrapper (for immediate table initialization, not for general use)
+ * WARNING: This is a blocking call and should only be used for initialization
+ */
+export function querySync(sql: string, values?: any[]): any {
+  // For synchronous compatibility with existing code during migration
+  // This is a compatibility layer - in production, all queries should be async
+  throw new Error(
+    'Synchronous queries are not supported. Use "await query(...)" instead. ' +
+    'If you need blocking behavior for initialization, use queryAsync with proper await.'
+  )
+}
+
+/**
+ * Backward compatibility wrapper (for lazy initialization)
+ * Call this in routes that need synchronous-like initialization
+ */
+export function getDb(): { prepare: () => never } {
+  throw new Error(
+    'SQLite API (getDb) is no longer supported. ' +
+    'This project has migrated to PostgreSQL. ' +
+    'Please use: await query(sql, values) instead of db.prepare(sql).run/get() ' +
+    'For async-unsafe contexts, use fire-and-forget query().catch(...) pattern.'
+  )
 }
 
 async function initTables() {

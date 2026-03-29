@@ -1,4 +1,4 @@
-import { getDb } from '@/lib/db'
+import { query } from '@/lib/db'
 
 type LogEvent =
   | 'license_created'
@@ -12,19 +12,21 @@ type LogEvent =
   | 'webhook_received'
   | 'webhook_error'
 
-export function logLicenseEvent(
+export async function logLicenseEvent(
   licenseKey: string | null,
   event: LogEvent,
   details?: string,
   ipAddress?: string
 ) {
   try {
-    const db = getDb()
-    db.prepare(`
-      INSERT INTO license_logs (license_key, event, details, ip_address) VALUES (?, ?, ?, ?)
-    `).run(licenseKey, event, details || null, ipAddress || null)
+    // Fire-and-forget async logging
+    query(
+      `INSERT INTO license_logs (license_key, event, details, ip_address) VALUES ($1, $2, $3, $4)`,
+      [licenseKey, event, details || null, ipAddress || null]
+    ).catch(err => {
+      console.error(`[LICENSE LOG ERROR] ${event}:`, err)
+    })
   } catch (err) {
-    // Fallback to console if DB logging fails
     console.error(`[LICENSE LOG ERROR] ${event}:`, err)
   }
 

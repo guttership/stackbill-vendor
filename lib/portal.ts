@@ -1,6 +1,6 @@
 import crypto from 'crypto'
 import type { NextRequest } from 'next/server'
-import { getDb } from '@/lib/db'
+import { query } from '@/lib/db'
 
 const PORTAL_SESSION_COOKIE = 'stackbill_portal_session'
 const SESSION_TTL_SECONDS = 60 * 60 * 24
@@ -96,16 +96,17 @@ export function consumeRateLimit(key: string, limit: number, windowMs: number): 
   return true
 }
 
-export function findActiveLicenseByEmail(email: string): LicenseRow | null {
-  const db = getDb()
+export async function findActiveLicenseByEmail(email: string): Promise<LicenseRow | null> {
+  const result = await query(
+    `SELECT id, license_key, email, status, expires_at, max_instances
+     FROM licenses
+     WHERE LOWER(COALESCE(email, '')) = LOWER($1)
+     ORDER BY created_at DESC
+     LIMIT 1`,
+    [email]
+  )
 
-  const license = db.prepare(`
-    SELECT id, license_key, email, status, expires_at, max_instances
-    FROM licenses
-    WHERE lower(COALESCE(email, '')) = lower(?)
-    ORDER BY created_at DESC
-    LIMIT 1
-  `).get(email) as LicenseRow | undefined
+  const license = result.rows[0] as LicenseRow | undefined
 
   if (!license) {
     return null
@@ -114,29 +115,36 @@ export function findActiveLicenseByEmail(email: string): LicenseRow | null {
   return isLicenseActive(license) ? license : null
 }
 
-export function issueMagicLink(email: string, licenseId: number): string {
-  const db = getDb()
+export async function issueMagicLink(email: string, licenseId: number): Promise<string> {
   const rawToken = newToken(32)
   const hash = tokenHash(rawToken)
 
-  db.prepare(`
-    INSERT INTO portal_magic_links (license_id, email, token_hash, expires_at)
-    VALUES (?, ?, ?, ?)
-  `).run(licenseId, normalizeEmail(email), hash, addMinutesIso(MAGIC_LINK_TTL_MINUTES))
+  await query(
+    `INSERT INTO portal_magic_links (license_id, email, token_hash, expires_at)
+     VALUES ($1, $2, $3, $4)`,
+    [licenseId, normalizeEmail(email), hash, addMinutesIso(MAGIC_LINK_TTL_MINUTES)]
+  )
 
   return rawToken
 }
 
-export function consumeMagicLink(token: string): { licenseId: number } | null {
-  const db = getDb()
+export async function consumeMagicLink(token: string): Promise<{ licenseId: number } | null> {
   const hash = tokenHash(token)
 
-  const row = db.prepare(`
-    SELECT id, license_id, expires_at, used_at
-    FROM portal_magic_links
-    WHERE token_hash = ?
-    LIMIT 1
-  `).get(hash) as { id: number; license_id: number; expires_at: string; used_at: string | null } | undefined
+  const result = await query(
+    `SELECT id, license_id, expires_at, used_at
+     FROM portal_magic_links
+     WHERE token_hash = $1
+     LIMIT 1`,
+    [hash]
+  )
+
+  const row = result.rows[0] as {
+    id: number
+    license_id: number
+    expires_at: string
+    used_at: string | null
+  } | undefined
 
   if (!row) {
     return null
@@ -146,40 +154,41 @@ export function consumeMagicLink(token: string): { licenseId: number } | null {
     return null
   }
 
-  db.prepare(`
-    UPDATE portal_magic_links
-    SET used_at = ?
-    WHERE id = ?
-  `).run(nowIso(), row.id)
+  await query(
+    `UPDATE portal_magic_links SET used_at = $1 WHERE id = $2`,
+    [nowIso(), row.id]
+  )
 
   return { licenseId: row.license_id }
 }
 
-export function createPortalSession(licenseId: number): string {
-  const db = getDb()
+export async function createPortalSession(licenseId: number): Promise<string> {
   const rawToken = newToken(24)
 
-  db.prepare(`
-    INSERT INTO portal_sessions (license_id, session_hash, expires_at)
-    VALUES (?, ?, ?)
-  `).run(licenseId, tokenHash(rawToken), addSecondsIso(SESSION_TTL_SECONDS))
+  await query(
+    `INSERT INTO portal_sessions (license_id, session_hash, expires_at)
+     VALUES ($1, $2, $3)`,
+    [licenseId, tokenHash(rawToken), addSecondsIso(SESSION_TTL_SECONDS)]
+  )
 
   return rawToken
 }
 
-export function getPortalSessionFromRequest(request: NextRequest): PortalSessionRow | null {
+export async function getPortalSessionFromRequest(request: NextRequest): Promise<PortalSessionRow | null> {
   const raw = request.cookies.get(PORTAL_SESSION_COOKIE)?.value
   if (!raw) {
     return null
   }
 
-  const db = getDb()
-  const row = db.prepare(`
-    SELECT id, license_id, expires_at, revoked_at
-    FROM portal_sessions
-    WHERE session_hash = ?
-    LIMIT 1
-  `).get(tokenHash(raw)) as PortalSessionRow | undefined
+  const result = await query(
+    `SELECT id, license_id, expires_at, revoked_at
+     FROM portal_sessions
+     WHERE session_hash = $1
+     LIMIT 1`,
+    [tokenHash(raw)]
+  )
+
+  const row = result.rows[0] as PortalSessionRow | undefined
 
   if (!row) {
     return null
@@ -192,8 +201,8 @@ export function getPortalSessionFromRequest(request: NextRequest): PortalSession
   return row
 }
 
-export function getPortalSessionInfoFromRequest(request: NextRequest): PortalSessionInfo | null {
-  const session = getPortalSessionFromRequest(request)
+export async function getPortalSessionInfoFromRequest(request: NextRequest): Promise<PortalSessionInfo | null> {
+  const session = await getPortalSessionFromRequest(request)
   if (!session) {
     return null
   }
@@ -204,13 +213,11 @@ export function getPortalSessionInfoFromRequest(request: NextRequest): PortalSes
   }
 }
 
-export function revokePortalSession(sessionId: number): void {
-  const db = getDb()
-  db.prepare(`
-    UPDATE portal_sessions
-    SET revoked_at = ?
-    WHERE id = ?
-  `).run(nowIso(), sessionId)
+export async function revokePortalSession(sessionId: number): Promise<void> {
+  await query(
+    `UPDATE portal_sessions SET revoked_at = $1 WHERE id = $2`,
+    [nowIso(), sessionId]
+  )
 }
 
 export function getPortalSessionCookieName(): string {
@@ -221,50 +228,53 @@ export function getPortalSessionTtlSeconds(): number {
   return SESSION_TTL_SECONDS
 }
 
-export function findLicenseById(licenseId: number): LicenseRow | null {
-  const db = getDb()
-  const row = db.prepare(`
-    SELECT id, license_key, email, status, expires_at, max_instances
-    FROM licenses
-    WHERE id = ?
-    LIMIT 1
-  `).get(licenseId) as LicenseRow | undefined
+export async function findLicenseById(licenseId: number): Promise<LicenseRow | null> {
+  const result = await query(
+    `SELECT id, license_key, email, status, expires_at, max_instances
+     FROM licenses
+     WHERE id = $1
+     LIMIT 1`,
+    [licenseId]
+  )
 
-  return row || null
+  return result.rows[0] as LicenseRow | null || null
 }
 
-export function listActiveArtifacts(): ArtifactRow[] {
-  const db = getDb()
-  return db.prepare(`
-    SELECT id, version, type, filename, storage_key, sha256, size_bytes, is_active, published_at
-    FROM artifacts
-    WHERE is_active = 1
-    ORDER BY published_at DESC
-  `).all() as ArtifactRow[]
+export async function listActiveArtifacts(): Promise<ArtifactRow[]> {
+  const result = await query(
+    `SELECT id, version, type, filename, storage_key, sha256, size_bytes, is_active, published_at
+     FROM artifacts
+     WHERE is_active = 1
+     ORDER BY published_at DESC`
+  )
+
+  return result.rows as ArtifactRow[]
 }
 
-export function issueDownloadToken(licenseId: number, artifactId: number): string {
-  const db = getDb()
+export async function issueDownloadToken(licenseId: number, artifactId: number): Promise<string> {
   const rawToken = newToken(28)
 
-  db.prepare(`
-    INSERT INTO portal_download_tokens (license_id, artifact_id, token_hash, expires_at)
-    VALUES (?, ?, ?, ?)
-  `).run(licenseId, artifactId, tokenHash(rawToken), addMinutesIso(DOWNLOAD_TOKEN_TTL_MINUTES))
+  await query(
+    `INSERT INTO portal_download_tokens (license_id, artifact_id, token_hash, expires_at)
+     VALUES ($1, $2, $3, $4)`,
+    [licenseId, artifactId, tokenHash(rawToken), addMinutesIso(DOWNLOAD_TOKEN_TTL_MINUTES)]
+  )
 
   return rawToken
 }
 
-export function consumeDownloadToken(token: string): { licenseId: number; artifactId: number } | null {
-  const db = getDb()
+export async function consumeDownloadToken(token: string): Promise<{ licenseId: number; artifactId: number } | null> {
   const hash = tokenHash(token)
 
-  const row = db.prepare(`
-    SELECT id, license_id, artifact_id, expires_at, used_at
-    FROM portal_download_tokens
-    WHERE token_hash = ?
-    LIMIT 1
-  `).get(hash) as {
+  const result = await query(
+    `SELECT id, license_id, artifact_id, expires_at, used_at
+     FROM portal_download_tokens
+     WHERE token_hash = $1
+     LIMIT 1`,
+    [hash]
+  )
+
+  const row = result.rows[0] as {
     id: number
     license_id: number
     artifact_id: number
@@ -280,29 +290,37 @@ export function consumeDownloadToken(token: string): { licenseId: number; artifa
     return null
   }
 
-  db.prepare('UPDATE portal_download_tokens SET used_at = ? WHERE id = ?').run(nowIso(), row.id)
+  await query(
+    `UPDATE portal_download_tokens SET used_at = $1 WHERE id = $2`,
+    [nowIso(), row.id]
+  )
 
   return { licenseId: row.license_id, artifactId: row.artifact_id }
 }
 
-export function findArtifactById(artifactId: number): ArtifactRow | null {
-  const db = getDb()
-  const row = db.prepare(`
-    SELECT id, version, type, filename, storage_key, sha256, size_bytes, is_active, published_at
-    FROM artifacts
-    WHERE id = ?
-    LIMIT 1
-  `).get(artifactId) as ArtifactRow | undefined
+export async function findArtifactById(artifactId: number): Promise<ArtifactRow | null> {
+  const result = await query(
+    `SELECT id, version, type, filename, storage_key, sha256, size_bytes, is_active, published_at
+     FROM artifacts
+     WHERE id = $1
+     LIMIT 1`,
+    [artifactId]
+  )
 
-  return row || null
+  return result.rows[0] as ArtifactRow | null || null
 }
 
-export function logDownloadEvent(licenseId: number, artifactId: number, ip: string | null, userAgent: string | null): void {
-  const db = getDb()
-  db.prepare(`
-    INSERT INTO download_events (license_id, artifact_id, ip, user_agent)
-    VALUES (?, ?, ?, ?)
-  `).run(licenseId, artifactId, ip, userAgent)
+export async function logDownloadEvent(
+  licenseId: number,
+  artifactId: number,
+  ip: string | null,
+  userAgent: string | null
+): Promise<void> {
+  await query(
+    `INSERT INTO download_events (license_id, artifact_id, ip, user_agent)
+     VALUES ($1, $2, $3, $4)`,
+    [licenseId, artifactId, ip, userAgent]
+  )
 }
 
 export function getSignedStorageUrl(storageKey: string): string {
