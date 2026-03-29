@@ -3,13 +3,33 @@ import { Pool } from 'pg'
 let pool: Pool | null = null
 let initPromise: Promise<void> | null = null
 
+function withSslCompat(databaseUrl: string): string {
+  try {
+    const parsed = new URL(databaseUrl)
+    const sslMode = parsed.searchParams.get('sslmode')
+    const hasCompatFlag = parsed.searchParams.has('uselibpqcompat')
+
+    // Avoid pg warning for sslmode=require semantics change in upcoming versions.
+    if (sslMode === 'require' && !hasCompatFlag) {
+      parsed.searchParams.set('uselibpqcompat', 'true')
+      return parsed.toString()
+    }
+
+    return databaseUrl
+  } catch {
+    return databaseUrl
+  }
+}
+
 export function getPool(): Pool {
   if (!pool) {
-    const databaseUrl = process.env.DATABASE_URL
+    const rawDatabaseUrl = process.env.DATABASE_URL
 
-    if (!databaseUrl) {
+    if (!rawDatabaseUrl) {
       throw new Error('DATABASE_URL environment variable is not set')
     }
+
+    const databaseUrl = withSslCompat(rawDatabaseUrl)
 
     pool = new Pool({
       connectionString: databaseUrl,
