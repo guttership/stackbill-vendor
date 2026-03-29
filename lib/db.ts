@@ -1,6 +1,7 @@
 import { Pool } from 'pg'
 
 let pool: Pool | null = null
+let initPromise: Promise<void> | null = null
 
 export function getPool(): Pool {
   if (!pool) {
@@ -15,16 +16,19 @@ export function getPool(): Pool {
       ssl: { rejectUnauthorized: false },
     })
 
-    // Initialize schema on first connection
-    initTables()
+    // Initialize schema once and let query() await this before first use.
+    initPromise = initTables(pool)
   }
 
   return pool
 }
 
 export async function query(sql: string, values?: any[]) {
-  const pool = getPool()
-  return pool.query(sql, values)
+  const currentPool = getPool()
+  if (initPromise) {
+    await initPromise
+  }
+  return currentPool.query(sql, values)
 }
 
 /**
@@ -53,11 +57,9 @@ export function getDb(): { prepare: () => never } {
   )
 }
 
-async function initTables() {
-  const pool = getPool()
-
+async function initTables(currentPool: Pool) {
   try {
-    await pool.query(`
+    await currentPool.query(`
       CREATE TABLE IF NOT EXISTS licenses (
         id SERIAL PRIMARY KEY,
         license_key TEXT NOT NULL UNIQUE,
@@ -187,9 +189,7 @@ async function initTables() {
 
     console.log('[DB] Tables initialized successfully')
   } catch (error: any) {
-    // Ignore errors if tables already exist
-    if (!error.message.includes('already exists')) {
-      console.error('[DB] Failed to initialize tables:', error)
-    }
+    console.error('[DB] Failed to initialize tables:', error)
+    throw error
   }
 }
