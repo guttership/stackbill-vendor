@@ -9,7 +9,7 @@ import {
 } from '@/lib/portal'
 
 export async function POST(request: NextRequest) {
-  const session = getPortalSessionFromRequest(request)
+  const session = await getPortalSessionFromRequest(request)
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
   }
 
-  const license = findLicenseById(session.license_id)
+  const license = await findLicenseById(session.license_id)
   if (!license || !isLicenseActive(license)) {
     return NextResponse.json({ error: 'License inactive' }, { status: 403 })
   }
@@ -33,12 +33,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'artifactId is required' }, { status: 400 })
   }
 
-  const artifact = findArtifactById(artifactId)
+  const artifact = await findArtifactById(artifactId)
   if (!artifact || artifact.is_active !== 1) {
     return NextResponse.json({ error: 'Artifact unavailable' }, { status: 404 })
   }
 
-  const token = issueDownloadToken(session.license_id, artifact.id)
+  const token = await issueDownloadToken(session.license_id, artifact.id)
 
   return NextResponse.json({ token, expiresInSeconds: 300 })
 }

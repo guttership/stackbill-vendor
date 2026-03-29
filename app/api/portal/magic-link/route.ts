@@ -20,12 +20,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: true })
     }
 
-    const license = findActiveLicenseByEmail(email)
+    const license = await findActiveLicenseByEmail(email)
     if (!license) {
       return NextResponse.json({ success: true })
     }
 
-    const token = issueMagicLink(email, license.id)
+    const token = await issueMagicLink(email, license.id)
     const loginUrl = `${siteConfig.url}/portal/login?token=${encodeURIComponent(token)}`
 
     await sendPortalMagicLinkEmail({

@@ -2,17 +2,18 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getPortalSessionFromRequest, findLicenseById, isLicenseActive, listActiveArtifacts } from '@/lib/portal'
 
 export async function GET(request: NextRequest) {
-  const session = getPortalSessionFromRequest(request)
+  const session = await getPortalSessionFromRequest(request)
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const license = findLicenseById(session.license_id)
+  const license = await findLicenseById(session.license_id)
   if (!license || !isLicenseActive(license)) {
     return NextResponse.json({ error: 'License inactive' }, { status: 403 })
   }
 
-  const artifacts = listActiveArtifacts().map((item) => ({
+  const artifactList = await listActiveArtifacts()
+  const artifacts = artifactList.map((item) => ({
     id: item.id,
     version: item.version,
     type: item.type,

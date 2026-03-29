@@ -8,12 +8,12 @@ import {
 } from '@/lib/portal'
 
 export async function GET(request: NextRequest) {
-  const session = getPortalSessionInfoFromRequest(request)
+  const session = await getPortalSessionInfoFromRequest(request)
   if (!session) {
     return NextResponse.json({ authenticated: false }, { status: 401 })
   }
 
-  const license = findLicenseById(session.licenseId)
+  const license = await findLicenseById(session.licenseId)
   if (!license || !isLicenseActive(license)) {
     return NextResponse.json({ authenticated: false }, { status: 401 })
   }
@@ -29,10 +29,10 @@ export async function GET(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  const session = getPortalSessionInfoFromRequest(request)
+  const session = await getPortalSessionInfoFromRequest(request)
 
   if (session) {
-    revokePortalSession(session.sessionId)
+    await revokePortalSession(session.sessionId)
   }
 
   const response = NextResponse.json({ success: true })
