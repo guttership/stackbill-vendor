@@ -23,14 +23,13 @@ export async function POST(request: NextRequest) {
 
     const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || undefined
 
-    const result = verifyLicense(
+    const result = await verifyLicense(
       {
         license_key: body.license_key.trim(),
         instance_id: body.instance_id.trim(),
         domain: body.domain?.trim(),
         app_version: body.app_version?.trim(),
-      },
-      ip
+      }
     )
 
     return NextResponse.json(result)

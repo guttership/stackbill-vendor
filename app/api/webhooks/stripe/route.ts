@@ -56,11 +56,11 @@ export async function POST(request: NextRequest) {
         break
 
       case 'invoice.paid':
-        handleInvoicePaid(event.data.object as Stripe.Invoice)
+        await handleInvoicePaid(event.data.object as Stripe.Invoice)
         break
 
       case 'customer.subscription.deleted':
-        handleSubscriptionDeleted(event.data.object as Stripe.Subscription)
+        await handleSubscriptionDeleted(event.data.object as Stripe.Subscription)
         break
 
       default:
@@ -100,7 +100,7 @@ async function handleCheckoutSessionCompleted(
   }
 
   // Check if license already exists for this subscription
-  const existing = findLicenseBySubscription(subscriptionId)
+  const existing = await findLicenseBySubscription(subscriptionId)
   if (existing) {
     console.log(`License already exists for subscription ${subscriptionId}: ${existing.license_key}`)
     return
@@ -124,7 +124,7 @@ async function handleCheckoutSessionCompleted(
   const { detectLanguage } = await import('@/lib/license')
   const language = detectLanguage(countryCode)
 
-  const license = createLicense({
+  const license = await createLicense({
     stripeCustomerId: customerId,
     stripeSubscriptionId: subscriptionId,
     email: customerEmail || undefined,
@@ -159,7 +159,7 @@ async function handleCheckoutSessionCompleted(
 /**
  * invoice.paid → Extend license validity
  */
-function handleInvoicePaid(invoice: Stripe.Invoice) {
+async function handleInvoicePaid(invoice: Stripe.Invoice) {
   const subscriptionId = invoice.subscription as string
   if (!subscriptionId) return
 
@@ -171,7 +171,7 @@ function handleInvoicePaid(invoice: Stripe.Invoice) {
   }
 
   const newExpiresAt = new Date(periodEnd * 1000).toISOString()
-  const updated = extendLicense(subscriptionId, newExpiresAt)
+  const updated = await extendLicense(subscriptionId, newExpiresAt)
 
   if (updated) {
     console.log(`License extended for subscription ${subscriptionId} until ${newExpiresAt}`)
@@ -184,9 +184,9 @@ function handleInvoicePaid(invoice: Stripe.Invoice) {
 /**
  * customer.subscription.deleted → Cancel license
  */
-function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
+async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
   const subscriptionId = subscription.id
-  const cancelled = cancelLicense(subscriptionId)
+  const cancelled = await cancelLicense(subscriptionId)
 
   if (cancelled) {
     console.log(`License cancelled for subscription ${subscriptionId}`)

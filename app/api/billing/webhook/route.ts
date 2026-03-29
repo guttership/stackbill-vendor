@@ -4,15 +4,16 @@ import Stripe from 'stripe'
 import { getStripeClient } from '@/lib/stripe'
 import { createLicense, extendLicense, findLicenseBySubscription, cancelLicense } from '@/lib/license'
 import { sendLicenseEmail } from '@/lib/email'
-import { getDb } from '@/lib/db'
+import { query } from '@/lib/db'
 
-function recordWebhookEvent(event: Stripe.Event): boolean {
-  const db = getDb()
+async function recordWebhookEvent(event: Stripe.Event): Promise<boolean> {
   try {
-    db.prepare(`
-      INSERT INTO webhook_events (provider, provider_event_id, event_type)
-      VALUES ('stripe', ?, ?)
-    `).run(event.id, event.type)
+    await query(
+      `INSERT INTO webhook_events (provider, provider_event_id, event_type)
+       VALUES ($1, $2, $3)
+       ON CONFLICT(provider, provider_event_id) DO NOTHING`,
+      ['stripe', event.id, event.type]
+    )
     return true
   } catch {
     return false
@@ -41,7 +42,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
   }
 
-  const isNewEvent = recordWebhookEvent(event)
+  const isNewEvent = await recordWebhookEvent(event)
   if (!isNewEvent) {
     return NextResponse.json({ received: true, duplicate: true })
   }
@@ -52,10 +53,10 @@ export async function POST(request: NextRequest) {
         await onCheckoutCompleted(event.data.object as Stripe.Checkout.Session, stripe, event.id)
         break
       case 'invoice.paid':
-        onInvoicePaid(event.data.object as Stripe.Invoice)
+        await onInvoicePaid(event.data.object as Stripe.Invoice)
         break
       case 'customer.subscription.deleted':
-        onSubscriptionDeleted(event.data.object as Stripe.Subscription)
+        await onSubscriptionDeleted(event.data.object as Stripe.Subscription)
         break
       default:
         break
@@ -75,21 +76,23 @@ async function onCheckoutCompleted(
   stripe: Stripe,
   providerEventId: string
 ) {
-  const db = getDb()
   const subscriptionId = session.subscription as string | null
   const customerId = session.customer as string | null
   const customerEmail = (session.customer_details?.email || session.customer_email || '').trim().toLowerCase()
 
-  db.prepare(`
-    INSERT OR IGNORE INTO orders (provider, provider_event_id, provider_checkout_id, email, amount_cents, currency, status)
-    VALUES ('stripe', ?, ?, ?, ?, ?, ?)
-  `).run(
-    providerEventId,
-    session.id,
-    customerEmail || 'unknown@example.invalid',
-    session.amount_total || 0,
-    (session.currency || 'eur').toLowerCase(),
-    (session.payment_status || 'paid').toLowerCase()
+  await query(
+    `INSERT INTO orders (provider, provider_event_id, provider_checkout_id, email, amount_cents, currency, status)
+     VALUES ($1, $2, $3, $4, $5, $6, $7)
+     ON CONFLICT(provider_event_id) DO NOTHING`,
+    [
+      'stripe',
+      providerEventId,
+      session.id,
+      customerEmail || 'unknown@example.invalid',
+      session.amount_total || 0,
+      (session.currency || 'eur').toLowerCase(),
+      (session.payment_status || 'paid').toLowerCase(),
+    ]
   )
 
   if (!subscriptionId || !customerId) {
@@ -102,10 +105,10 @@ async function onCheckoutCompleted(
   const monthlyPriceId = process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID
   const plan = priceId === monthlyPriceId ? 'monthly' : 'yearly'
 
-  const existing = findLicenseBySubscription(subscriptionId)
+  const existing = await findLicenseBySubscription(subscriptionId)
 
   if (!existing) {
-    const created = createLicense({
+    const created = await createLicense({
       stripeCustomerId: customerId,
       stripeSubscriptionId: subscriptionId,
       email: customerEmail || undefined,
@@ -127,17 +130,18 @@ async function onCheckoutCompleted(
     return
   }
 
-  db.prepare(`
-    UPDATE licenses
-    SET email = COALESCE(NULLIF(email, ''), ?),
-        plan = ?,
-        expires_at = ?,
-        status = 'active'
-    WHERE id = ?
-  `).run(customerEmail || null, plan, expiresAt, existing.id)
+  await query(
+    `UPDATE licenses
+     SET email = COALESCE(NULLIF($1, ''), email),
+         plan = $2,
+         expires_at = $3,
+         status = 'active'
+     WHERE id = $4`,
+    [customerEmail || null, plan, expiresAt, existing.id]
+  )
 }
 
-function onInvoicePaid(invoice: Stripe.Invoice) {
+async function onInvoicePaid(invoice: Stripe.Invoice) {
   const subscriptionId = invoice.subscription as string | null
   const periodEnd = invoice.lines?.data?.[0]?.period?.end
 
@@ -146,9 +150,9 @@ function onInvoicePaid(invoice: Stripe.Invoice) {
   }
 
   const newExpiresAt = new Date(periodEnd * 1000).toISOString()
-  extendLicense(subscriptionId, newExpiresAt)
+  await extendLicense(subscriptionId, newExpiresAt)
 }
 
-function onSubscriptionDeleted(subscription: Stripe.Subscription) {
-  cancelLicense(subscription.id)
+async function onSubscriptionDeleted(subscription: Stripe.Subscription) {
+  await cancelLicense(subscription.id)
 }

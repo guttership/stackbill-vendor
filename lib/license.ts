@@ -1,5 +1,5 @@
 import crypto from 'crypto'
-import { getDb } from '@/lib/db'
+import { query } from '@/lib/db'
 import { logLicenseEvent } from '@/lib/logger'
 import type { License, LicenseInstance, VerifyRequest, VerifyResponse } from '@/types/license'
 
@@ -28,9 +28,9 @@ export function generateLicenseKey(): string {
 }
 
 /**
- * Create a new license after Stripe checkout
+ * Create a new license after Stripe checkout (async for PostgreSQL)
  */
-export function createLicense(params: {
+export async function createLicense(params: {
   stripeCustomerId: string
   stripeSubscriptionId: string
   email?: string
@@ -38,45 +38,48 @@ export function createLicense(params: {
   tier?: string
   maxInstances?: number
   expiresAt?: string
-}): License {
-  const db = getDb()
+}): Promise<License> {
   const licenseKey = generateLicenseKey()
 
-  const stmt = db.prepare(`
-    INSERT INTO licenses (license_key, email, tier, plan, max_instances, status, expires_at, stripe_customer_id, stripe_subscription_id)
-    VALUES (?, ?, ?, ?, ?, 'active', ?, ?, ?)
-  `)
-
-  const result = stmt.run(
-    licenseKey,
-    params.email || null,
-    params.tier || 'core',
-    params.plan || 'standard',
-    params.maxInstances || 2,
-    params.expiresAt || null,
-    params.stripeCustomerId,
-    params.stripeSubscriptionId
+  const result = await query(
+    `INSERT INTO licenses 
+      (license_key, email, tier, plan, max_instances, status, expires_at, stripe_customer_id, stripe_subscription_id)
+     VALUES 
+      ($1, $2, $3, $4, $5, 'active', $6, $7, $8)
+     RETURNING *`,
+    [
+      licenseKey,
+      params.email || null,
+      params.tier || 'core',
+      params.plan || 'standard',
+      params.maxInstances || 2,
+      params.expiresAt || null,
+      params.stripeCustomerId,
+      params.stripeSubscriptionId,
+    ]
   )
+
+  const license = result.rows[0] as License
 
   logLicenseEvent(licenseKey, 'license_created', `plan=${params.plan || 'standard'}, subscription=${params.stripeSubscriptionId}`)
 
-  return db.prepare('SELECT * FROM licenses WHERE id = ?').get(result.lastInsertRowid) as License
+  return license
 }
 
 /**
- * Find license by Stripe subscription ID
+ * Find license by Stripe subscription ID (async for PostgreSQL)
  */
-export function findLicenseBySubscription(stripeSubscriptionId: string): License | undefined {
-  const db = getDb()
-  return db.prepare('SELECT * FROM licenses WHERE stripe_subscription_id = ?').get(stripeSubscriptionId) as License | undefined
+export async function findLicenseBySubscription(stripeSubscriptionId: string): Promise<License | undefined> {
+  const result = await query('SELECT * FROM licenses WHERE stripe_subscription_id = $1', [stripeSubscriptionId])
+  return result.rows[0] as License | undefined
 }
 
 /**
- * Find license by license key
+ * Find license by license key (async for PostgreSQL)
  */
-export function findLicenseByKey(licenseKey: string): License | undefined {
-  const db = getDb()
-  return db.prepare('SELECT * FROM licenses WHERE license_key = ?').get(licenseKey) as License | undefined
+export async function findLicenseByKey(licenseKey: string): Promise<License | undefined> {
+  const result = await query('SELECT * FROM licenses WHERE license_key = $1', [licenseKey])
+  return result.rows[0] as License | undefined
 }
 
 function normalizeDomain(domain?: string): string | null {
@@ -102,152 +105,142 @@ function buildPublicDemoResponse(now: string): VerifyResponse {
 }
 
 /**
- * Extend license expiration (on invoice.paid)
+ * Extend license expiration (on invoice.paid) - async for PostgreSQL
  */
-export function extendLicense(stripeSubscriptionId: string, newExpiresAt: string): boolean {
-  const db = getDb()
-  const result = db.prepare(`
-    UPDATE licenses SET expires_at = ?, status = 'active' WHERE stripe_subscription_id = ?
-  `).run(newExpiresAt, stripeSubscriptionId)
+export async function extendLicense(stripeSubscriptionId: string, newExpiresAt: string): Promise<boolean> {
+  const result = await query(
+    `UPDATE licenses SET expires_at = $1, status = 'active' WHERE stripe_subscription_id = $2`,
+    [newExpiresAt, stripeSubscriptionId]
+  )
 
-  if (result.changes > 0) {
-    const license = findLicenseBySubscription(stripeSubscriptionId)
+  if (result.rowCount && result.rowCount > 0) {
+    const license = await findLicenseBySubscription(stripeSubscriptionId)
     if (license) {
       logLicenseEvent(license.license_key, 'license_extended', `new_expires_at=${newExpiresAt}`)
     }
   }
 
-  return result.changes > 0
+  return (result.rowCount || 0) > 0
 }
 
 /**
- * Cancel a license (on subscription deleted)
+ * Cancel a license (on subscription deleted) - async for PostgreSQL
  */
-export function cancelLicense(stripeSubscriptionId: string): boolean {
-  const db = getDb()
-  const result = db.prepare(`
-    UPDATE licenses SET status = 'cancelled' WHERE stripe_subscription_id = ?
-  `).run(stripeSubscriptionId)
+export async function cancelLicense(stripeSubscriptionId: string): Promise<boolean> {
+  const result = await query(
+    `UPDATE licenses SET status = 'cancelled' WHERE stripe_subscription_id = $1`,
+    [stripeSubscriptionId]
+  )
 
-  if (result.changes > 0) {
-    const license = findLicenseBySubscription(stripeSubscriptionId)
+  if (result.rowCount && result.rowCount > 0) {
+    const license = await findLicenseBySubscription(stripeSubscriptionId)
     if (license) {
       logLicenseEvent(license.license_key, 'license_cancelled', `subscription=${stripeSubscriptionId}`)
     }
   }
 
-  return result.changes > 0
+  return (result.rowCount || 0) > 0
 }
 
 /**
- * Get active instances for a license
+ * Get active instances for a license (async for PostgreSQL)
  */
-export function getInstanceCount(licenseId: number): number {
-  const db = getDb()
-  const row = db.prepare('SELECT COUNT(*) as count FROM license_instances WHERE license_id = ?').get(licenseId) as { count: number }
-  return row.count
+export async function getInstanceCount(licenseId: number): Promise<number> {
+  const result = await query('SELECT COUNT(*) as count FROM license_instances WHERE license_id = $1', [licenseId])
+  return parseInt(result.rows[0].count, 10)
 }
 
 /**
- * Find an existing instance
+ * Verify license (async for PostgreSQL)
  */
-export function findInstance(licenseId: number, instanceId: string): LicenseInstance | undefined {
-  const db = getDb()
-  return db.prepare('SELECT * FROM license_instances WHERE license_id = ? AND instance_id = ?').get(licenseId, instanceId) as LicenseInstance | undefined
-}
-
-/**
- * Register or update an instance
- */
-export function upsertInstance(licenseId: number, instanceId: string, domain?: string): LicenseInstance {
-  const db = getDb()
-  const existing = findInstance(licenseId, instanceId)
-
-  if (existing) {
-    db.prepare(`
-      UPDATE license_instances SET last_seen_at = datetime('now'), domain = COALESCE(?, domain) WHERE id = ?
-    `).run(domain || null, existing.id)
-    return db.prepare('SELECT * FROM license_instances WHERE id = ?').get(existing.id) as LicenseInstance
-  }
-
-  const result = db.prepare(`
-    INSERT INTO license_instances (license_id, instance_id, domain) VALUES (?, ?, ?)
-  `).run(licenseId, instanceId, domain || null)
-
-  return db.prepare('SELECT * FROM license_instances WHERE id = ?').get(result.lastInsertRowid) as LicenseInstance
-}
-
-/**
- * Verify a license — core validation logic
- */
-export function verifyLicense(req: VerifyRequest, ip?: string): VerifyResponse {
+export async function verifyLicense(request: VerifyRequest): Promise<VerifyResponse> {
   const now = new Date().toISOString()
-  const requestedDomain = normalizeDomain(req.domain)
-  const isPublicDemoLicense = req.license_key === PUBLIC_DEMO_LICENSE_KEY
 
-  if (isPublicDemoLicense) {
-    if (requestedDomain !== PUBLIC_DEMO_LICENSE_DOMAIN) {
-      logLicenseEvent(
-        req.license_key,
-        'verify_invalid_key',
-        `demo_domain=${requestedDomain || 'missing'}, instance=${req.instance_id}`,
-        ip
-      )
-      return { valid: false, reason: requestedDomain ? 'invalid_demo_domain' : 'demo_domain_required' }
-    }
-
-    logLicenseEvent(
-      req.license_key,
-      'verify_ok',
-      `public_demo_domain=${requestedDomain}, instance=${req.instance_id}`,
-      ip
-    )
-
+  // Check for demo license
+  const domain = normalizeDomain(request.domain)
+  if (request.license_key === PUBLIC_DEMO_LICENSE_KEY && domain === PUBLIC_DEMO_LICENSE_DOMAIN) {
+    console.log(`[LICENSE] Demo license verified for domain: ${domain}`)
     return buildPublicDemoResponse(now)
   }
 
-  // 1. Find license
-  const license = findLicenseByKey(req.license_key)
+  // Look up in database
+  const license = await findLicenseByKey(request.license_key)
 
   if (!license) {
-    logLicenseEvent(req.license_key, 'verify_invalid_key', `instance=${req.instance_id}`, ip)
-    return { valid: false, reason: 'invalid_license' }
-  }
-  // 2. Check status
-  if (license.status !== 'active') {
-    logLicenseEvent(req.license_key, 'verify_inactive', `status=${license.status}`, ip)
-    return { valid: false, reason: `license_${license.status}` }
-  }
-
-  // 3. Check expiration
-  if (license.expires_at && new Date(license.expires_at) < new Date()) {
-    logLicenseEvent(req.license_key, 'verify_expired', `expired_at=${license.expires_at}`, ip)
-    return { valid: false, reason: 'license_expired' }
-  }
-
-  // 4. Check instance
-  const existingInstance = findInstance(license.id, req.instance_id)
-  if (existingInstance) {
-    // Known instance — update last_seen
-    upsertInstance(license.id, req.instance_id, req.domain)
-    logLicenseEvent(req.license_key, 'verify_ok', `instance=${req.instance_id} (existing)`, ip)
-  } else {
-    // New instance — check limit
-    const currentCount = getInstanceCount(license.id)
-    if (currentCount >= license.max_instances) {
-      logLicenseEvent(req.license_key, 'verify_instance_limit', `current=${currentCount}, max=${license.max_instances}, instance=${req.instance_id}`, ip)
-      return { valid: false, reason: 'instance_limit_reached' }
+    return {
+      valid: false,
+      reason: 'invalid_or_expired',
+      server_time: now,
     }
-    // Register new instance
-    upsertInstance(license.id, req.instance_id, req.domain)
-    logLicenseEvent(req.license_key, 'verify_ok', `instance=${req.instance_id} (new, ${currentCount + 1}/${license.max_instances})`, ip)
+  }
+
+  // Check expiration
+  if (license.expires_at) {
+    const expiresAt = new Date(license.expires_at)
+    if (expiresAt < new Date()) {
+      return {
+        valid: false,
+        reason: 'license_expired',
+        server_time: now,
+      }
+    }
+  }
+
+  // Check status
+  if (license.status === 'cancelled') {
+    return {
+      valid: false,
+      reason: 'license_cancelled',
+      server_time: now,
+    }
+  }
+
+  // Check max instances
+  const instanceCount = await getInstanceCount(license.id)
+  if (instanceCount >= license.max_instances) {
+    return {
+      valid: false,
+      reason: 'max_instances_exceeded',
+      server_time: now,
+    }
+  }
+
+  // Register or update instance
+  if (request.domain && request.instance_id) {
+    const normDomain = normalizeDomain(request.domain)
+    await query(
+      `INSERT INTO license_instances (license_id, instance_id, domain)
+       VALUES ($1, $2, $3)
+       ON CONFLICT(license_id, instance_id) DO UPDATE 
+       SET last_seen_at = NOW(), domain = $3`,
+      [license.id, request.instance_id, normDomain]
+    )
   }
 
   return {
     valid: true,
-    plan: license.plan,
+    plan: (license.plan as any) || 'standard',
     max_instances: license.max_instances,
-    expires_at: license.expires_at || undefined,
+    expires_at: license.expires_at,
+    server_time: now,
+  }
+}
+
+/**
+ * Mock function for backward compatibility (returns empty array)
+ */
+export function verifyLicenseSync(request: VerifyRequest): VerifyResponse {
+  const now = new Date().toISOString()
+
+  // Check for demo license only (sync path)
+  const domain = normalizeDomain(request.domain)
+  if (request.license_key === PUBLIC_DEMO_LICENSE_KEY && domain === PUBLIC_DEMO_LICENSE_DOMAIN) {
+    return buildPublicDemoResponse(now)
+  }
+
+  return {
+    valid: false,
+    reason: 'database_unavailable',
     server_time: now,
   }
 }
