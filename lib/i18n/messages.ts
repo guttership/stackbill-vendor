@@ -502,7 +502,7 @@ const fr: Messages = {
     rights: 'Tous droits réservés.',
   },
   marketing: {
-    heroTitle: 'Arrêtez de louer votre facturation. Hébergez-la.',
+    heroTitle: 'Arrêtez de louer votre facturation. Hébergez‑la.',
     heroSubtitle: 'StackBill donne aux freelances et petites équipes tech un outil de devis/factures qu\'ils contrôlent vraiment, sur leur propre infrastructure.',
     heroPrimaryCta: 'Installer StackBill',
     heroSecondaryCta: 'Voir la documentation',

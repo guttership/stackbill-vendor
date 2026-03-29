@@ -29,7 +29,13 @@
 }
 
 .markdown-content pre {
-  @apply bg-[#2d2d2d] text-[#f8f8f2] rounded-lg p-4 mb-6 overflow-x-auto;
+  @apply rounded-2xl p-5 mb-6 overflow-x-auto;
+  background: linear-gradient(180deg, #2f2f34 0%, #242429 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 10px 30px -12px rgba(0, 0, 0, 0.55);
+  color: #f4f4f5;
 }
 
 .markdown-content code {
@@ -37,7 +43,8 @@
 }
 
 .markdown-content pre code {
-  @apply bg-transparent text-[#f8f8f2];
+  @apply bg-transparent;
+  color: #f4f4f5;
 }
 
 .markdown-content p code,

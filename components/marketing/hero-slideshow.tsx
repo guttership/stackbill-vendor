@@ -46,7 +46,6 @@ export function HeroSlideshow({ images }: HeroSlideshowProps) {
       </div>
 
       <p className="mt-3 text-center text-sm text-[#676060]">Clean interface. Built for developers.</p>
-
       {slides.length > 1 && (
         <div className="mt-3 flex justify-center gap-2">
           {slides.map((src, index) => (

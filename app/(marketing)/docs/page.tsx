@@ -80,7 +80,7 @@ export default async function DocsPage() {
           <AnimateOnScroll animation="scale-up" delay={100}>
             <article className="prose prose-slate max-w-none">
               <div
-                className="markdown-content"
+                className="markdown-content not-prose"
                 dangerouslySetInnerHTML={{ __html: convertMarkdownToHTML(docContent) }}
               />
             </article>
@@ -106,30 +106,38 @@ export default async function DocsPage() {
 function convertMarkdownToHTML(markdown: string): string {
   let html = markdown
 
-  // Headers
-  html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>')
-  html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>')
-  html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>')
-
-  // Bold
-  html = html.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
-
-  // Code blocks
-  html = html.replace(/```(\w+)?\n([\s\S]*?)```/gim, (match, lang, code) => {
-    return `<pre><code class="language-${lang || 'text'}">${escapeHtml(code.trim())}</code></pre>`
+  // 1. Extraire les blocs de code en premier pour les protéger des autres transformations
+  const codeBlocks: string[] = []
+  html = html.replace(/```(\w+)?\n([\s\S]*?)```/gm, (_, lang, code) => {
+    const index = codeBlocks.length
+    codeBlocks.push(
+      `<pre><code class="language-${lang || 'text'}">${escapeHtml(code.trim())}</code></pre>`
+    )
+    return `%%CODEBLOCK_${index}%%`
   })
 
-  // Inline code
-  html = html.replace(/`([^`]+)`/gim, '<code>$1</code>')
+  // 2. Titres
+  html = html.replace(/^### (.*$)/gm, '<h3>$1</h3>')
+  html = html.replace(/^## (.*$)/gm, '<h2>$1</h2>')
+  html = html.replace(/^# (.*$)/gm, '<h1>$1</h1>')
 
-  // Unordered lists
-  html = html.replace(/^\- (.*$)/gim, '<li>$1</li>')
-  html = html.replace(/(<li>[\s\S]*?<\/li>)/gim, '<ul>$1</ul>')
+  // 3. Gras
+  html = html.replace(/\*\*(.*?)\*\*/gm, '<strong>$1</strong>')
 
-  // Ordered lists
-  html = html.replace(/^\d+\. (.*$)/gim, '<li>$1</li>')
+  // 4. Code inline
+  html = html.replace(/`([^`]+)`/gm, '<code>$1</code>')
 
-  // Paragraphs
+  // 5. Listes non ordonnées : convertir puis regrouper les <li> consécutifs en un seul <ul>
+  html = html.replace(/^\- (.*$)/gm, '<li>$1</li>')
+  html = html.replace(/(<li>.*<\/li>\n?)+/gm, (match) => `<ul>\n${match}</ul>`)
+
+  // 6. Listes ordonnées
+  html = html.replace(/^\d+\. (.*$)/gm, '<li>$1</li>')
+
+  // 7. Séparateurs
+  html = html.replace(/^---$/gm, '<hr />')
+
+  // 8. Paragraphes (ne pas envelopper les éléments blocs ni les placeholders de code)
   html = html
     .split('\n\n')
     .map((paragraph) => {
@@ -140,6 +148,7 @@ function convertMarkdownToHTML(markdown: string): string {
         paragraph.startsWith('<ul>') ||
         paragraph.startsWith('<ol>') ||
         paragraph.startsWith('<hr') ||
+        paragraph.startsWith('%%CODEBLOCK') ||
         paragraph === ''
       ) {
         return paragraph
@@ -148,8 +157,10 @@ function convertMarkdownToHTML(markdown: string): string {
     })
     .join('\n')
 
-  // Horizontal rules
-  html = html.replace(/^---$/gim, '<hr />')
+  // 9. Restaurer les blocs de code
+  codeBlocks.forEach((block, index) => {
+    html = html.replace(`%%CODEBLOCK_${index}%%`, block)
+  })
 
   return html
 }
