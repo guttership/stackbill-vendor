@@ -92,22 +92,13 @@ function normalizeDomain(domain?: string): string | null {
   return normalized || null
 }
 
-function ensurePublicDemoLicense(): License {
-  const db = getDb()
-
-  db.prepare(`
-    INSERT OR IGNORE INTO licenses (
-      license_key, email, tier, plan, max_instances, status, expires_at, stripe_customer_id, stripe_subscription_id
-    ) VALUES (?, ?, 'core', 'demo', ?, 'active', NULL, NULL, NULL)
-  `).run(PUBLIC_DEMO_LICENSE_KEY, 'demo@stackbill.local', PUBLIC_DEMO_MAX_INSTANCES)
-
-  db.prepare(`
-    UPDATE licenses
-    SET email = ?, tier = 'core', plan = 'demo', max_instances = ?, status = 'active', expires_at = NULL
-    WHERE license_key = ?
-  `).run('demo@stackbill.local', PUBLIC_DEMO_MAX_INSTANCES, PUBLIC_DEMO_LICENSE_KEY)
-
-  return db.prepare('SELECT * FROM licenses WHERE license_key = ?').get(PUBLIC_DEMO_LICENSE_KEY) as License
+function buildPublicDemoResponse(now: string): VerifyResponse {
+  return {
+    valid: true,
+    plan: 'demo',
+    max_instances: PUBLIC_DEMO_MAX_INSTANCES,
+    server_time: now,
+  }
 }
 
 /**
@@ -194,30 +185,34 @@ export function verifyLicense(req: VerifyRequest, ip?: string): VerifyResponse {
   const requestedDomain = normalizeDomain(req.domain)
   const isPublicDemoLicense = req.license_key === PUBLIC_DEMO_LICENSE_KEY
 
+  if (isPublicDemoLicense) {
+    if (requestedDomain !== PUBLIC_DEMO_LICENSE_DOMAIN) {
+      logLicenseEvent(
+        req.license_key,
+        'verify_invalid_key',
+        `demo_domain=${requestedDomain || 'missing'}, instance=${req.instance_id}`,
+        ip
+      )
+      return { valid: false, reason: requestedDomain ? 'invalid_demo_domain' : 'demo_domain_required' }
+    }
+
+    logLicenseEvent(
+      req.license_key,
+      'verify_ok',
+      `public_demo_domain=${requestedDomain}, instance=${req.instance_id}`,
+      ip
+    )
+
+    return buildPublicDemoResponse(now)
+  }
+
   // 1. Find license
-  const license = isPublicDemoLicense
-    ? ensurePublicDemoLicense()
-    : findLicenseByKey(req.license_key)
+  const license = findLicenseByKey(req.license_key)
 
   if (!license) {
     logLicenseEvent(req.license_key, 'verify_invalid_key', `instance=${req.instance_id}`, ip)
     return { valid: false, reason: 'invalid_license' }
   }
-
-  const existingInstance = findInstance(license.id, req.instance_id)
-
-  if (isPublicDemoLicense) {
-    if (requestedDomain && requestedDomain !== PUBLIC_DEMO_LICENSE_DOMAIN) {
-      logLicenseEvent(req.license_key, 'verify_invalid_key', `demo_domain=${requestedDomain}, instance=${req.instance_id}`, ip)
-      return { valid: false, reason: 'invalid_demo_domain' }
-    }
-
-    if (!requestedDomain && !existingInstance) {
-      logLicenseEvent(req.license_key, 'verify_invalid_key', `demo_domain_missing, instance=${req.instance_id}`, ip)
-      return { valid: false, reason: 'demo_domain_required' }
-    }
-  }
-
   // 2. Check status
   if (license.status !== 'active') {
     logLicenseEvent(req.license_key, 'verify_inactive', `status=${license.status}`, ip)
@@ -231,6 +226,7 @@ export function verifyLicense(req: VerifyRequest, ip?: string): VerifyResponse {
   }
 
   // 4. Check instance
+  const existingInstance = findInstance(license.id, req.instance_id)
   if (existingInstance) {
     // Known instance — update last_seen
     upsertInstance(license.id, req.instance_id, req.domain)
