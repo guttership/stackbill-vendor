@@ -25,17 +25,17 @@ import { siteConfig } from '@/lib/config'
 import { getCurrentMessages } from '@/lib/i18n/server'
 
 export const metadata: Metadata = {
-  title: `${siteConfig.name} — Self-hosted Invoicing for Developers`,
+  title: 'Self-Hosted Invoicing for Developers and Freelancers',
   description:
-    'StackBill is an open-source, self-hosted invoicing and quoting tool built for developers and freelancers. Full data ownership, PDF export, Clockify & Trello integration.',
+    'Self-hosted invoicing for developers and freelancers. Own your data, avoid SaaS lock-in, and deploy billing for clients as recurring revenue.',
   alternates: {
     canonical: siteConfig.url,
   },
   openGraph: {
     url: siteConfig.url,
-    title: `${siteConfig.name} — Self-hosted Invoicing for Developers`,
+    title: 'Self-Hosted Invoicing for Developers and Freelancers',
     description:
-      'StackBill is an open-source, self-hosted invoicing and quoting tool built for developers and freelancers. Full data ownership, PDF export, Clockify & Trello integration.',
+      'Self-hosted invoicing for developers and freelancers. Own your data, avoid SaaS lock-in, and deploy billing for clients as recurring revenue.',
   },
 }
 
@@ -110,6 +110,14 @@ export default async function HomePage() {
   const clientDeployIcons = [Server, FileText, Code2]
   const howItWorksIcons = [Play, Key, Zap]
   const integrationIcons = [Clock, Trello]
+  const seoLinks = [
+    { href: '/invoice-software-for-developers', label: 'Invoice software for developers' },
+    { href: '/self-hosted-invoicing-software', label: 'Self-hosted invoicing software' },
+    { href: '/white-label-invoicing-software', label: 'White-label invoicing software' },
+    { href: '/quickbooks-alternative-for-developers', label: 'QuickBooks alternative for developers' },
+    { href: '/self-hosted-invoicing-vs-saas', label: 'Self-hosted invoicing vs SaaS' },
+    { href: '/blog', label: 'Developer invoicing blog' },
+  ]
 
   return (
     <>
@@ -455,6 +463,34 @@ npm run dev`}</code>
                       <CardDescription className="pt-2 text-base">{item.a}</CardDescription>
                     </CardHeader>
                   </Card>
+                </AnimateOnScroll>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── SEO hub links ──────────────────────────────────────── */}
+        <section className="border-b border-black/10 bg-[#fafaf9]">
+          <div className="container mx-auto px-4 py-16 md:py-20">
+            <AnimateOnScroll animation="slide-up">
+              <div className="mx-auto mb-10 max-w-3xl space-y-4 text-center">
+                <h2 className="section-title">Guides and comparisons</h2>
+                <p className="text-lg text-[#676060]">
+                  Practical pages for developers evaluating self-hosted invoicing and SaaS alternatives.
+                </p>
+              </div>
+            </AnimateOnScroll>
+
+            <div className="mx-auto grid max-w-4xl gap-4 md:grid-cols-2">
+              {seoLinks.map((item, index) => (
+                <AnimateOnScroll key={item.href} animation="slide-up" delay={index * 50}>
+                  <Link
+                    href={item.href}
+                    className="group flex items-center justify-between rounded-[1rem] border border-black/10 bg-white/85 px-5 py-4 text-sm text-[#4f4a4a] transition-colors hover:border-black/20"
+                  >
+                    <span>{item.label}</span>
+                    <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                  </Link>
                 </AnimateOnScroll>
               ))}
             </div>
