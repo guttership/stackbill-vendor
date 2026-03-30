@@ -133,30 +133,52 @@ export default async function HomePage() {
                       <ChevronRight className="ml-2 h-4 w-4" />
                     </Link>
                   </Button>
-                  <Button size="lg" variant="outline" asChild>
-                    <Link href={siteConfig.docsUrl} target="_blank" rel="noopener noreferrer">
-                      {messages.marketing.heroSecondaryCta}
-                    </Link>
-                  </Button>
                 </div>
-
-                <div className="flex flex-wrap gap-2 items-center text-sm text-[#676060]">
-                  <Check className="h-4 w-4" />
-                  <span>{messages.marketing.reassurance[0]}</span>
-                  <span className="text-black/20">·</span>
-                  <span>{messages.marketing.reassurance[1]}</span>
-                  <span className="text-black/20">·</span>
-                  <span>{messages.marketing.reassurance[2]}</span>
-                </div>
-
-                <p className="text-sm text-[#555353] pt-4 border-t border-black/10">
-                  {messages.marketing.deployReassurance}
-                </p>
               </div>
 
               <div className="relative animate-slide-left">
                 <HeroSlideshow images={heroSlides} />
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Client deploy (primary value) ─────────────────────── */}
+        <section id="features" className="border-b border-black/10 bg-[#fafaf9]">
+          <div className="container mx-auto px-4 py-16 md:py-24">
+            <AnimateOnScroll animation="slide-up">
+              <div className="mx-auto mb-12 max-w-3xl space-y-4 text-center">
+                <h2 className="section-title">{messages.marketing.clientDeployTitle}</h2>
+                <p className="text-lg leading-relaxed text-[#555353]">{messages.marketing.clientDeployText}</p>
+                <div className="pt-2">
+                  <Button size="lg" asChild>
+                    <Link href="/pricing">
+                      {messages.marketing.pricingHighlightPrimaryCta}
+                      <ChevronRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </AnimateOnScroll>
+
+            <div className="grid gap-6 md:grid-cols-3">
+              {messages.marketing.clientDeployCards.map((card, index) => {
+                const Icon = clientDeployIcons[index]
+
+                return (
+                  <AnimateOnScroll key={card.title} animation="slide-up" delay={index * 100}>
+                    <Card className="h-full border border-black/5 bg-white/88 hover-lift">
+                      <CardHeader className="p-6">
+                        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-[color:var(--brand-accent)]/15 text-[#3f3a3a]">
+                          <Icon className="h-6 w-6" />
+                        </div>
+                        <CardTitle>{card.title}</CardTitle>
+                        <CardDescription>{card.description}</CardDescription>
+                      </CardHeader>
+                    </Card>
+                  </AnimateOnScroll>
+                )
+              })}
             </div>
           </div>
         </section>
@@ -219,35 +241,62 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* ── Client deploy ──────────────────────────────────────── */}
-        <section id="features" className="border-b border-black/10">
+        {/* ── Pricing highlight ──────────────────────────────────── */}
+        <section className="border-b border-black/10">
           <div className="container mx-auto px-4 py-16 md:py-24">
             <AnimateOnScroll animation="slide-up">
               <div className="mx-auto mb-12 max-w-3xl space-y-4 text-center">
-                <h2 className="section-title">{messages.marketing.clientDeployTitle}</h2>
-                <p className="text-lg leading-relaxed text-[#555353]">{messages.marketing.clientDeployText}</p>
+                <h2 className="section-title">{messages.marketing.pricingHighlightTitle}</h2>
+                <p className="text-lg text-[#676060]">{messages.marketing.pricingHighlightSubtitle}</p>
               </div>
             </AnimateOnScroll>
 
-            <div className="grid gap-6 md:grid-cols-3">
-              {messages.marketing.clientDeployCards.map((card, index) => {
-                const Icon = clientDeployIcons[index]
+            <AnimateOnScroll animation="scale-up">
+              <Card className="mx-auto max-w-3xl border border-black/5 bg-white/92 hover-scale">
+                <CardHeader className="p-8">
+                  <Badge variant="outline" className="w-fit border-black/10 bg-white/85 px-3 py-1 text-[#3f3a3a]">
+                    {siteConfig.name}
+                  </Badge>
+                  <CardTitle className="mt-4 text-[calc(1.6rem*var(--brand-font-heading-scale,1))]">
+                    {messages.marketing.pricingHighlightNote}
+                  </CardTitle>
+                  <CardDescription className="text-base">{messages.marketing.pricingHighlightReassurance}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6 p-8 pt-0">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="rounded-[1.4rem] border border-black/15 bg-[#7b7373] px-6 py-5 text-center shadow-sm">
+                      <p className="text-2xl font-semibold text-white">{messages.marketing.pricingHighlightMonthly}</p>
+                    </div>
+                    <div className="rounded-[1.4rem] border border-black/15 bg-[#7b7373] px-6 py-5 text-center shadow-sm">
+                      <p className="text-2xl font-semibold text-white">{messages.marketing.pricingHighlightYearly}</p>
+                    </div>
+                  </div>
 
-                return (
-                  <AnimateOnScroll key={card.title} animation="slide-up" delay={index * 100}>
-                    <Card className="h-full border border-black/5 bg-white/88 hover-lift">
-                      <CardHeader className="p-6">
-                        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-[color:var(--brand-accent)]/15 text-[#3f3a3a]">
-                          <Icon className="h-6 w-6" />
-                        </div>
-                        <CardTitle>{card.title}</CardTitle>
-                        <CardDescription>{card.description}</CardDescription>
-                      </CardHeader>
-                    </Card>
-                  </AnimateOnScroll>
-                )
-              })}
-            </div>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {messages.marketing.pricingHighlightFeatures.map((feature) => (
+                      <div key={feature} className="flex items-start gap-3 text-sm text-[#555353]">
+                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#4f4a4a]" />
+                        <span>{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="flex flex-col gap-4 sm:flex-row">
+                    <Button size="lg" asChild>
+                      <Link href="/pricing">
+                        {messages.marketing.pricingHighlightPrimaryCta}
+                        <ChevronRight className="ml-2 h-4 w-4" />
+                      </Link>
+                    </Button>
+                    <Button size="lg" variant="outline" asChild>
+                      <Link href={siteConfig.docsUrl} target="_blank" rel="noopener noreferrer">
+                        {messages.marketing.pricingHighlightSecondaryCta}
+                      </Link>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </AnimateOnScroll>
           </div>
         </section>
 
@@ -340,65 +389,6 @@ export default async function HomePage() {
                   </Link>
                 </Button>
               </div>
-            </AnimateOnScroll>
-          </div>
-        </section>
-
-        {/* ── Pricing highlight ──────────────────────────────────── */}
-        <section className="border-b border-black/10">
-          <div className="container mx-auto px-4 py-16 md:py-24">
-            <AnimateOnScroll animation="slide-up">
-              <div className="mx-auto mb-12 max-w-3xl space-y-4 text-center">
-                <h2 className="section-title">{messages.marketing.pricingHighlightTitle}</h2>
-                <p className="text-lg text-[#676060]">{messages.marketing.pricingHighlightSubtitle}</p>
-              </div>
-            </AnimateOnScroll>
-
-            <AnimateOnScroll animation="scale-up">
-              <Card className="mx-auto max-w-3xl border border-black/5 bg-white/92 hover-scale">
-                <CardHeader className="p-8">
-                  <Badge variant="outline" className="w-fit border-black/10 bg-white/85 px-3 py-1 text-[#3f3a3a]">
-                    {siteConfig.name}
-                  </Badge>
-                  <CardTitle className="mt-4 text-[calc(1.6rem*var(--brand-font-heading-scale,1))]">
-                    {messages.marketing.pricingHighlightNote}
-                  </CardTitle>
-                  <CardDescription className="text-base">{messages.marketing.pricingHighlightReassurance}</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6 p-8 pt-0">
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="rounded-[1.4rem] border border-black/15 bg-[#7b7373] px-6 py-5 text-center shadow-sm">
-                      <p className="text-2xl font-semibold text-white">{messages.marketing.pricingHighlightMonthly}</p>
-                    </div>
-                    <div className="rounded-[1.4rem] border border-black/15 bg-[#7b7373] px-6 py-5 text-center shadow-sm">
-                      <p className="text-2xl font-semibold text-white">{messages.marketing.pricingHighlightYearly}</p>
-                    </div>
-                  </div>
-
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    {messages.marketing.pricingHighlightFeatures.map((feature) => (
-                      <div key={feature} className="flex items-start gap-3 text-sm text-[#555353]">
-                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#4f4a4a]" />
-                        <span>{feature}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="flex flex-col gap-4 sm:flex-row">
-                    <Button size="lg" asChild>
-                      <Link href="/pricing">
-                        {messages.marketing.pricingHighlightPrimaryCta}
-                        <ChevronRight className="ml-2 h-4 w-4" />
-                      </Link>
-                    </Button>
-                    <Button size="lg" variant="outline" asChild>
-                      <Link href={siteConfig.docsUrl} target="_blank" rel="noopener noreferrer">
-                        {messages.marketing.pricingHighlightSecondaryCta}
-                      </Link>
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
             </AnimateOnScroll>
           </div>
         </section>
