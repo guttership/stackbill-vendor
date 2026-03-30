@@ -22,6 +22,22 @@ export type SeoLandingPage = {
   intro: string
   outline: SeoOutlineSection[]
   ctas: SeoCta[]
+  persona: string
+  conversionAngle: string
+  primaryObjection: string
+  priorityScore: number
+  painPoints?: string[]
+  whyNow?: string[]
+  proofPoints?: string[]
+}
+
+export type SeoExecutionItem = {
+  slug: string
+  mainKeyword: string
+  persona: string
+  conversionAngle: string
+  primaryObjection: string
+  priorityScore: number
 }
 
 export type BlogPost = {
@@ -81,7 +97,7 @@ export const keywordClusters: KeywordCluster[] = [
   },
 ]
 
-export const seoLandingPages: SeoLandingPage[] = [
+const baseSeoLandingPages: Omit<SeoLandingPage, 'persona' | 'conversionAngle' | 'primaryObjection' | 'priorityScore'>[] = [
   {
     slug: 'invoice-software-for-developers',
     mainKeyword: 'invoice software for developers',
@@ -457,6 +473,226 @@ export const seoLandingPages: SeoLandingPage[] = [
     ],
   },
 ]
+
+const seoPageOptimizationBySlug: Record<
+  string,
+  Pick<
+    SeoLandingPage,
+    'persona' | 'conversionAngle' | 'primaryObjection' | 'priorityScore' | 'painPoints' | 'whyNow' | 'proofPoints'
+  >
+> = {
+  'invoice-software-for-developers': {
+    persona: 'Freelance developer and indie builder',
+    conversionAngle: 'Control over critical billing workflow',
+    primaryObjection: 'Fear of setup complexity',
+    priorityScore: 96,
+    painPoints: [
+      'You invoice through tools you cannot customize for your actual process.',
+      'Your billing data and workflow rules depend on third-party product decisions.',
+      'Every manual billing workaround compounds as your client load grows.',
+    ],
+    whyNow: [
+      'Billing is cashflow. Any external dependency here is business risk.',
+      'Switching is cheaper before you scale client volume and process complexity.',
+      'Owning the stack now prevents migration stress later.',
+    ],
+    proofPoints: [
+      'Self-hosted deployment on infrastructure you control.',
+      'Developer-first architecture designed for integration and customization.',
+      'Can be reused for client deployments to create recurring revenue.',
+    ],
+  },
+  'self-hosted-invoicing-software': {
+    persona: 'Freelancer comparing SaaS vs ownership',
+    conversionAngle: 'No lock-in and predictable costs',
+    primaryObjection: 'Concern about maintenance burden',
+    priorityScore: 95,
+    painPoints: [
+      'SaaS pricing and limits can change while your invoices and cashflow cannot wait.',
+      'You adapt your process to tool constraints instead of business needs.',
+      'Vendor lock-in creates long-term dependency on someone else roadmap.',
+    ],
+    whyNow: [
+      'Each month in lock-in increases switching cost and operational debt.',
+      'Self-hosted gives immediate control over data location and access.',
+      'You can start local and move to production without changing your workflow.',
+    ],
+    proofPoints: [
+      'Simple deployment path with local-first setup.',
+      'Same core workflow for freelancers and small teams.',
+      'Predictable pricing with no hidden feature gates.',
+    ],
+  },
+  'freelance-developer-invoice-tool': {
+    persona: 'Solo dev consultant',
+    conversionAngle: 'Faster quote-to-invoice with full ownership',
+    primaryObjection: 'Wants simplicity, not another tool to manage',
+    priorityScore: 93,
+  },
+  'api-first-invoicing-software': {
+    persona: 'Technical team needing integrations',
+    conversionAngle: 'API-first billing that fits existing stack',
+    primaryObjection: 'Unsure if integration effort pays off',
+    priorityScore: 88,
+  },
+  'white-label-invoicing-software': {
+    persona: 'Small dev agency owner',
+    conversionAngle: 'Turn deployments into recurring MRR',
+    primaryObjection: 'Doubt about client willingness to pay monthly',
+    priorityScore: 98,
+    painPoints: [
+      'One-off project revenue is irregular and hard to forecast.',
+      'Clients still need billing operations after delivery, but it is rarely productized.',
+      'SaaS tools limit your ability to package billing as your own service.',
+    ],
+    whyNow: [
+      'Recurring retainers stabilize agency cashflow faster than chasing new projects.',
+      'You already have the technical skills to deploy and maintain instances per client.',
+      'Turning billing ops into a service is one of the simplest MRR offers for dev agencies.',
+    ],
+    proofPoints: [
+      'Deploy one branded instance per client.',
+      'Host on your infra or client infra while keeping technical control.',
+      'Package setup, maintenance, and updates as monthly service tiers.',
+    ],
+  },
+  'invoicing-software-for-dev-agencies': {
+    persona: 'Agency operations lead',
+    conversionAngle: 'Reusable per-client deployment model',
+    primaryObjection: 'Worried about scaling support',
+    priorityScore: 92,
+  },
+  'french-compliant-invoicing-software': {
+    persona: 'French freelance developer',
+    conversionAngle: 'Compliance plus technical control',
+    primaryObjection: 'Fear of legal mistakes in invoices',
+    priorityScore: 91,
+  },
+  'quote-to-invoice-software-for-freelancers': {
+    persona: 'Freelancer with admin overload',
+    conversionAngle: 'Reduce admin time between quote and invoice',
+    primaryObjection: 'Belief that current process is good enough',
+    priorityScore: 87,
+  },
+  'open-source-invoicing-software-for-developers': {
+    persona: 'Open-source oriented developer',
+    conversionAngle: 'Auditability and extensibility',
+    primaryObjection: 'Concerns about support and reliability',
+    priorityScore: 85,
+  },
+  'quickbooks-alternative-for-developers': {
+    persona: 'Developer unhappy with legacy accounting UX',
+    conversionAngle: 'Lighter dev-first alternative',
+    primaryObjection: 'Migration risk from incumbent tool',
+    priorityScore: 94,
+    painPoints: [
+      'Legacy accounting UX slows technical teams with workflow friction.',
+      'Customization is limited when you need developer-oriented billing logic.',
+      'Migration fear keeps teams in tools they have already outgrown.',
+    ],
+    whyNow: [
+      'You can phase migration client by client instead of one big risky switch.',
+      'Developer-first tooling reduces recurring admin load over time.',
+      'Moving now protects margin before process debt becomes expensive.',
+    ],
+    proofPoints: [
+      'Self-hosted stack with full deployment ownership.',
+      'API-friendly model to integrate with your existing tools.',
+      'Clear pricing and reusable workflow for freelancers and agencies.',
+    ],
+  },
+  'freshbooks-alternative-self-hosted': {
+    persona: 'Freelancer evaluating alternatives',
+    conversionAngle: 'Keep simplicity and gain ownership',
+    primaryObjection: 'Fear of losing convenience',
+    priorityScore: 84,
+  },
+  'indy-alternative-for-freelancers': {
+    persona: 'Solo freelancer on modern SaaS',
+    conversionAngle: 'No lock-in while keeping speed',
+    primaryObjection: 'Thinks self-hosted is too technical',
+    priorityScore: 83,
+  },
+  'freebe-alternative-for-developers': {
+    persona: 'French freelancer hitting tool limits',
+    conversionAngle: 'Developer-first flexibility',
+    primaryObjection: 'Not convinced switch effort is worth it',
+    priorityScore: 90,
+  },
+  'stripe-invoicing-alternative-self-hosted': {
+    persona: 'Builder using Stripe ecosystem',
+    conversionAngle: 'Own invoicing logic, keep payment flexibility',
+    primaryObjection: 'Confusion between payments and invoicing stack',
+    priorityScore: 82,
+  },
+  'zoho-invoice-alternative-for-developers': {
+    persona: 'Developer inside generic suite workflow',
+    conversionAngle: 'Move from generic suite to dev-first stack',
+    primaryObjection: 'Habit inertia with current suite',
+    priorityScore: 80,
+  },
+  'self-hosted-invoicing-vs-saas': {
+    persona: 'Decision-maker comparing models',
+    conversionAngle: 'Direct ownership vs dependency trade-off',
+    primaryObjection: 'Unsure if now is the right time',
+    priorityScore: 97,
+    painPoints: [
+      'SaaS convenience often hides long-term control and pricing risk.',
+      'Critical billing operations depend on vendor decisions you cannot influence.',
+      'Teams delay switching until lock-in and process debt become costly.',
+    ],
+    whyNow: [
+      'The earlier you switch, the lower your migration complexity.',
+      'Owning billing now gives you leverage on process, data, and costs.',
+      'Self-hosted allows deliberate scaling instead of vendor-led constraints.',
+    ],
+    proofPoints: [
+      'Clear comparison framework across cost, risk, and flexibility.',
+      'Deployment model works for both solo freelancers and small agencies.',
+      'Built for developers who need control, not generic accounting defaults.',
+    ],
+  },
+  'best-invoicing-software-for-indie-hackers': {
+    persona: 'Indie hacker evaluating stack',
+    conversionAngle: 'Best-fit tool by stage and constraints',
+    primaryObjection: 'Analysis paralysis across too many options',
+    priorityScore: 86,
+  },
+  'invoice-tool-with-api-for-freelancers': {
+    persona: 'Automation-minded freelancer',
+    conversionAngle: 'API workflows save recurring admin time',
+    primaryObjection: 'Thinks automation is overkill for solo work',
+    priorityScore: 81,
+  },
+  'self-hosted-billing-software-for-freelancers': {
+    persona: 'Independent dev with margin focus',
+    conversionAngle: 'Stable billing foundation you own',
+    primaryObjection: 'Fear of ongoing ops overhead',
+    priorityScore: 89,
+  },
+  'developer-invoicing-app': {
+    persona: 'General developer audience',
+    conversionAngle: 'Own stack, own data, own economics',
+    primaryObjection: 'Not clear on immediate ROI',
+    priorityScore: 88,
+  },
+}
+
+export const seoLandingPages: SeoLandingPage[] = baseSeoLandingPages.map((page) => ({
+  ...page,
+  ...seoPageOptimizationBySlug[page.slug],
+}))
+
+export const seoExecutionPlan: SeoExecutionItem[] = [...seoLandingPages]
+  .sort((a, b) => b.priorityScore - a.priorityScore)
+  .map((page) => ({
+    slug: page.slug,
+    mainKeyword: page.mainKeyword,
+    persona: page.persona,
+    conversionAngle: page.conversionAngle,
+    primaryObjection: page.primaryObjection,
+    priorityScore: page.priorityScore,
+  }))
 
 export const blogPosts: BlogPost[] = [
   {

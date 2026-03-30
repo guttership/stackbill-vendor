@@ -78,6 +78,32 @@ export default async function SeoLandingPage({ params }: Props) {
             </Badge>
             <h1 className="page-title">{page.h1}</h1>
             <p className="text-lg leading-relaxed text-[#555353]">{page.intro}</p>
+            <div className="mx-auto grid max-w-4xl gap-4 text-left md:grid-cols-3">
+              <Card className="border border-black/5 bg-white/92">
+                <CardHeader className="p-5">
+                  <CardTitle className="text-base">Best for</CardTitle>
+                </CardHeader>
+                <CardContent className="px-5 pb-5 pt-0">
+                  <p className="text-sm leading-relaxed text-[#555353]">{page.persona}</p>
+                </CardContent>
+              </Card>
+              <Card className="border border-black/5 bg-white/92">
+                <CardHeader className="p-5">
+                  <CardTitle className="text-base">Why switch</CardTitle>
+                </CardHeader>
+                <CardContent className="px-5 pb-5 pt-0">
+                  <p className="text-sm leading-relaxed text-[#555353]">{page.conversionAngle}</p>
+                </CardContent>
+              </Card>
+              <Card className="border border-black/5 bg-white/92">
+                <CardHeader className="p-5">
+                  <CardTitle className="text-base">Common objection</CardTitle>
+                </CardHeader>
+                <CardContent className="px-5 pb-5 pt-0">
+                  <p className="text-sm leading-relaxed text-[#555353]">{page.primaryObjection}</p>
+                </CardContent>
+              </Card>
+            </div>
             <div className="flex flex-col justify-center gap-4 sm:flex-row">
               {page.ctas.map((cta) => (
                 <Button key={cta.label} size="lg" asChild>
@@ -114,6 +140,59 @@ export default async function SeoLandingPage({ params }: Props) {
           </div>
         </div>
       </section>
+
+      {(page.painPoints?.length || page.whyNow?.length || page.proofPoints?.length) && (
+        <section className="border-b border-black/10">
+          <div className="container mx-auto px-4 py-16 md:py-24">
+            <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-3">
+              {page.painPoints?.length ? (
+                <Card className="h-full border border-black/5 bg-white/92 hover-lift">
+                  <CardHeader className="p-6">
+                    <CardTitle>Pain points</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3 px-6 pb-6 pt-0">
+                    {page.painPoints.map((item) => (
+                      <p key={item} className="text-sm leading-relaxed text-[#555353]">
+                        {item}
+                      </p>
+                    ))}
+                  </CardContent>
+                </Card>
+              ) : null}
+
+              {page.whyNow?.length ? (
+                <Card className="h-full border border-black/5 bg-white/92 hover-lift">
+                  <CardHeader className="p-6">
+                    <CardTitle>Why switch now</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3 px-6 pb-6 pt-0">
+                    {page.whyNow.map((item) => (
+                      <p key={item} className="text-sm leading-relaxed text-[#555353]">
+                        {item}
+                      </p>
+                    ))}
+                  </CardContent>
+                </Card>
+              ) : null}
+
+              {page.proofPoints?.length ? (
+                <Card className="h-full border border-black/5 bg-white/92 hover-lift">
+                  <CardHeader className="p-6">
+                    <CardTitle>Proof</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3 px-6 pb-6 pt-0">
+                    {page.proofPoints.map((item) => (
+                      <p key={item} className="text-sm leading-relaxed text-[#555353]">
+                        {item}
+                      </p>
+                    ))}
+                  </CardContent>
+                </Card>
+              ) : null}
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="border-b border-black/10">
         <div className="container mx-auto px-4 py-16 md:py-20">
