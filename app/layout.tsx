@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Fira_Sans, Geist_Mono } from 'next/font/google'
+import Script from 'next/script'
 import './globals.css'
 import { siteConfig } from '@/lib/config'
 import { getCurrentLocale } from '@/lib/i18n/server'
@@ -14,6 +15,8 @@ const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
 })
+
+const googleAnalyticsId = 'G-KVSDP1S9XJ'
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -92,6 +95,18 @@ export default async function RootLayout({
   return (
     <html lang={locale}>
       <body className={`${firaSans.variable} ${geistMono.variable} antialiased`}>
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${googleAnalyticsId}');
+          `}
+        </Script>
         {children}
       </body>
     </html>
