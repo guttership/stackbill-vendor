@@ -17,7 +17,7 @@ export default async function MarketingLayout({
       <div className="hidden md:block bg-orb bg-orb-primary w-[440px] h-[440px] bottom-[-10%] left-[18%] fixed opacity-[0.11]" />
       <div className="hidden md:block bg-orb bg-orb-accent w-[280px] h-[280px] top-[45%] -left-[5%] fixed opacity-[0.08]" />
 
-      <Header locale={locale} />
+      <Header />
       <main className="surface-texture relative z-10 flex-1 pt-28">
         {children}
       </main>

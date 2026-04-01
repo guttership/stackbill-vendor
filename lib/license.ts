@@ -1,7 +1,7 @@
 import crypto from 'crypto'
 import { query } from '@/lib/db'
 import { logLicenseEvent } from '@/lib/logger'
-import type { License, LicenseInstance, VerifyRequest, VerifyResponse } from '@/types/license'
+import type { License, LicenseInstance, VerifyRequest, VerifyResponse, RestoreInstanceRequest } from '@/types/license'
 
 const PUBLIC_DEMO_LICENSE_KEY = 'SB-DEMO-DMUM-2026'
 const PUBLIC_DEMO_LICENSE_DOMAIN = 'factures.dmum.eu'
@@ -195,13 +195,43 @@ export async function verifyLicense(request: VerifyRequest): Promise<VerifyRespo
     }
   }
 
-  // Check max instances
+  // Check max instances (allow already-registered instance to revalidate)
+  const existingInstanceResult = await query(
+    `SELECT 1 FROM license_instances WHERE license_id = $1 AND instance_id = $2 LIMIT 1`,
+    [license.id, request.instance_id]
+  )
+  const hasExistingInstance = existingInstanceResult.rowCount !== null && existingInstanceResult.rowCount > 0
+
   const instanceCount = await getInstanceCount(license.id)
-  if (instanceCount >= license.max_instances) {
-    return {
-      valid: false,
-      reason: 'max_instances_exceeded',
-      server_time: now,
+  if (!hasExistingInstance && instanceCount >= license.max_instances) {
+    // If the same domain already has a registered instance, reassign it to the new instance_id.
+    if (domain) {
+      const sameDomainResult = await query(
+        `SELECT id FROM license_instances WHERE license_id = $1 AND domain = $2 ORDER BY last_seen_at DESC LIMIT 1`,
+        [license.id, domain]
+      )
+
+      const sameDomainInstanceId = sameDomainResult.rows[0]?.id as number | undefined
+      if (sameDomainInstanceId) {
+        await query(
+          `UPDATE license_instances
+           SET instance_id = $1, last_seen_at = NOW(), domain = $2
+           WHERE id = $3`,
+          [request.instance_id, domain, sameDomainInstanceId]
+        )
+      } else {
+        return {
+          valid: false,
+          reason: 'max_instances_exceeded',
+          server_time: now,
+        }
+      }
+    } else {
+      return {
+        valid: false,
+        reason: 'max_instances_exceeded',
+        server_time: now,
+      }
     }
   }
 
@@ -219,6 +249,83 @@ export async function verifyLicense(request: VerifyRequest): Promise<VerifyRespo
 
   return {
     valid: true,
+    tier: license.tier,
+    plan: (license.plan as any) || 'standard',
+    max_instances: license.max_instances,
+    expires_at: license.expires_at || undefined,
+    server_time: now,
+  }
+}
+
+export async function restoreLicenseInstance(request: RestoreInstanceRequest): Promise<VerifyResponse> {
+  const now = new Date().toISOString()
+  const domain = normalizeDomain(request.domain)
+
+  if (!request.instance_id) {
+    return {
+      valid: false,
+      reason: 'missing_instance_id',
+      server_time: now,
+    }
+  }
+
+  const params: string[] = [request.instance_id.trim()]
+  let domainFilter = ''
+  if (domain) {
+    params.push(domain)
+    domainFilter = 'AND li.domain = $2'
+  }
+
+  const result = await query(
+    `SELECT l.*
+     FROM license_instances li
+     JOIN licenses l ON l.id = li.license_id
+     WHERE li.instance_id = $1 ${domainFilter}
+     ORDER BY li.last_seen_at DESC
+     LIMIT 1`,
+    params
+  )
+
+  const license = result.rows[0] as License | undefined
+
+  if (!license) {
+    return {
+      valid: false,
+      reason: 'instance_not_found',
+      server_time: now,
+    }
+  }
+
+  if (license.expires_at) {
+    const expiresAt = new Date(license.expires_at)
+    if (expiresAt < new Date()) {
+      return {
+        valid: false,
+        reason: 'license_expired',
+        server_time: now,
+      }
+    }
+  }
+
+  if (license.status === 'cancelled' || license.status === 'revoked') {
+    return {
+      valid: false,
+      reason: 'license_cancelled',
+      server_time: now,
+    }
+  }
+
+  await query(
+    `UPDATE license_instances
+     SET last_seen_at = NOW(),
+         domain = COALESCE($2, domain)
+     WHERE instance_id = $1`,
+    [request.instance_id.trim(), domain]
+  )
+
+  return {
+    valid: true,
+    tier: license.tier,
     plan: (license.plan as any) || 'standard',
     max_instances: license.max_instances,
     expires_at: license.expires_at || undefined,

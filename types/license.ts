@@ -28,8 +28,14 @@ export interface VerifyRequest {
   app_version?: string
 }
 
+export interface RestoreInstanceRequest {
+  instance_id: string
+  domain?: string
+}
+
 export interface VerifyResponse {
   valid: boolean
+  tier?: string
   plan?: string
   max_instances?: number
   expires_at?: string
