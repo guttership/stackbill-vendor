@@ -23,6 +23,7 @@ import { AnimateOnScroll } from '@/components/marketing/animate-on-scroll'
 import { HeroSlideshow } from '@/components/marketing/hero-slideshow'
 import { siteConfig } from '@/lib/config'
 import { getCurrentMessages } from '@/lib/i18n/server'
+import { seoLandingPages } from '@/lib/seo/content'
 
 export const metadata: Metadata = {
   title: 'Self-Hosted Invoicing for Developers and Freelancers',
@@ -131,11 +132,12 @@ export default async function HomePage() {
   const howItWorksIcons = [Play, Key, Zap]
   const integrationIcons = [Clock, Trello]
   const seoLinks = [
-    { href: '/invoice-software-for-developers', label: 'Invoice software for developers' },
-    { href: '/self-hosted-invoicing-software', label: 'Self-hosted invoicing software' },
-    { href: '/white-label-invoicing-software', label: 'White-label invoicing software' },
-    { href: '/quickbooks-alternative-for-developers', label: 'QuickBooks alternative for developers' },
-    { href: '/self-hosted-invoicing-vs-saas', label: 'Self-hosted invoicing vs SaaS' },
+    ...seoLandingPages
+      .sort((a, b) => b.priorityScore - a.priorityScore)
+      .map((page) => ({
+        href: `/${page.slug}`,
+        label: page.seoTitle.replace(' | StackBill', ''),
+      })),
     { href: '/blog', label: 'Developer invoicing blog' },
   ]
 
@@ -502,7 +504,7 @@ npm run dev`}</code>
               </div>
             </AnimateOnScroll>
 
-            <div className="mx-auto grid max-w-4xl gap-4 md:grid-cols-2">
+            <div className="mx-auto grid max-w-5xl gap-4 md:grid-cols-2 lg:grid-cols-3">
               {seoLinks.map((item, index) => (
                 <AnimateOnScroll key={item.href} animation="slide-up" delay={index * 50}>
                   <Link
