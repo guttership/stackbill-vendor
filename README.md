@@ -38,7 +38,7 @@ NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID=price_...
 NEXT_PUBLIC_STRIPE_YEARLY_PRICE_ID=price_...
 
 # 4. Set application URL (MUST use HTTPS in production)
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_APP_URL=http://localhost:3001
 
 # 5. Configure database
 DATABASE_URL=postgresql://user:password@host:5432/vendor?sslmode=require

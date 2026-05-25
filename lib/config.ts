@@ -32,13 +32,26 @@ export const plans = {
   },
 } as const
 
+function normalizeAppUrl(url: string) {
+  const cleanUrl = url.replace(/\/$/, '')
+
+  if (cleanUrl === 'https://stackbill.tech') {
+    return 'https://www.stackbill.tech'
+  }
+
+  return cleanUrl
+}
+
+const appUrl = normalizeAppUrl(
+  process.env.NEXT_PUBLIC_APP_URL ||
+    (process.env.NODE_ENV === 'production' ? 'https://www.stackbill.tech' : 'http://localhost:3001')
+)
+
 export const siteConfig = {
   name: 'StackBill',
   description: 'Self-hosted invoicing for developers.',
   tagline: 'Create quotes, generate invoices, and keep full control of your data.',
-  url:
-    process.env.NEXT_PUBLIC_APP_URL ||
-    (process.env.NODE_ENV === 'production' ? 'https://stackbill.tech' : 'http://localhost:3000'),
+  url: appUrl,
   githubUrl: 'https://github.com/guttership/stackbill',
   docsUrl: '/docs',
   keywords: [
