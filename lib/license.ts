@@ -85,14 +85,16 @@ export async function findLicenseByKey(licenseKey: string): Promise<License | un
 function normalizeDomain(domain?: string): string | null {
   if (!domain) return null
 
-  const normalized = domain
-    .trim()
-    .toLowerCase()
-    .replace(/^https?:\/\//, '')
-    .split('/')[0]
-    .replace(/^www\./, '')
+  const raw = domain.trim().toLowerCase()
+  if (!raw) return null
 
-  return normalized || null
+  // Parse hostname robustly from either full URL, host:port or bare hostname.
+  const parsed = raw.startsWith('http://') || raw.startsWith('https://')
+    ? new URL(raw)
+    : new URL(`http://${raw}`)
+
+  const normalizedHost = parsed.hostname.replace(/^www\./, '')
+  return normalizedHost || null
 }
 
 function buildPublicDemoResponse(now: string): VerifyResponse {
