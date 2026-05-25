@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { AnimateOnScroll } from '@/components/marketing/animate-on-scroll'
 import { blogPosts } from '@/lib/seo/content'
 import { siteConfig } from '@/lib/config'
+import { breadcrumbSchema } from '@/lib/seo/schema'
 
 export const metadata: Metadata = {
   title: 'Developer Invoicing Blog and Comparisons',
@@ -17,8 +18,14 @@ export const metadata: Metadata = {
 }
 
 export default function BlogIndexPage() {
+  const breadcrumbJsonLd = breadcrumbSchema([
+    { name: 'Home', item: siteConfig.url },
+    { name: 'Blog', item: `${siteConfig.url}/blog` },
+  ])
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <section className="relative overflow-hidden border-b border-black/10">
         <div className="container mx-auto px-4 py-16 md:py-24">
           <div className="mx-auto max-w-3xl space-y-6 text-center">
@@ -47,8 +54,9 @@ export default function BlogIndexPage() {
                     <CardTitle className="mt-3 text-[1.25rem] leading-tight">{post.title}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4 px-6 pb-6 pt-0">
-                    <p className="text-sm text-[#555353]">Keyword: {post.targetKeyword}</p>
+                    <p className="text-sm text-[#555353]">Topic: {post.targetKeyword}</p>
                     <p className="text-sm leading-relaxed text-[#555353]">{post.intro}</p>
+                    <p className="text-xs text-[#676060]">Published {post.datePublished}</p>
                     <Link href={`/blog/${post.slug}`} className="inline-flex items-center text-sm font-medium text-[#3f3a3a]">
                       Read article
                       <ArrowRight className="ml-2 h-4 w-4" />

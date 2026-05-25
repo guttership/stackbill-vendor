@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { getCurrentMessages, getCurrentLocale } from '@/lib/i18n/server'
+import { breadcrumbSchema } from '@/lib/seo/schema'
 
 export const dynamic = 'force-dynamic'
 import Link from 'next/link'
@@ -40,6 +41,39 @@ export default async function DocsPage() {
   const messages = await getCurrentMessages()
   const locale = await getCurrentLocale()
   const docContent = await getInstallationDoc(locale)
+  const breadcrumbJsonLd = breadcrumbSchema([
+    { name: 'Home', item: siteConfig.url },
+    { name: 'Docs', item: `${siteConfig.url}/docs` },
+  ])
+  const howToJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: 'Install StackBill',
+    description: 'Install and configure StackBill for self-hosted use.',
+    totalTime: 'PT20M',
+    step: [
+      {
+        '@type': 'HowToStep',
+        name: 'Copy the environment template',
+        text: 'Copy the sample environment file and set your application URL and secrets.',
+      },
+      {
+        '@type': 'HowToStep',
+        name: 'Configure Stripe and database access',
+        text: 'Add the Stripe keys, webhook secret, and database connection string.',
+      },
+      {
+        '@type': 'HowToStep',
+        name: 'Run the application',
+        text: 'Install dependencies, start the development server, and confirm the app loads.',
+      },
+      {
+        '@type': 'HowToStep',
+        name: 'Verify the deployment',
+        text: 'Check the checkout flow, portal access, and documentation links before going live.',
+      },
+    ],
+  }
 
   if (!docContent) {
     return (
@@ -58,6 +92,8 @@ export default async function DocsPage() {
 
   return (
     <div className="relative z-10">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }} />
       <div className="container mx-auto px-4 py-16 md:py-24">
         <div className="max-w-4xl mx-auto">
           <AnimateOnScroll animation="slide-up">
@@ -128,11 +164,16 @@ function convertMarkdownToHTML(markdown: string): string {
   html = html.replace(/`([^`]+)`/gm, '<code>$1</code>')
 
   // 5. Listes non ordonnées : convertir puis regrouper les <li> consécutifs en un seul <ul>
-  html = html.replace(/^\- (.*$)/gm, '<li>$1</li>')
-  html = html.replace(/(<li>.*<\/li>\n?)+/gm, (match) => `<ul>\n${match}</ul>`)
+  html = html.replace(/^\- (.*$)/gm, '<ul-li>$1</ul-li>')
+  html = html.replace(/(<ul-li>.*<\/ul-li>\n?)+/gm, (match) =>
+    `<ul>\n${match.replace(/<ul-li>/g, '<li>').replace(/<\/ul-li>/g, '</li>')}</ul>`
+  )
 
   // 6. Listes ordonnées
-  html = html.replace(/^\d+\. (.*$)/gm, '<li>$1</li>')
+  html = html.replace(/^\d+\. (.*$)/gm, '<ol-li>$1</ol-li>')
+  html = html.replace(/(<ol-li>.*<\/ol-li>\n?)+/gm, (match) =>
+    `<ol>\n${match.replace(/<ol-li>/g, '<li>').replace(/<\/ol-li>/g, '</li>')}</ol>`
+  )
 
   // 7. Séparateurs
   html = html.replace(/^---$/gm, '<hr />')

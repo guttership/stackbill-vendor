@@ -36,7 +36,9 @@ export const siteConfig = {
   name: 'StackBill',
   description: 'Self-hosted invoicing for developers.',
   tagline: 'Create quotes, generate invoices, and keep full control of your data.',
-  url: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+  url:
+    process.env.NEXT_PUBLIC_APP_URL ||
+    (process.env.NODE_ENV === 'production' ? 'https://stackbill.tech' : 'http://localhost:3000'),
   githubUrl: 'https://github.com/guttership/stackbill',
   docsUrl: '/docs',
   keywords: [
@@ -56,7 +58,7 @@ export const siteConfig = {
     'developer tools',
   ],
   twitterHandle: '@stackbill',
-  ogImage: '/images/og-image.png',
+  ogImage: '/images/image.webp',
   locale: 'en_US',
   locales: ['en_US', 'fr_FR'],
   category: 'Software',

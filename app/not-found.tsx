@@ -51,7 +51,7 @@ export default function NotFound() {
           <p>Need help? Check our documentation or contact support.</p>
           <div className="mt-2 space-x-4">
             <Link 
-              href="https://docs.stackbill.com" 
+              href={siteConfig.docsUrl} 
               className="text-blue-600 hover:text-blue-700"
             >
               Documentation

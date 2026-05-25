@@ -65,23 +65,26 @@ function SoftwareApplicationJsonLd() {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
+    '@id': `${siteConfig.url}/#software-application`,
     name: siteConfig.name,
     applicationCategory: 'BusinessApplication',
     operatingSystem: 'Linux, macOS, Windows',
     description: siteConfig.tagline,
     url: siteConfig.url,
-    license: 'https://opensource.org/licenses/MIT',
     softwareVersion: '1.0',
+    image: new URL(siteConfig.ogImage, siteConfig.url).toString(),
     author: {
-      '@type': 'Organization',
-      name: 'StackBill',
-      url: siteConfig.url,
+      '@id': `${siteConfig.url}/#organization`,
+    },
+    publisher: {
+      '@id': `${siteConfig.url}/#organization`,
     },
     offers: {
-      '@type': 'Offer',
-      price: '10',
+      '@type': 'AggregateOffer',
+      lowPrice: '10',
+      highPrice: '100',
       priceCurrency: 'EUR',
-      priceValidUntil: '2027-12-31',
+      offerCount: 2,
     },
     featureList: [
       'Self-hosted deployment',
@@ -100,6 +103,23 @@ function SoftwareApplicationJsonLd() {
       dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
     />
   )
+}
+
+function FaqJsonLd({ faqs }: { faqs: Array<{ q: string; a: string }> }) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.a,
+      },
+    })),
+  }
+
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 }
 
 export default async function HomePage() {
@@ -122,6 +142,7 @@ export default async function HomePage() {
   return (
     <>
       <SoftwareApplicationJsonLd />
+      <FaqJsonLd faqs={messages.marketing.faqs} />
       <div className="relative z-10 flex flex-col overflow-hidden text-[#463f3f]">
 
         {/* ── Hero ─────────────────────────────────────────────── */}

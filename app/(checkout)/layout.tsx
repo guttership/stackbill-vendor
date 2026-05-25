@@ -5,6 +5,10 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: `Checkout - ${siteConfig.name}`,
   description: siteConfig.description,
+  robots: {
+    index: false,
+    follow: false,
+  },
 }
 
 export default function CheckoutLayout({

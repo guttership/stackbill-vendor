@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { AnimateOnScroll } from '@/components/marketing/animate-on-scroll'
 import { getSeoLandingBySlug, seoLandingPages } from '@/lib/seo/content'
 import { siteConfig } from '@/lib/config'
+import { breadcrumbSchema } from '@/lib/seo/schema'
 
 type Props = {
   params: Promise<{ slug: string }>
@@ -52,9 +53,15 @@ export default async function SeoLandingPage({ params }: Props) {
     notFound()
   }
 
+  const canonicalUrl = `${siteConfig.url}/${page.slug}`
+  const breadcrumbJsonLd = breadcrumbSchema([
+    { name: 'Home', item: siteConfig.url },
+    { name: page.h1, item: canonicalUrl },
+  ])
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
+    '@id': `${canonicalUrl}#webpage`,
     name: page.h1,
     description: page.metaDescription,
     url: `${siteConfig.url}/${page.slug}`,
@@ -68,6 +75,7 @@ export default async function SeoLandingPage({ params }: Props) {
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <section className="relative overflow-hidden border-b border-black/10">

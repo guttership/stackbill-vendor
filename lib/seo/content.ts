@@ -47,6 +47,8 @@ export type BlogPost = {
   searchIntent: 'transactional' | 'comparison' | 'informational'
   intro: string
   outline: string[]
+  datePublished: string
+  dateModified: string
 }
 
 export const keywordClusters: KeywordCluster[] = [
@@ -702,6 +704,8 @@ export const blogPosts: BlogPost[] = [
     searchIntent: 'informational',
     intro: 'The monthly fee is not the real cost. The real cost is dependency when your process needs to evolve.',
     outline: ['What lock-in really means', 'How lock-in hits margin', 'When to switch'],
+    datePublished: '2025-01-07',
+    dateModified: '2025-01-07',
   },
   {
     slug: 'developers-outgrow-generic-invoicing-tools',
@@ -710,6 +714,8 @@ export const blogPosts: BlogPost[] = [
     searchIntent: 'informational',
     intro: 'Generic tools optimize for broad users. Developer workflows need flexible systems.',
     outline: ['Where generic tools fail', 'What a dev-first stack needs', 'A switch framework'],
+    datePublished: '2025-01-21',
+    dateModified: '2025-01-21',
   },
   {
     slug: 'quickbooks-vs-self-hosted-invoicing',
@@ -718,6 +724,8 @@ export const blogPosts: BlogPost[] = [
     searchIntent: 'comparison',
     intro: 'QuickBooks can work, but many developer teams pay for complexity they do not need.',
     outline: ['Cost comparison', 'Workflow comparison', 'Migration path'],
+    datePublished: '2025-02-04',
+    dateModified: '2025-02-04',
   },
   {
     slug: 'freebe-vs-self-hosted-invoicing',
@@ -726,6 +734,8 @@ export const blogPosts: BlogPost[] = [
     searchIntent: 'comparison',
     intro: 'Convenience is great until workflow constraints hit your business.',
     outline: ['What Freebe gets right', 'Where it limits dev teams', 'Switch criteria'],
+    datePublished: '2025-02-18',
+    dateModified: '2025-02-18',
   },
   {
     slug: 'indy-vs-self-hosted-invoicing',
@@ -734,6 +744,8 @@ export const blogPosts: BlogPost[] = [
     searchIntent: 'comparison',
     intro: 'You can keep simplicity without giving up ownership.',
     outline: ['Simplicity vs control', 'Cost over 12 months', 'Decision matrix'],
+    datePublished: '2025-03-04',
+    dateModified: '2025-03-04',
   },
   {
     slug: 'stripe-invoicing-workflow-control',
@@ -742,6 +754,8 @@ export const blogPosts: BlogPost[] = [
     searchIntent: 'comparison',
     intro: 'If your process is custom, generic billing rails become friction.',
     outline: ['Where Stripe helps', 'Where teams hit limits', 'Hybrid architecture'],
+    datePublished: '2025-03-18',
+    dateModified: '2025-03-18',
   },
   {
     slug: 'developer-quote-to-invoice-workflow',
@@ -750,6 +764,8 @@ export const blogPosts: BlogPost[] = [
     searchIntent: 'informational',
     intro: 'Most billing inefficiency starts between quote acceptance and invoice creation.',
     outline: ['Workflow design', 'Automation hooks', 'Scale playbook'],
+    datePublished: '2025-04-01',
+    dateModified: '2025-04-01',
   },
   {
     slug: 'white-label-invoicing-mrr',
@@ -758,6 +774,8 @@ export const blogPosts: BlogPost[] = [
     searchIntent: 'transactional',
     intro: 'If you already deploy for clients, productize the billing layer and bill monthly.',
     outline: ['Offer design', 'Packaging and pricing', 'Execution checklist'],
+    datePublished: '2025-04-15',
+    dateModified: '2025-04-15',
   },
   {
     slug: 'french-invoicing-compliance-checklist',
@@ -766,6 +784,8 @@ export const blogPosts: BlogPost[] = [
     searchIntent: 'informational',
     intro: 'Compliance is easier when the process is explicit and repeatable.',
     outline: ['Required mentions', 'Common mistakes', 'Validation routine'],
+    datePublished: '2025-04-29',
+    dateModified: '2025-04-29',
   },
   {
     slug: 'api-first-invoicing-explained',
@@ -774,6 +794,8 @@ export const blogPosts: BlogPost[] = [
     searchIntent: 'informational',
     intro: 'API-first is not a buzzword. It is operational leverage for technical teams.',
     outline: ['Definition', 'Use cases', 'Implementation pattern'],
+    datePublished: '2025-05-13',
+    dateModified: '2025-05-13',
   },
   {
     slug: 'self-hosted-invoicing-for-agencies',
@@ -782,6 +804,8 @@ export const blogPosts: BlogPost[] = [
     searchIntent: 'transactional',
     intro: 'A repeatable deployment model is the difference between service chaos and margin.',
     outline: ['Per-client instance model', 'Ops model', 'Support model'],
+    datePublished: '2025-05-27',
+    dateModified: '2025-05-27',
   },
   {
     slug: 'best-invoicing-tools-indie-hackers-2026',
@@ -790,6 +814,8 @@ export const blogPosts: BlogPost[] = [
     searchIntent: 'comparison',
     intro: 'This is a practical ranking based on control, speed, and long-term cost.',
     outline: ['Scoring criteria', 'Top options', 'Recommendation by stage'],
+    datePublished: '2025-06-10',
+    dateModified: '2025-06-10',
   },
   {
     slug: 'open-source-invoicing-vs-saas-trade-offs',
@@ -798,6 +824,8 @@ export const blogPosts: BlogPost[] = [
     searchIntent: 'comparison',
     intro: 'SaaS is not always wrong. Open source is not always free. Context decides.',
     outline: ['Cost', 'Control', 'Operational burden'],
+    datePublished: '2025-06-24',
+    dateModified: '2025-06-24',
   },
   {
     slug: 'local-to-production-self-hosted-invoicing',
@@ -806,6 +834,8 @@ export const blogPosts: BlogPost[] = [
     searchIntent: 'informational',
     intro: 'A good deployment path should move from local to production without surprises.',
     outline: ['Prerequisites', 'Step-by-step deployment', 'Pitfalls to avoid'],
+    datePublished: '2025-07-08',
+    dateModified: '2025-07-08',
   },
   {
     slug: 'invoicing-tool-without-integration-bottleneck',
@@ -814,6 +844,8 @@ export const blogPosts: BlogPost[] = [
     searchIntent: 'informational',
     intro: 'Integration debt is one of the quietest margin killers in service businesses.',
     outline: ['How integration debt appears', 'API requirements', 'Action plan'],
+    datePublished: '2025-07-22',
+    dateModified: '2025-07-22',
   },
 ]
 

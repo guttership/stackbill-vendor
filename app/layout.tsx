@@ -4,6 +4,7 @@ import Script from 'next/script'
 import './globals.css'
 import { siteConfig } from '@/lib/config'
 import { getCurrentLocale } from '@/lib/i18n/server'
+import { organizationSchema, websiteSchema } from '@/lib/seo/schema'
 
 const firaSans = Fira_Sans({
   variable: '--font-fira-sans',
@@ -52,17 +53,9 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  alternates: {
-    canonical: siteConfig.url,
-    languages: {
-      'en-US': `${siteConfig.url}`,
-      'fr-FR': `${siteConfig.url}`,
-    },
-  },
   openGraph: {
     type: 'website',
     locale: siteConfig.locale,
-    alternateLocale: ['fr_FR'],
     url: siteConfig.url,
     title: `${siteConfig.name} — ${siteConfig.description}`,
     description: siteConfig.tagline,
@@ -95,6 +88,16 @@ export default async function RootLayout({
   return (
     <html lang={locale}>
       <body className={`${firaSans.variable} ${geistMono.variable} antialiased`}>
+        <Script
+          id="organization-schema"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema()) }}
+        />
+        <Script
+          id="website-schema"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema()) }}
+        />
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`}
           strategy="afterInteractive"

@@ -1,7 +1,15 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import type { Metadata } from 'next'
 import { Home, Key, CreditCard, Settings, Menu } from 'lucide-react'
 import { siteConfig } from '@/lib/config'
+
+export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
+}
 
 export default function AccountLayout({
   children,
@@ -85,7 +93,7 @@ export default function AccountLayout({
                 Check our documentation or contact support
               </p>
               <Link
-                href="https://docs.stackbill.com"
+                href={siteConfig.docsUrl}
                 className="text-xs text-blue-600 hover:text-blue-700"
               >
                 View documentation

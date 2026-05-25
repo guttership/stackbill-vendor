@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { AnimateOnScroll } from '@/components/marketing/animate-on-scroll'
 import { blogPosts, getBlogPostBySlug } from '@/lib/seo/content'
 import { siteConfig } from '@/lib/config'
+import { breadcrumbSchema } from '@/lib/seo/schema'
 
 type Props = {
   params: Promise<{ slug: string }>
@@ -31,6 +32,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: post.title,
     description: post.intro,
     keywords: [post.targetKeyword, 'self hosted invoicing', 'developer workflow'],
+    robots: {
+      index: false,
+      follow: true,
+    },
     alternates: {
       canonical: canonicalUrl,
     },
@@ -51,25 +56,43 @@ export default async function BlogPostPage({ params }: Props) {
     notFound()
   }
 
+  const canonicalUrl = `${siteConfig.url}/blog/${post.slug}`
+  const breadcrumbJsonLd = breadcrumbSchema([
+    { name: 'Home', item: siteConfig.url },
+    { name: 'Blog', item: `${siteConfig.url}/blog` },
+    { name: post.title, item: canonicalUrl },
+  ])
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'Article',
+    '@type': 'BlogPosting',
+    '@id': `${canonicalUrl}#article`,
     headline: post.title,
     description: post.intro,
+    image: [new URL(siteConfig.ogImage, siteConfig.url).toString()],
+    datePublished: post.datePublished,
+    dateModified: post.dateModified,
     inLanguage: 'en',
-    mainEntityOfPage: `${siteConfig.url}/blog/${post.slug}`,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': canonicalUrl,
+    },
     author: {
-      '@type': 'Organization',
-      name: siteConfig.name,
+      '@id': `${siteConfig.url}/#organization`,
     },
     publisher: {
       '@type': 'Organization',
+      '@id': `${siteConfig.url}/#organization`,
       name: siteConfig.name,
+      logo: {
+        '@type': 'ImageObject',
+        url: new URL('/images/logo.svg', siteConfig.url).toString(),
+      },
     },
   }
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <section className="relative overflow-hidden border-b border-black/10">
@@ -80,7 +103,10 @@ export default async function BlogPostPage({ params }: Props) {
             </Badge>
             <h1 className="page-title">{post.title}</h1>
             <p className="text-lg leading-relaxed text-[#555353]">{post.intro}</p>
-            <p className="text-sm text-[#676060]">Target keyword: {post.targetKeyword}</p>
+            <div className="flex flex-wrap items-center gap-4 text-sm text-[#676060]">
+              <span>Topic: {post.targetKeyword}</span>
+              <span>Published {post.datePublished}</span>
+            </div>
           </div>
         </div>
       </section>

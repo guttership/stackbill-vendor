@@ -3,6 +3,7 @@ import { plans, siteConfig } from '@/lib/config'
 import { PricingCard } from '@/components/pricing/pricing-card'
 import { Check } from 'lucide-react'
 import { getCurrentLocale, getCurrentMessages } from '@/lib/i18n/server'
+import { breadcrumbSchema } from '@/lib/seo/schema'
 
 export const dynamic = 'force-dynamic'
 import { AnimateOnScroll } from '@/components/marketing/animate-on-scroll'
@@ -25,6 +26,10 @@ export const metadata: Metadata = {
 export default async function PricingPage() {
   const locale = await getCurrentLocale()
   const messages = await getCurrentMessages()
+  const breadcrumbJsonLd = breadcrumbSchema([
+    { name: 'Home', item: siteConfig.url },
+    { name: 'Pricing', item: `${siteConfig.url}/pricing` },
+  ])
 
   const monthlyFeatures =
     locale === 'fr'
@@ -76,6 +81,7 @@ export default async function PricingPage() {
 
   return (
     <div className="relative z-10 flex flex-col min-h-screen text-[#463f3f]">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 gradient-mesh opacity-70"></div>
         <div className="container relative mx-auto px-6 md:px-8 py-16 md:py-24">
